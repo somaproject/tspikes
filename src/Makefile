@@ -1,10 +1,14 @@
 
 CXX =g++
-CXXFLAGS = -O2 `pkg-config gtkmm-2.4 gdkmm-2.4 gtkglextmm-1.2 --cflags` -Wall -g
+CXXFLAGS = -O2 `pkg-config gtkmm-2.4 gdkmm-2.4 gtkglextmm-1.2 --cflags` -g
 
-LDFLAGS = `pkg-config --libs gtkmm-2.4 gdkmm-2.4 gtkglextmm-1.2` -g
+LDFLAGS = `pkg-config --libs gtkmm-2.4 gdkmm-2.4 gtkglextmm-1.2` -g -lboost_thread -lboost_date_time -lboost_signals -lboost_program_options 
 
-all: wavevis
+all: tspikemain
+
+
+
+tspikemain: tspikemain.o tspikewin.o network/network.o network/datareceiver.o network/eventreceiver.o  clusterview.o shaders.o glconfig.o  spikewaveview.o glconfig.o ttreader.o
 
 wavevis: wavevis.o spikewaveview.o glconfig.o ttreader.o
 

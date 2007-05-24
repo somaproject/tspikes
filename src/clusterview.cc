@@ -19,7 +19,7 @@ ClusterView::ClusterView(GLSPVectpList * pspvl, CViewMode cvm)
     pCurSPVect_(pspvl->front())
 
 {
-  assert (!pspvl->empty()); 
+  //assert (!pspvl->empty()); 
 
   // configure view pointers
   viewStartIter_ = pspvl_->begin(); 
@@ -37,7 +37,7 @@ ClusterView::ClusterView(GLSPVectpList * pspvl, CViewMode cvm)
 				     Gdk::GL::MODE_ACCUM);
   if (!glconfig)
     {
-      raise 
+      throw std::logic_error("Unable to acquire double-buffered visual"); 
     }
 
   // print frame buffer attributes.
@@ -63,6 +63,7 @@ void ClusterView::on_realize()
 {
   std::cout << "ClusterView::on_realize()" << std::endl; 
 
+  
   // We need to call the base on_realize()
   Gtk::DrawingArea::on_realize();
 
@@ -89,6 +90,7 @@ void ClusterView::on_realize()
   
   gldrawable->gl_end();
   // *** OpenGL END ***
+  std::cout << "OnRealize done" << std::endl; 
 
 }
 
@@ -151,7 +153,6 @@ bool ClusterView::on_configure_event(GdkEventConfigure* event)
 bool ClusterView::on_expose_event(GdkEventExpose* event)
 {
 
-  //std::cout << "Expose event"  << std::endl; 
 
   Glib::RefPtr<Gdk::GL::Drawable> gldrawable = get_gl_drawable();
 
@@ -160,44 +161,56 @@ bool ClusterView::on_expose_event(GdkEventExpose* event)
   if (!gldrawable->gl_begin(get_gl_context()))
     return false;
 
-  glDrawBuffer(GL_BACK); 
-  
-  // copy things into current buffer
-  glAccum(GL_RETURN, 1.0); 
-  if (viewEndIter_ == pspvl_->end() )
-    {
-      // we are always viewing the latest data 
-      GLSPVectpList::iterator lastp = viewEndIter_; 
-      lastp--; 
-      if (*(lastp) != pCurSPVect_)
-	{
-	  glClear(GL_COLOR_BUFFER_BIT); 
 
-	  // this is new data, render the old and go
-	  renderSpikeVector(pCurSPVect_); 
-	  
-	  switch(decayMode_) {
-	  case LINEAR:
-	    glAccum(GL_ADD, -decayVal_); 
-	    break; 
-	  case LOG:
-	    glAccum(GL_MULT, 1-decayVal_); 
-	    break; 
-	  default:
-	    std::cerr << " should never get here" << std::endl; 
-	    break; 
-	  }
-	  
-	  glAccum(GL_ACCUM, 1.0); 
-	  
-	  glAccum(GL_RETURN, 1.0); 
-
-	  pCurSPVect_ = *(lastp); 
-	}
-      
+  // if buffer is empty do nothing
+  if (viewEndIter_ == pspvl_->end() and
+      viewStartIter_ == pspvl_->end())
+    { 
+      glClear(GL_COLOR_BUFFER_BIT); 
     } 
+  else
+    {
+      
+      glDrawBuffer(GL_BACK); 
+      
+      // copy things into current buffer
+      glAccum(GL_RETURN, 1.0); 
+      if (viewEndIter_ == pspvl_->end() )
+	{
+	  // we are always viewing the latest data 
+	  GLSPVectpList::iterator lastp = viewEndIter_; 
+	  lastp--; 
+	  if (*(lastp) != pCurSPVect_)
+	    {
+	      glClear(GL_COLOR_BUFFER_BIT); 
+	  
+	      // this is new data, render the old and go
+	      renderSpikeVector(pCurSPVect_); 
+	      
+	      switch(decayMode_) {
+	      case LINEAR:
+		glAccum(GL_ADD, -decayVal_); 
+		break; 
+	      case LOG:
+		glAccum(GL_MULT, 1-decayVal_); 
+		break; 
+	      default:
+		std::cerr << " should never get here" << std::endl; 
+		break; 
+	      }
+	      
+	      glAccum(GL_ACCUM, 1.0); 
+	      
+	      glAccum(GL_RETURN, 1.0); 
+	      
+	      pCurSPVect_ = *(lastp); 
+	    }
+	  
+	} 
+      renderSpikeVector(pCurSPVect_); 
+    }
   
-  renderSpikeVector(pCurSPVect_); 
+
   
   // Swap buffers.
   gldrawable->swap_buffers();

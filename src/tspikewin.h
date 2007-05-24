@@ -1,5 +1,5 @@
-#ifndef TSPIKEAPP_H
-#define TSPIKEAPP_H
+#ifndef TSPIKEWIN_H
+#define TSPIKEWIN_H
 
 #include <iostream>
 #include <cstdlib>
@@ -16,14 +16,16 @@
 #include <windows.h>
 #endif
 
+#include "network/network.h"
+
 #include "clusterview.h"
 #include "spikewaveview.h"
 
 class TSpikeWin : public Gtk::Window
 {
 public:
-  explicit TSpikeApp(Network * network);
-  virtual ~TSpikeApp();
+  explicit TSpikeWin(Network * network);
+  virtual ~TSpikeWin();
 
 protected:
   virtual bool on_idle();
@@ -31,8 +33,20 @@ protected:
 protected:
   // member widgets:
   
+  
+  Network * pNetwork_; 
+
+
+  GLSPVect *  spvect_; 
+
+  GLSPVectpList spVectpList_; 
+
+
   Gtk::Table clusterTable_; 
   Gtk::Table spikeWaveTable_; 
+  Gtk::VBox spikeWaveVBox_, clusterViewVBox_; 
+  Gtk::HBox mainHBox_; 
+
 
   ClusterView clusterView12_; 
   ClusterView clusterView13_; 
@@ -41,15 +55,14 @@ protected:
   ClusterView clusterView24_; 
   ClusterView clusterView34_; 
 
-  SpikeWaveView SpikeWaveView1_; 
-  SpikeWaveView SpikeWaveView2_; 
-  SpikeWaveView SpikeWaveView3_; 
-  SpikeWaveView SpikeWaveView4_; 
+  SpikeWaveView spikeWaveView1_; 
+  SpikeWaveView spikeWaveView2_; 
+  SpikeWaveView spikeWaveView3_; 
+  SpikeWaveView spikeWaveView4_; 
+  
 
-  Network * pNetwork_; 
-  GLSPVectpList spVectpList_; 
   
 
 };
 
-#endif // TSPIKEAPP_H
+#endif // TSPIKEWIN_H
