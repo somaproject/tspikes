@@ -1,0 +1,62 @@
+Cluster plotting....
+
+
+on each "redraw", we redraw all the points? or only those in the invalidated areas? 
+
+
+each derived object has, well...
+
+we work with floats;
+
+
+we have a window struct, which consists of an x1, x2, y1, and y2, as floats
+
+we have a main .window and a zoombox window. 
+
+motion inside the zoombox window emits a "zoombox_move" signal
+
+
+colors:
+ we pre-allocate 200 of each channel's color, in the form of a giant 2x2 color matrix. 
+
+
+
+
+
+Design overview: 
+No actions -inside- the clusterbox actually cause any changes, these are all caused by externally calling: 
+    setClustWin(window & )
+and 
+    setTotalWin(window &)
+
+The clusterbox itself takes care of updating:
+    clustWin_ and totalWin_
+
+
+All keyboard input is handled by the main window
+
+mouse input: 
+   a middle click zooms in
+   
+We enforce zoom policy at the parent app level
+
+the clusterwin itself will enforce its aspect ratio within the whateverpacking box that we use. 
+
+Minimum size will be 200x200 pix
+
+The head object will always be drawn with a circle of white around it. 
+
+Create a clusterbox with
+
+ClusterBox(spikes &, int chanA, int chanB)
+where chanA, chanB are from 0
+
+Then you set the various bounds
+
+
+For the actual drawing, we have:
+    drawClusterSpikes() : plots actual points
+    drawZoomSpikes() :  plots actual zoom spikes
+    drawZoomBox() : parent to draw zoom box
+    drawCluster() : parent to draw clusters
+

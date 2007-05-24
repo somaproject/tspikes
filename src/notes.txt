@@ -1,0 +1,192 @@
+
+Some of the ideas for spikes
+
+easy to hide the waveform shape
+always have the same color for each wire, i.e. wire 1 / channel A1 is ALWAYS BLUE, etc. 
+
+similarly, plot the triggering spike on-top
+show thresholds
+
+As points come in, they flash
+
+there is a constant temporal fade
+you can accelerate it with a key
+
+Clicking on a point will let you temporariallly see it
+   what about when you have a billion points? 
+
+Window configurations: 
+
+we want 8 per 1600x1200 screen, giving us...
+
+well, either 800x300 or 300x800, really. Your only other options are going to give you fewer pixels
+
+
+800x400 only lets you have 6 tetrodes per screen, or 24 total
+"oh well"? 
+
+what about non-square aspect ratios? But.. "what does it mean"? 
+
+Zooming for the spike windows... they all move together. 
+
+---------------------------------------------------------------------------
+organization
+---------------------------------------------------------------------------
+
+As we get in spike objects, we deserialize them and place them into a giant-ass circular buffer
+
+We're using the boost circular buffer
+
+We take each spike object, and wrap it in a clusterpoint object:
+    contains peaks for 4 channels
+    a "time factor", a float which multiplies all time deltas
+
+
+]
+
+
+-------------------------------------------------------------------------
+benchmarks: 
+
+reading through all the data in d215.tt, the initial cache refresh takes 400 ms and generates 262 frames. This is not noticably reduced by not zeroing the frames. 
+
+Perhaps it is the memory allocation that is expensive here. 
+
+
+---------------------------------------------------------------------------
+We're talking about 800k data points; the simple addition of a single pair of 200x200 data frames is going to require 40k-ops. The cost of simply rebuilding an entire frame is going to dwarf everything else. 
+
+Let's ignore premature optimization for the moment, and focus on simply plotting the points. All input points are placed in an slist, and we start at the end of the list and operate backwards. We could use some sort of skip list for added indexing capability with minimal overhead, which would be l337. 
+
+It appears that simply constructing the hitpoints for all 800k points takes 200 ms. Whoa. 
+
+
+--------------------------------------------------------------------------
+problem formulation:
+
+1. we receive 800k points over the course of 4.2 hours. Each point is a 4-tuple of 32-bit ints in nanovolts. 
+2. we would like to plot each point in a drawable that is M pixels on a side; note that M ~ 500pix, with varying nV/pix. 
+3. we would like the points to fade with time. 
+4. we would like to vary the timeline, and the zoom level, and the scroll. We also want a pony. 
+
+Now, at the very least, 800k operations on a 1.6 Ghz processor takes 500uS. In reality it ended up taking around 7 ns, but that's not really so bad because there is index variable overhead, looping, instruction cache issues. 
+
+there's the question of how to handle the cluster viewing; do we want a custom cluster-view widget? 
+
+
+
+
+
+For a clusterview, we have two modes:
+rebuild: due to a timeline change
+update: 
+  if time is less
+
+
+on update(): 
+   if time is sufficiently different, fade the frame
+   if it's been more than a minute since our last frame fade:  
+      fade the frame by the proper portion of a minute 
+
+
+update vs rebuild()
+  rebuild: rebuilds all points using the timeline
+=
+
+update: 
+   just plots points
+   
+updateTime:
+   just a handler that gets called every minute and fades the screen at whatever predefined rate
+
+      
+
+
+
+Okay, we -have- to depdend on the external time signal, because ... No we don't! we can just use the internal clock and call it 'close enough'.
+
+
+
+If timeline.end = future, just 
+
+
+-----------------------------------------------------------------------------
+
+Cluster Display -----
+
+As Spike objects arrive, a SpikePoint is computed, and the spikes are placed into a single SpikePointList, which will maintain a history of all captured SpikePoints. 
+
+There are two types that we use to set how we display / view a cluster: 
+
+ClusterView: 
+  This object contains all the parameters necessary for rendering a spikepointlist to a frame. It also contains the methods which perform the voltage-to-pixel-value mapping. 
+  vorigx, vorigy: voltage origins along the x and y axes
+  width, height : pixel count for width, height
+
+  nvXPerPixel: the number of nv in a pixel, in the x direction
+  nvYPerPixel : the number of nv in a pixel in the y direction
+  xchan : channel number (0-MAXCHAN) for x data display
+  ychan: channel number (0 - MAXCHAN) for y data display
+
+Note that all of these parameters are specified in a constructor. 
+
+TimeView:
+  This contains the time paramteres necessary to render a cluster: 
+  .endTime : the last timestamp that is displayed for this cluster
+  .endTimeIsNow() : returns true if the end time is not shortened
+  .rate : additive rate
+  .granularity: the time stamp rate with which pixels are faded
+  .initialValue: the initial brightness of a pixel 
+
+
+ClusterRenderer(SpikePointList * spl, ClusterView cv, TimeView tv) 
+  The cluster renderer creates an internal frame with the associated width and height. 
+  It then renders from the back of the SpikePointList  towards the front to the internal frame
+  A clusterRenderer contains numerous helper functions for rendering the spikes to disk, to a window, etc. 
+
+methods: 
+public:
+  update(int time):
+    call with the current timestamp
+    responsible for fading current frame
+    and plotting new points
+private:
+  rebuild() : generates entire frame, used in constructor
+
+Question: how do we get data -out- of the ClusterRenderer? 
+
+
+Questions for cap: 
+how much sense does it make to separate the cluster renderer from the widget toolkit? For example, you could imagine doing the same thing for the SpikeRenderer, except that then you find yourself wanting to use line drawing primitives, etc. and before you know it you have toolkit dependency again. 
+
+Problems with X: 
+   1. no native support for alpha (yet)
+   2. x gc's keep track of vector-esque components, meaning points, lines, etc. Drawing 1m points will result in X keeping track of these 1m points, which is hella slow and inefficient
+   
+
+As it currently stands, we go: 
+1. we have a big list of spike 4-tuples
+2. we pass this to a ClusterArea widget, along with a TimeView (a set of parameters specifying how spike points fade out with time) and a ClusterView (what /range to display, etc. ) 
+3. A clusterRenderer takes the SpikePointList, the TimeView, and the ClusterView and generates an MxM bitmap of colored spike points; we say it has -rendered- the SpikePointList to a frame
+4. on the X expose event, the ClusterArea GTKMM widget:
+   a. takes the ClusterRendere's Frame, and copies it to the drawing area
+   b. Adds the necessary window dressing based on the TimeView, including axis tick marks, the scaling box, etc. 
+
+Potential problems/conflicts: 
+  1. It seems wrong that we're actually generating the display in two different modules, the ClusterRenderer object and the ClusterArea widget. This requires the ClusterArea widget, for example, to understand that pixel (0, 100) in the ClusterRenderer's frame is the location for the 100 uV tick mark on the y axis.  
+  2. That said, as it stands the ClusterRenderer just turns a series of SpikePoints into a flattened MxM bitmap; it has no facilities for line drawing, text rendering, etc. The ClusterArea widget can use the Gtkmm (x11) drawing primitives
+
+
+Spike area widgets: 
+ 
+Then, we have the SpikeArea widgets. Here the challenge is that basically every bit of the rendering is going to be happening in the SpikeArea widget using the gtkmm (X11) drawing primitives. I'd love to do something someting cairo but gtkmm-cairo isn't going to be available for quite a while. 
+
+
+Again, the question becomes the separation of the drawing functionality from the widget functionality. Unfortunately, the limitations of contemporary graphics devices make this less optimal than we'd like. The spikes are potentially arriving at 1kHz (that's the peak rate; mean is 50 Hz). The gtkmm drawing area's OnExpose call gets called on every display refresh every time the window is invalidated. 
+
+All of that said, Cairo really might be the correct answer if I'm willing to knife-rape myself at the moment. Sure it's floating-point dependent, but then agin we have vectorization of floating-point code, the GPU takes care of shit, etc.
+
+There's basically no way I can think of to avoid the "million points" problem with the cellrenderer, and that's probably something we're just going to have to Deal With in terms of pragmatic optimizations. 
+
+--------------------------------------------------------------------------
+

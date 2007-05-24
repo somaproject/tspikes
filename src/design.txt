@@ -1,0 +1,71 @@
+It is important to recognize that the ClusterView widgets are there to
+-display- underlying data. They have some current state, but they also
+share the larger data state.
+
+Ideally we want to fade points out over time. Performance problems with various naieve approaches lead us to perform intermediate renderings to the accumulation buffer. 
+
+A GLSpikePoint is a spike point, complete with the timestamp and trigger channel. 
+
+A GLSPVect is a vector of spike points. For visualization purposes,
+these points will always be rendered at the same luminance. 
+
+The GLSPVectpList is a list of _pointers_ to GLSPVects. This is the
+master data structure.
+
+The idea here is that we basically chunk the incoming spikes into
+manageable SPVects, and we have a giant list of them. The pcode for new
+spike arrival is
+
+      s = NewSpike() 
+      GLSPVectPlist.back().push_back(s); 
+      if time_elapsed > Tinterval:
+         GLSPVect * p spv= new GLSPVect;	
+	 GLSPVectPlist.push_back(p)
+
+this means that: 
+    GLSPVectPlist should never have size() == 0; upon startup
+    we will add an empty GLSPVect to it
+    
+    GLSPVectPlist.back() is the current spike point vector,
+    which might be rendered differently for whatever reason
+
+now, when interfacing with the spike point list, we'd like to do
+something like:
+
+clusterview.setHistView(begin, end, decayrate, decaymode)
+Histview sets the view to be a range between begin() and end()
+
+clusterview.setLiveView(decayrate, decaymode)
+Live sets the view to be a range starting from the current view
+
+When in live mode, new points are indicated by .end() moving. 
+
+-------------------------------------------------------------------------
+I'd love to do something fancy here, I really would. But the reality
+is that, without relying on vertex and fragment shaders, there's no
+easy way to render from the same set of data.
+
+However, concern over point size are as follows: ~10m spike points is
+200 MB of data, assuming 20 bytes per point (x + y + a + b +
+time). That's a lot.
+
+10m spike points with separate (x,y) points per window is 8 bytes per point *10 m points * 6 windows  == 480 MB, which is way larger. 
+
+
+clusterview again: 
+
+we keep two internal iterators, viewStartIter_ and viewEndIter_. If
+viewEndIter_ == list.end() then we are always showing the latest data.
+
+That's it; that's our abstraction barrier. 
+
+now, every time we call setViewIter(), we totally redraw the entire
+field (that is, resetaccum buffer), which repaints from [viewStartIter_
+to viewEndIter_)
+
+The only thing interesting here is when viewEndIter_ == list.end() --
+this will mean that we're always following the newest data. That means
+that when we go to render, we check to make sure that (viewEndIter_ -
+1) hasn't changed. 
+
+

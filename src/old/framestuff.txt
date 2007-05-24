@@ -1,0 +1,46 @@
+
+This is a brief description of how we want to keep a frame history
+
+granularity_ : how many timestamps are contained within a given frame. think ~600000 (60 sec) or so. 
+
+a Frame is a window of RGB bytes of M x N pixels, and an "age", that is the first possible timestamp of a spike it could contain
+
+ a "view", that is an origin (xorig, yorig) in nV,and a zoom-factor (number of nv per pixel in x and y) 
+
+a timeline tells us how we should fade out old frames; it consists of:
+
+int now : a timestamp representing the "head" of a display; if it is MAX_UINT then it means "all"
+
+int rate: if a frame is ts/granularity_ frames in the past, it should be dimmed by rate*(ts/granularity_); 
+
+
+an flist is an std::list of frames; there is a constant view per flist
+
+Now, we use the flist as a way of quickly recomputing all of our timeline. 
+
+We also have a current_frame
+
+now, here's some pcode:
+
+for a new view, we rebuild all frames
+we then walk them all and sum over all of them to build up the new current frame, using the current timeline
+
+For a new timeline, we just walk them all and rebuild the current frame
+
+for everything else, we just look at the last point we measured, look at the current (head) point, and add it to frames and create new frames as we go
+
+class FrameCache 
+
+
+.newView(const view) 
+.newTimeline(const & timeline)
+.newPoints()
+.getFrame() 
+
+
+
+
+
+
+    
+

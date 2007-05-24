@@ -1,0 +1,12 @@
+A clusterview is an opengl viewer for spikes. We take in a pointer to
+a GLSPVectpList, a list of pointers to vectors containing spike
+points.
+
+We always consider the last (head) of the list to be the "Current" set
+of spike points. As new spikes arrive, they are added to the current
+(head) spike point vector. Once every T time units, that vector ends,
+and is put on the list; at that point we composite using the
+accumulation buffer for fading purposes.
+
+At the moment, there is hardly any optimizaton; in particular there
+are a lot of superfluous copies going on.

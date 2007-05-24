@@ -1,0 +1,3 @@
+1. read in a real spike file, all into memory, into whatever configuration works the best. 
+2. at a rate of ~ 1 kHz, read in new points. Ignore the "real" timestamp. 
+3. update the 6 opengl windows. 

@@ -1,0 +1,8 @@
+THe design of spikes
+
+For each data component, we have a View object which is responsible for both maintaining state about the current view AND for rendering the current view to a displayable format. 
+
+
+Example views include: 
+
+ClusterView -- contains the current spike range viewed, the frame, 
