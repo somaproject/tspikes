@@ -33,10 +33,10 @@ enum CViewMode  {VIEW12, VIEW13, VIEW14, VIEW23, VIEW24, VIEW34};
 class ClusterView : public Gtk::GL::DrawingArea
 {
 public:
-  explicit ClusterView(GLSPVectpList * pspvl, CViewMode cvm);  
+  explicit ClusterView(GLSPVect_tpList * pspvl, CViewMode cvm);  
   virtual ~ClusterView();
-  void setView(GLSPVectpList::iterator sstart, 
-		   GLSPVectpList::iterator send, 
+  void setView(GLSPVect_tpList::iterator sstart, 
+		   GLSPVect_tpList::iterator send, 
 		   float decayVal, DecayMode dm); 
   // Invalidate whole window.
   void inv(); 
@@ -57,21 +57,21 @@ protected:
   virtual bool on_unmap_event(GdkEventAny* event);
   virtual bool on_visibility_notify_event(GdkEventVisibility* event);
   virtual bool on_idle();
-  void resetAccumBuffer(GLSPVectpList::iterator sstart, 
-				GLSPVectpList::iterator send); 
-  void renderSpikeVector(const GLSPVect * spvect); 
+  void resetAccumBuffer(GLSPVect_tpList::iterator sstart, 
+				GLSPVect_tpList::iterator send); 
+  void renderSpikeVector(const GLSPVect_t * spvect); 
 
   
-  GLSPVectpList*  pspvl_; 
+  GLSPVect_tpList*  pspvl_; 
   float decayVal_; 
   DecayMode decayMode_; 
   bool isLive_; 
-  GLSPVectpList::iterator viewStartIter_;  
-  GLSPVectpList::iterator viewEndIter_;  
+  GLSPVect_tpList::iterator viewStartIter_;  
+  GLSPVect_tpList::iterator viewEndIter_;  
 
   int m_Frames;
   CViewMode viewMode_; 
-  GLSPVect *  pCurSPVect_; 
+  GLSPVect_t *  pCurSPVect_; 
 
   
   GLuint gpuProg_; 

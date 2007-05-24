@@ -135,7 +135,7 @@ void Vis::on_button_quit_clicked()
 void Vis::updateSpikePosFromAdj()
 {
 //   std::cout << "updateSpikePosFromAdj: " << spikePosAdjustment_.get_value() << std::endl; 
-//   GLSPVectpList::iterator svpliter = spvl.begin(); 
+//   GLSPVect_tpList::iterator svpliter = spvl.begin(); 
   
 //   for (int i = 0; i < spikePosAdjustment_.get_value(); i++)
 //     {

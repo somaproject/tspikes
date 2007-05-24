@@ -10,7 +10,7 @@ int ClusterView::getFrames()
 
 }
 
-ClusterView::ClusterView(GLSPVectpList * pspvl, CViewMode cvm)
+ClusterView::ClusterView(GLSPVect_tpList * pspvl, CViewMode cvm)
   : pspvl_(pspvl), 
     decayVal_(0.01), 
     decayMode_(LOG), 
@@ -178,7 +178,7 @@ bool ClusterView::on_expose_event(GdkEventExpose* event)
       if (viewEndIter_ == pspvl_->end() )
 	{
 	  // we are always viewing the latest data 
-	  GLSPVectpList::iterator lastp = viewEndIter_; 
+	  GLSPVect_tpList::iterator lastp = viewEndIter_; 
 	  lastp--; 
 	  if (*(lastp) != pCurSPVect_)
 	    {
@@ -286,18 +286,18 @@ bool ClusterView::on_idle()
 }
 
 
-void ClusterView::renderSpikeVector(const GLSPVect * spvect)
+void ClusterView::renderSpikeVector(const GLSPVect_t * spvect)
 {
   // take the spikes in the SPvect and render them on the current
   // buffer; we assume viewport and whatnot are already configured
 
   glColor3f(1.0, 1.0, 0.0); 
-  glVertexPointer(4, GL_FLOAT, sizeof(GLSpikePoint),
+  glVertexPointer(4, GL_FLOAT, sizeof(GLSpikePoint_t),
 		  &((*spvect)[0])); 
-  std::vector<CRGBA> colors(spvect->size()); 
+  std::vector<CRGBA_t> colors(spvect->size()); 
   for(unsigned int i = 0; i < spvect->size(); i++)
     {
-      CRGBA c = {0, 0, 0, 0}; 
+      CRGBA_t c = {0, 0, 0, 0}; 
       int tchan = (*spvect)[i].tchan; 
       switch (tchan) 
 	{
@@ -334,7 +334,7 @@ void ClusterView::renderSpikeVector(const GLSPVect * spvect)
 	}
       colors[i] = c; 
     }
-  glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(CRGBA), 
+  glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(CRGBA_t), 
  		 &colors[0]); 
 
   GLint vp = glGetUniformLocation(gpuProg_, "axes"); 
@@ -345,8 +345,8 @@ void ClusterView::renderSpikeVector(const GLSPVect * spvect)
 
 }
 
-void ClusterView::resetAccumBuffer(GLSPVectpList::iterator sstart, 
-			      GLSPVectpList::iterator send)
+void ClusterView::resetAccumBuffer(GLSPVect_tpList::iterator sstart, 
+			      GLSPVect_tpList::iterator send)
 {
   // first clear accumulation buffer
   glClearAccum(0.0, 0.0, 0.0, 0.0); 
@@ -354,7 +354,7 @@ void ClusterView::resetAccumBuffer(GLSPVectpList::iterator sstart,
   
   glClear(GL_COLOR_BUFFER_BIT |  GL_ACCUM_BUFFER_BIT); 
   
-  GLSPVectpList::iterator i; 
+  GLSPVect_tpList::iterator i; 
   glReadBuffer(GL_BACK); 
   int pos = 0; 
   for (i = sstart; i != send; i++)
@@ -381,8 +381,8 @@ void ClusterView::resetAccumBuffer(GLSPVectpList::iterator sstart,
   
 }
 
-void ClusterView::setView(GLSPVectpList::iterator sstart, 
-			  GLSPVectpList::iterator send, 
+void ClusterView::setView(GLSPVect_tpList::iterator sstart, 
+			  GLSPVect_tpList::iterator send, 
 			  float decayVal, DecayMode dm)
 {
 

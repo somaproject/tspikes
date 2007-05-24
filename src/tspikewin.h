@@ -16,7 +16,9 @@
 #include <windows.h>
 #endif
 
-#include "network/network.h"
+#include "network/networkinterface.h"
+#include "network/data/tspike.h"
+#include "network/data/rawdata.h"
 
 #include "clusterview.h"
 #include "spikewaveview.h"
@@ -24,29 +26,27 @@
 class TSpikeWin : public Gtk::Window
 {
 public:
-  explicit TSpikeWin(Network * network);
+  explicit TSpikeWin(NetworkInterface * network);
   virtual ~TSpikeWin();
 
 protected:
   virtual bool on_idle();
 
 protected:
+  
+  
+  NetworkInterface * pNetwork_; 
+
+  GLSPVect_t *  spvect_; 
+
+  GLSPVect_tpList spVectpList_; 
+
   // member widgets:
-  
-  
-  Network * pNetwork_; 
-
-
-  GLSPVect *  spvect_; 
-
-  GLSPVectpList spVectpList_; 
-
 
   Gtk::Table clusterTable_; 
   Gtk::Table spikeWaveTable_; 
   Gtk::VBox spikeWaveVBox_, clusterViewVBox_; 
   Gtk::HBox mainHBox_; 
-
 
   ClusterView clusterView12_; 
   ClusterView clusterView13_; 
@@ -55,13 +55,15 @@ protected:
   ClusterView clusterView24_; 
   ClusterView clusterView34_; 
 
-  SpikeWaveView spikeWaveView1_; 
-  SpikeWaveView spikeWaveView2_; 
-  SpikeWaveView spikeWaveView3_; 
-  SpikeWaveView spikeWaveView4_; 
+  SpikeWaveView spikeWaveViewX_; 
+  SpikeWaveView spikeWaveViewY_; 
+  SpikeWaveView spikeWaveViewA_; 
+  SpikeWaveView spikeWaveViewB_; 
   
-
-  
+  // append data functions
+  bool dataRXCallback(Glib::IOCondition io_condition); 
+  void appendTSpikeToSpikewaves(const TSpike_t & tspike); 
+  void appendTSpikeToSPL(const TSpike_t & tspike);
 
 };
 

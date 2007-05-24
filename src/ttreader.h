@@ -1,6 +1,5 @@
 #ifndef TTREADER_H
 #define TTREADER_H
-
 #include <fstream>
 #include <string>
 

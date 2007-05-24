@@ -10,7 +10,8 @@ int SpikeWaveView::getFrames()
 
 }
 
-SpikeWaveView::SpikeWaveView() : 
+SpikeWaveView::SpikeWaveView(GLChan_t chan) : 
+  chan_(chan), 
   decayVal_(0.0), 
   spikeWaveListFull_(false), 
   spikeWaveListTgtLen_(25), 
@@ -51,7 +52,7 @@ SpikeWaveView::~SpikeWaveView()
 {
 }
 
-void SpikeWaveView::newSpikeWave(const SpikeWave_t & sw)
+void SpikeWaveView::newSpikeWave(const GLSpikeWave_t & sw)
 {
   if (spikeWaveListFull_)
     {
@@ -69,7 +70,7 @@ void SpikeWaveView::newSpikeWave(const SpikeWave_t & sw)
       
     }
   
-
+  
 }
 
 void SpikeWaveView::setListLen(int len)
@@ -106,7 +107,7 @@ void SpikeWaveView::on_realize()
 
   gldrawable->gl_end();
   // *** OpenGL END ***
-  
+    setViewingWindow(0, -2000, 32, 2000); 
 }
 
 bool SpikeWaveView::setViewingWindow(float x1, float y1, 
@@ -163,14 +164,35 @@ bool SpikeWaveView::on_configure_event(GdkEventConfigure* event)
   return true;
 }
 
-bool SpikeWaveView::renderSpikeWave(const SpikeWave_t & sw, 
+bool SpikeWaveView::renderSpikeWave(const GLSpikeWave_t & sw, 
 				    float alpha, 
 				    bool plotPoints = false)
 {
   // assume we are in a primary GL loop
   
   // first we render the line  
-  glColor4f(1.0, 0.0, 0.0, alpha); 
+  switch (chan_) 
+    {
+    case CHANX:
+      glColor4f(1.0, 0.0, 0.0, alpha); 
+      break;
+
+    case CHANY:
+      glColor4f(0.0, 1.0, 0.0, alpha); 
+      break;
+
+    case CHANA:
+      glColor4f(0.0, 0.0, 1.0, alpha); 
+      break;
+
+    case CHANB:
+      glColor4f(1.0, 1.0, 0.0, alpha); 
+      break;
+
+    default:
+      break;
+    }
+
 
   if (plotPoints)
     {
@@ -202,6 +224,7 @@ bool SpikeWaveView::renderSpikeWave(const SpikeWave_t & sw,
   return true; 
 
 }
+
 bool SpikeWaveView::on_expose_event(GdkEventExpose* event)
 {
 

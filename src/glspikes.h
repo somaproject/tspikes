@@ -5,7 +5,10 @@
 #include <vector>
 #include <list>
 
-struct GLSpikePoint {
+enum GLChan_t {CHANX, CHANY, CHANA, CHANB}; 
+
+
+struct GLSpikePoint_t {
   GLfloat p1; 
   GLfloat p2; 
   GLfloat p3; 
@@ -14,16 +17,22 @@ struct GLSpikePoint {
   GLbyte tchan; 
 }; 
 
-typedef std::vector<GLSpikePoint> GLSPVect; 
-typedef std::list<GLSPVect* > GLSPVectpList; 
+typedef std::vector<GLSpikePoint_t> GLSPVect_t; 
+typedef std::list<GLSPVect_t* > GLSPVect_tpList; 
 
-struct CRGBA 
+struct CRGBA_t 
 {
   GLubyte R; 
   GLubyte G; 
   GLubyte B; 
   GLubyte A; 
 } __attribute__((packed)) ; 
+
+struct GLSpikeWave_t
+{
+  uint64_t ts; 
+  std::vector<int32_t> wave; 
+}; 
 
 
 #endif //GLSPIKES_H

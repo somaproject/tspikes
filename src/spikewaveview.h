@@ -27,18 +27,12 @@
 
 const int SPIKEWAVE_LEN = 32; 
 
-struct SpikeWave_t
-{
-  uint64_t ts; 
-  std::vector<int32_t> wave; 
-}; 
-
-typedef std::list<SpikeWave_t> SpikeWaveList_t; 
+typedef std::list<GLSpikeWave_t> SpikeWaveList_t; 
 
 class SpikeWaveView : public Gtk::GL::DrawingArea
 {
 public:
-  explicit SpikeWaveView(); 
+  explicit SpikeWaveView(GLChan_t chan); 
 
   virtual ~SpikeWaveView();
 
@@ -47,7 +41,7 @@ public:
   bool setViewingWindow(float x1, float y1,  float x2, float y2); 
   int getFrames(); 
   void setTime(uint64_t time); 
-  void newSpikeWave(const SpikeWave_t & sw); 
+  void newSpikeWave(const GLSpikeWave_t & sw); 
   void setListLen(int len);
 
 
@@ -67,14 +61,16 @@ protected:
   virtual bool on_visibility_notify_event(GdkEventVisibility* event);
   virtual bool on_idle();
 
+  float decayVal_;  // how many ts are we at zero opacity with ? 
+  GLChan_t chan_; 
   SpikeWaveList_t swl_; 
   bool spikeWaveListFull_; 
   int spikeWaveListTgtLen_; 
   uint64_t currentTime_; 
-  bool renderSpikeWave(const SpikeWave_t & sw, 
+  bool renderSpikeWave(const GLSpikeWave_t & sw, 
 		       float alpha, bool plotPoints);
-  float decayVal_;  // how many ts are we at zero opacity with ? 
 
+  
   int m_Frames;
 
 };

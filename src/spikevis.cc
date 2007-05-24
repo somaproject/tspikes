@@ -31,8 +31,8 @@ const int M = 6000;
 GLfloat points[N][4]; 
 
 
-GLSPVectpList spvl, spvlsrc; 
-GLSPVectpList::iterator spvlp; 
+GLSPVect_tpList spvl, spvlsrc; 
+GLSPVect_tpList::iterator spvlp; 
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -163,14 +163,14 @@ void Vis::on_button_quit_clicked()
 void Vis::updateSpikePosFromAdj()
 {
   std::cout << "updateSpikePosFromAdj: " << spikePosAdjustment_.get_value() << std::endl; 
-  GLSPVectpList::iterator svpliter = spvl.begin(); 
+  GLSPVect_tpList::iterator svpliter = spvl.begin(); 
   
   for (int i = 0; i < spikePosAdjustment_.get_value(); i++)
     {
       svpliter++; 
     }
 
-//   GLSPVectpList::iterator svpliter2 = svpliter; 
+//   GLSPVect_tpList::iterator svpliter2 = svpliter; 
 
 //   clusterView12_.setHistView(spvl.begin(), svpliter, 
 // 			     0.01, LOG); 
@@ -261,7 +261,7 @@ bool Vis::on_idle()
 	  spvl.push_back(*spvlp); 
 	  spvlp++; 
 	} else {
-	  spvl.push_back(new GLSPVect); 
+	  spvl.push_back(new GLSPVect_t); 
 	}
       
       dtimer_.reset(); 
@@ -286,13 +286,13 @@ void spikesquares(void)
     { 
       for (int j = 0 ; j < 20; j++)
 	{
-	  GLSPVect * spv = new GLSPVect; 
+	  GLSPVect_t * spv = new GLSPVect_t; 
 	  
 	  for (int x = 0; x < MAXX; x++) 
 	    { 
 	      for (int y = 0; y < MAXY; y++)
 		{
-		  GLSpikePoint sp1; 
+		  GLSpikePoint_t sp1; 
 
 
 		  sp1.p1 = float( x + j * SPACEX) * scale; 
