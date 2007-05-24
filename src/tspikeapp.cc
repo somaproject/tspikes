@@ -1,5 +1,5 @@
 
-TSpikeApp::TSpikeApp(bool is_sync)
+TSpikeWin::TSpikeWin()
   : m_VBox(false, 0), 
     table_(2, 3), 
     clusterView12_(&spvl, VIEW12), 
@@ -8,15 +8,12 @@ TSpikeApp::TSpikeApp(bool is_sync)
     clusterView23_(&spvl, VIEW23), 
     clusterView24_(&spvl, VIEW24), 
     clusterView34_(&spvl, VIEW34), 
-    m_ButtonQuit("Quit"),
-    spikePosAdjustment_(0.0, 0.0, spvl.size(), 10.0, 10.0, 0), 
-    spikePosScale_(spikePosAdjustment_)
 {
   //
   // Top-level window.
   //
-
-  set_title("TSpikeApp");
+  
+  set_title("Tetrode Spike Viewer");
 
   // Get automatically redrawn if any of their children changed allocation.
   set_reallocate_redraws(true);
@@ -35,20 +32,15 @@ TSpikeApp::TSpikeApp(bool is_sync)
   clusterView34_.set_size_request(200, 200);
 
   
-  table_.attach(clusterView12_, 0, 1, 0, 1);
-  table_.attach(clusterView13_, 1, 2, 0, 1);
-  table_.attach(clusterView14_, 2, 3, 0, 1);
-  table_.attach(clusterView23_, 0, 1, 1, 2);
-  table_.attach(clusterView24_, 1, 2, 1, 2);
-  table_.attach(clusterView34_, 2, 3, 1, 2);
+  clusterTable_.attach(clusterView12_, 0, 1, 0, 1);
+  clusterTable_.attach(clusterView13_, 1, 2, 0, 1);
+  clusterTaable_.attach(clusterView14_, 2, 3, 0, 1);
+  clusterTable_.attach(clusterView23_, 0, 1, 1, 2);
+  clusterTable_.attach(clusterView24_, 1, 2, 1, 2);
+  clusterTable_.attach(clusterView34_, 2, 3, 1, 2);
 
   m_VBox.pack_start(table_); 
 
-  spikePosScale_.set_update_policy(Gtk::UPDATE_DELAYED);
-  spikePosScale_.set_digits(1);
-  spikePosScale_.set_value_pos(Gtk::POS_TOP);
-  spikePosScale_.set_draw_value();
-  spikePosScale_.set_size_request(200, 30);
   m_VBox.pack_start(spikePosScale_); 
 
   //
@@ -59,10 +51,6 @@ TSpikeApp::TSpikeApp(bool is_sync)
     sigc::mem_fun(*this, &TSpikeApp::on_button_quit_clicked));
 
   m_VBox.pack_start(m_ButtonQuit, Gtk::PACK_SHRINK, 0);
-
-  spikePosAdjustment_.signal_value_changed().connect(
-					    sigc::mem_fun(*this, 
-							  &TSpikeApp::updateSpikePosFromAdj ) ); 
 
   
 
@@ -196,81 +184,3 @@ bool TSpikeApp::on_idle()
 }
 
 
-void spikesquares(void)
-{
-  
-  float scale = 0.0035; 
-  const int MAXX = 30; 
-  const int MAXY = 30; 
-  
-  const int SPACEX = 40; 
-  const int SPACEY = 40; 
-  
-  for (int i = 0; i < 20; i++)
-    { 
-      for (int j = 0 ; j < 20; j++)
-	{
-	  GLSPVect * spv = new GLSPVect; 
-	  
-	  for (int x = 0; x < MAXX; x++) 
-	    { 
-	      for (int y = 0; y < MAXY; y++)
-		{
-		  GLSpikePoint sp1; 
-
-
-		  sp1.p1 = float( x + j * SPACEX) * scale; 
-		  sp1.p2 = float( y + i * SPACEY) * scale; 
-		  sp1.p3 = float( x + j * SPACEX) * scale/2.0; 
-		  sp1.p4 = float( y + i * SPACEY) * scale/2.0; 
-		  sp1.ts = 1000; 
-		  sp1.tchan = j % 4; 
-		  spv->push_back(sp1); 
-		}
-	    }
-	  spvlsrc.push_back(spv); 
-
-	}
-    }
-}
-
-int main(int argc, char** argv)
-{
-  Gtk::Main kit(argc, argv);
-
-  //
-  // Init gtkglextmm.
-  //
-  
-
-  Gtk::GL::init(argc, argv);
-  spikesquares(); 
-
-  spvlp = spvlsrc.begin(); 
-
-  int testmode = 1;
-  switch (testmode)
-    {
-    case 0:
-      // empty pointers
-      spvl.push_back(*spvlp); 
-      spvlp++; 
-      break; 
-    case 1:
-      // partly populated
-      for (int i =0; i < 207; i++)
-	{
-	  spvl.push_back(*spvlp); 
-	  spvlp++; 
-	}
-      break ; 
-    default:
-      break; 
-    }
-  
-  TSpikeApp vis(true);
-
-  kit.run(vis);
-
-  return 0;
-}

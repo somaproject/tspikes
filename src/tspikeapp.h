@@ -16,10 +16,13 @@
 #include <windows.h>
 #endif
 
-class TSpikeApp : public Gtk::Window
+#include "clusterview.h"
+#include "spikewaveview.h"
+
+class TSpikeWin : public Gtk::Window
 {
 public:
-  explicit TSpikeApp(bool is_sync = true);
+  explicit TSpikeApp(Network * network);
   virtual ~TSpikeApp();
 
 protected:
@@ -27,8 +30,9 @@ protected:
 
 protected:
   // member widgets:
-  Gtk::VBox m_VBox;
-  Gtk::Table table_; 
+  
+  Gtk::Table clusterTable_; 
+  Gtk::Table spikeWaveTable_; 
 
   ClusterView clusterView12_; 
   ClusterView clusterView13_; 
@@ -37,16 +41,14 @@ protected:
   ClusterView clusterView24_; 
   ClusterView clusterView34_; 
 
-  Glib::Timer timer_; 
-  Glib::Timer dtimer_; 
-  Gtk::Button m_ButtonQuit;
-  Gtk::Adjustment spikePosAdjustment_; 
-  Gtk::HScale spikePosScale_; 
-  void updateSpikePosFromAdj(); 
-  sigc::connection m_ConnectionIdle;
+  SpikeWaveView SpikeWaveView1_; 
+  SpikeWaveView SpikeWaveView2_; 
+  SpikeWaveView SpikeWaveView3_; 
+  SpikeWaveView SpikeWaveView4_; 
 
-  virtual bool on_key_press_event(GdkEventKey* event); 
-
+  Network * pNetwork_; 
+  GLSPVectpList spVectpList_; 
+  
 
 };
 
