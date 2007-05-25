@@ -59,13 +59,13 @@ int main(int argc, char** argv)
   Gtk::GL::init(argc, argv);
   
   FakeNetwork net; 
-  FakeTTData fttd("../../d118.tt", 100); 
+  FakeTTData fttd("../../d118.tt", 1000); 
   
   Glib::signal_timeout().connect(
 				 sigc::bind(sigc::mem_fun(&fttd, 
 							  &FakeTTData::appendToFakeNetwork), 
 					    &net),
-				 100); 
+				 10); 
   TSpikeWin tspikewin(&net);
   
   kit.run(tspikewin);

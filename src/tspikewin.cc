@@ -14,12 +14,12 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
   clusterViewVBox_(false, 0), 
   mainHBox_(false, 0), 
 
-  clusterView12_(&spVectpList_, VIEW12), 
-  clusterView13_(&spVectpList_, VIEW13), 
-  clusterView14_(&spVectpList_, VIEW14), 
-  clusterView23_(&spVectpList_, VIEW23), 
-  clusterView24_(&spVectpList_, VIEW24), 
-  clusterView34_(&spVectpList_, VIEW34), 
+  clusterViewXY_(&spVectpList_, VIEW12), 
+  clusterViewXA_(&spVectpList_, VIEW13), 
+  clusterViewXB_(&spVectpList_, VIEW14), 
+  clusterViewYA_(&spVectpList_, VIEW23), 
+  clusterViewYB_(&spVectpList_, VIEW24), 
+  clusterViewAB_(&spVectpList_, VIEW34), 
   
   spikeWaveViewX_(CHANX), 
   spikeWaveViewY_(CHANY), 
@@ -37,20 +37,20 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
   spVectpList_.push_back(new GLSPVect_t); 
   add(mainHBox_); 
 
-  clusterView12_.set_size_request(150, 150);
-  clusterView13_.set_size_request(150, 150);
-  clusterView14_.set_size_request(150, 150);
-  clusterView23_.set_size_request(150, 150);
-  clusterView24_.set_size_request(150, 150);
-  clusterView34_.set_size_request(150, 150);
+  clusterViewXY_.set_size_request(150, 150);
+  clusterViewXA_.set_size_request(150, 150);
+  clusterViewXB_.set_size_request(150, 150);
+  clusterViewYA_.set_size_request(150, 150);
+  clusterViewYB_.set_size_request(150, 150);
+  clusterViewAB_.set_size_request(150, 150);
 
   
-  clusterTable_.attach(clusterView12_, 0, 1, 0, 1);
-  clusterTable_.attach(clusterView13_, 1, 2, 0, 1);
-  clusterTable_.attach(clusterView14_, 2, 3, 0, 1);
-  clusterTable_.attach(clusterView23_, 0, 1, 1, 2);
-  clusterTable_.attach(clusterView24_, 1, 2, 1, 2);
-  clusterTable_.attach(clusterView34_, 2, 3, 1, 2);
+  clusterTable_.attach(clusterViewXY_, 0, 1, 0, 1);
+  clusterTable_.attach(clusterViewXA_, 1, 2, 0, 1);
+  clusterTable_.attach(clusterViewXB_, 2, 3, 0, 1);
+  clusterTable_.attach(clusterViewYA_, 0, 1, 1, 2);
+  clusterTable_.attach(clusterViewYB_, 1, 2, 1, 2);
+  clusterTable_.attach(clusterViewAB_, 2, 3, 1, 2);
 
 
 
@@ -67,7 +67,7 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
   spikeWaveTable_.attach(spikeWaveViewA_, 0, 1, 1, 2); 
   spikeWaveTable_.attach(spikeWaveViewB_, 1, 2, 1, 2); 
 
-
+ 
   spikeWaveVBox_.pack_start(spikeWaveTable_); 
   
   mainHBox_.pack_start(spikeWaveVBox_); 
@@ -75,36 +75,43 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
   //
   // Show window.
   //
-  clusterView12_.setView(spVectpList_.begin(), 
-			 spVectpList_.end(), 
-			 0.0, LOG); 
-  clusterView12_.setViewingWindow(0, 0, float(200000.0), float(200000.0));
 
-  clusterView13_.setView(spVectpList_.begin(), 
+  float decay = 0.05; 
+  clusterViewXY_.setView(spVectpList_.begin(), 
 			 spVectpList_.end(), 
-			 0.0, LOG); 
-  clusterView13_.setViewingWindow(0, 0, float(200000.0), float(200000.0));
+			 decay, LOG); 
+  clusterViewXY_.setViewingWindow(0, 0, float(150e-6), float(150e-6));
 
-  clusterView14_.setView(spVectpList_.begin(), 
+  clusterViewXA_.setView(spVectpList_.begin(), 
 			 spVectpList_.end(), 
-			 0.0, LOG); 
-  clusterView14_.setViewingWindow(0, 0, float(200000.0), float(200000.0));
+			 decay, LOG); 
+  clusterViewXA_.setViewingWindow(0, 0, float(150e-6), float(150e-6));
 
-  clusterView23_.setView(spVectpList_.begin(), 
+  clusterViewXB_.setView(spVectpList_.begin(), 
 			 spVectpList_.end(), 
-			 0.0, LOG); 
-  clusterView23_.setViewingWindow(0, 0, float(200000.0), float(200000.0));
+			 decay, LOG); 
+  clusterViewXB_.setViewingWindow(0, 0, float(150e-6), float(150e-6));
 
-  clusterView24_.setView(spVectpList_.begin(), 
+  clusterViewYA_.setView(spVectpList_.begin(), 
 			 spVectpList_.end(), 
-			 0.0, LOG); 
-  clusterView24_.setViewingWindow(0, 0, float(200000.0), float(200000.0));
+			 decay, LOG); 
+  clusterViewYA_.setViewingWindow(0, 0, float(150e-6), float(150e-6));
 
-  clusterView34_.setView(spVectpList_.begin(), 
+  clusterViewYB_.setView(spVectpList_.begin(), 
 			 spVectpList_.end(), 
-			 0.0, LOG); 
-  clusterView34_.setViewingWindow(0, 0, float(200000.0), float(200000.0));
+			 decay, LOG); 
+  clusterViewYB_.setViewingWindow(0, 0, float(150e-6), float(150e-6));
 
+  clusterViewAB_.setView(spVectpList_.begin(), 
+			 spVectpList_.end(), 
+			 decay, LOG); 
+  clusterViewAB_.setViewingWindow(0, 0, float(150e-6), float(150e-6));
+
+
+   spikeWaveViewX_.setViewingWindow(0, -100e-6, 32, 180e-6); 
+   spikeWaveViewY_.setViewingWindow(0, -100e-6, 32, 180e-6); 
+   spikeWaveViewA_.setViewingWindow(0, -100e-6, 32, 180e-6); 
+   spikeWaveViewB_.setViewingWindow(0, -100e-6, 32, 180e-6); 
 
   show_all();
 
@@ -123,12 +130,12 @@ TSpikeWin::~TSpikeWin()
 bool TSpikeWin::on_idle()
 
 {
-  clusterView12_.get_window()->invalidate_rect(get_allocation(), true);
-  clusterView13_.get_window()->invalidate_rect(get_allocation(), true);
-  clusterView14_.get_window()->invalidate_rect(get_allocation(), true);
-  clusterView23_.get_window()->invalidate_rect(get_allocation(), true);
-  clusterView24_.get_window()->invalidate_rect(get_allocation(), true);
-  clusterView34_.get_window()->invalidate_rect(get_allocation(), true);
+  clusterViewXY_.get_window()->invalidate_rect(get_allocation(), true);
+  clusterViewXA_.get_window()->invalidate_rect(get_allocation(), true);
+  clusterViewXB_.get_window()->invalidate_rect(get_allocation(), true);
+  clusterViewYA_.get_window()->invalidate_rect(get_allocation(), true);
+  clusterViewYB_.get_window()->invalidate_rect(get_allocation(), true);
+  clusterViewAB_.get_window()->invalidate_rect(get_allocation(), true);
 
 
   spikeWaveViewX_.get_window()->invalidate_rect(get_allocation(), true);
@@ -143,7 +150,7 @@ bool TSpikeWin::on_idle()
 //       std::cout.setf(std::ios_base::fixed, std::ios_base::floatfield);
 //       std::cout.setf(std::ios::fixed, std::ios::floatfield);
 //       std::cout.precision(3);
-//       int m_Frames = clusterView12_.getFrames(); 
+//       int m_Frames = clusterViewXY_.getFrames(); 
 //       std::cout << m_Frames << " frames in "
 //                 << seconds << " seconds = "
 //                 << (m_Frames / seconds) << " FPS\n";
@@ -206,14 +213,14 @@ void TSpikeWin::appendTSpikeToSpikewaves(const TSpike_t & tspike)
   y.ts = tspike.time; 
   a.ts = tspike.time; 
   b.ts = tspike.time; 
-  
+  float SCALE = 1e9; 
   
   for (int i = 0; i < TSPIKEWAVE_LEN; i++)
     {
-      x.wave.push_back(tspike.x.wave[i]); 
-      y.wave.push_back(tspike.y.wave[i]); 
-      a.wave.push_back(tspike.a.wave[i]); 
-      b.wave.push_back(tspike.b.wave[i]); 
+      x.wave.push_back(float(tspike.x.wave[i]) / SCALE); 
+      y.wave.push_back(float(tspike.y.wave[i]) / SCALE); 
+      a.wave.push_back(float(tspike.a.wave[i]) / SCALE); 
+      b.wave.push_back(float(tspike.b.wave[i]) / SCALE); 
 
     }
 
@@ -234,36 +241,49 @@ void TSpikeWin::appendTSpikeToSPL(const TSpike_t & tspike)
   sp.p4 = -100e6; 
   sp.tchan = - 1 ;
   
+  // remember tspike is in nv
+  float SCALE = 1e9; 
+
   for (int i = 0; i < TSPIKEWAVE_LEN; i++)
     {
-      if (sp.p1 < tspike.x.wave[i])
-	sp.p1 = tspike.x.wave[i]; 
+      GLfloat xval = float(tspike.x.wave[i]) / SCALE; 
+      GLfloat yval = float(tspike.y.wave[i]) / SCALE; 
+      GLfloat aval = float(tspike.a.wave[i]) / SCALE; 
+      GLfloat bval = float(tspike.b.wave[i]) / SCALE; 
+
+      GLfloat xthresh = float(tspike.x.threshold) / SCALE; 
+      GLfloat ythresh = float(tspike.y.threshold) / SCALE; 
+      GLfloat athresh = float(tspike.a.threshold) / SCALE; 
+      GLfloat bthresh = float(tspike.b.threshold) / SCALE; 
+
+      if (sp.p1 < xval)
+	sp.p1 = xval; 
       
-      if (sp.tchan < 0 & tspike.x.wave[i] > tspike.x.threshold)
+      if (sp.tchan < 0 & xval > xthresh)
 	{
 	  sp.tchan = 0; 
 	}
 
-      if (sp.p2 < tspike.y.wave[i])
-	sp.p2 = tspike.y.wave[i]; 
+      if (sp.p2 < yval)
+	sp.p2 = yval; 
       
-      if (sp.tchan < 0 & tspike.y.wave[i] > tspike.y.threshold)
+      if (sp.tchan < 0 & yval > ythresh)
 	{
 	  sp.tchan = 1; 
 	}
 
-      if (sp.p3 < tspike.a.wave[i])
-	sp.p3 = tspike.a.wave[i]; 
+      if (sp.p3 < aval)
+	sp.p3 = aval; 
       
-      if (sp.tchan < 0 & tspike.a.wave[i] > tspike.a.threshold)
+      if (sp.tchan < 0 & aval > athresh)
 	{
 	  sp.tchan = 2; 
 	}
 
-      if (sp.p4 < tspike.b.wave[i])
-	sp.p4 = tspike.b.wave[i]; 
+      if (sp.p4 < bval)
+	sp.p4 = bval; 
       
-      if (sp.tchan < 0 & tspike.b.wave[i] > tspike.b.threshold)
+      if (sp.tchan < 0 & bval > bthresh)
 	{
 	  sp.tchan = 3; 
 	}
@@ -272,7 +292,7 @@ void TSpikeWin::appendTSpikeToSPL(const TSpike_t & tspike)
   
 
   spVectpList_.back()->push_back(sp); 
-  if (spVectpList_.size() == 50)
+  if (spVectpList_.back()->size() > 500)
     {
       spVectpList_.push_back(new GLSPVect_t); 
     }

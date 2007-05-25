@@ -12,6 +12,7 @@ int SpikeWaveView::getFrames()
 
 SpikeWaveView::SpikeWaveView(GLChan_t chan) : 
   chan_(chan), 
+  viewChanged_(false),
   decayVal_(0.0), 
   spikeWaveListFull_(false), 
   spikeWaveListTgtLen_(25), 
@@ -104,30 +105,34 @@ void SpikeWaveView::on_realize()
   
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
+  updateViewingWindow(); 
+
   gldrawable->gl_end();
   // *** OpenGL END ***
-    setViewingWindow(0, -100000, 32, 100000); 
+
 }
 
 bool SpikeWaveView::setViewingWindow(float x1, float y1, 
 				   float x2, float y2)
 {
+  viewX1_ = x1; 
+  viewY1_ = y1; 
+  viewX2_ = x2; 
+  viewY2_ = y2; 
+
+  viewChanged_ = true; 
+}
+
+void SpikeWaveView::updateViewingWindow()
+
+{
   glLoadIdentity(); 
 
-  glOrtho(x1, x2, y1, y2, -3, 3); 
+  glOrtho(viewX1_, viewX2_, viewY1_, viewY2_, -3, 3); 
 
   glViewport(0, 0, get_width(), get_height());
+  viewChanged_ = false; 
   
-  Glib::RefPtr<Gdk::GL::Drawable> gldrawable = get_gl_drawable();
-
-  if (!gldrawable->gl_begin(get_gl_context()))
-     return false;
-  gldrawable->wait_gdk(); 
-
-  gldrawable->gl_end();
-  
-  return true; 
-
 }
 
 bool SpikeWaveView::on_configure_event(GdkEventConfigure* event)
@@ -144,10 +149,8 @@ bool SpikeWaveView::on_configure_event(GdkEventConfigure* event)
   gldrawable->wait_gdk(); 
   glDrawBuffer(GL_BACK); 
 
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity(); 
-  glOrtho(0, 3, 0, 3, -3, 3);   
-  glViewport(0, 0, get_width(), get_height());
+  updateViewingWindow(); 
+
   glClearColor(0.0, 0.0, 0.0, 1.0); 
   glClear(GL_COLOR_BUFFER_BIT | GL_ACCUM_BUFFER_BIT ); 
   
@@ -203,7 +206,7 @@ bool SpikeWaveView::renderSpikeWave(const GLSpikeWave_t & sw,
   glBegin(GL_LINE_STRIP); 
   for (unsigned int i = 0; i < sw.wave.size(); i++)
     {
-      glVertex2i(i, sw.wave[i]); 
+      glVertex2f(i, sw.wave[i]); 
     }
   glEnd(); 
 
@@ -215,7 +218,7 @@ bool SpikeWaveView::renderSpikeWave(const GLSpikeWave_t & sw,
       glBegin(GL_POINTS); 
 	for (unsigned int i = 0; i < sw.wave.size(); i++)
 	  {
-	    glVertex2i(i, sw.wave[i]); 
+	    glVertex2f(i, sw.wave[i]); 
 	  }
       glEnd(); 
     }
@@ -233,6 +236,10 @@ bool SpikeWaveView::on_expose_event(GdkEventExpose* event)
   if (!gldrawable->gl_begin(get_gl_context()))
     return false;
 
+  if (viewChanged_)
+    {
+      updateViewingWindow(); 
+    }
   glClearColor(0.0, 0.0, 0.0, 1.0); 
   glClear(GL_COLOR_BUFFER_BIT | GL_ACCUM_BUFFER_BIT ); 
 
@@ -279,6 +286,7 @@ bool SpikeWaveView::on_map_event(GdkEventAny* event)
 
   glClear(GL_COLOR_BUFFER_BIT | GL_ACCUM_BUFFER_BIT ); 
   
+  updateViewingWindow(); 
 
   gldrawable->wait_gl(); 
   //gldrawable->wait_gdk(); 

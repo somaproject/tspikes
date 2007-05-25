@@ -61,12 +61,16 @@ protected:
   virtual bool on_visibility_notify_event(GdkEventVisibility* event);
   virtual bool on_idle();
 
+  void updateViewingWindow(); 
+  bool viewChanged_; 
   float decayVal_;  // how many ts are we at zero opacity with ? 
   GLChan_t chan_; 
   SpikeWaveList_t swl_; 
   bool spikeWaveListFull_; 
   int spikeWaveListTgtLen_; 
   uint64_t currentTime_; 
+  GLfloat viewX1_, viewX2_, viewY1_, viewY2_; 
+
   bool renderSpikeWave(const GLSpikeWave_t & sw, 
 		       float alpha, bool plotPoints);
 

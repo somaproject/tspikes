@@ -31,7 +31,7 @@ struct CRGBA_t
 struct GLSpikeWave_t
 {
   uint64_t ts; 
-  std::vector<int32_t> wave; 
+  std::vector<GLfloat> wave; 
 }; 
 
 

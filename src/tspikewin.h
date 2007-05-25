@@ -48,12 +48,12 @@ protected:
   Gtk::VBox spikeWaveVBox_, clusterViewVBox_; 
   Gtk::HBox mainHBox_; 
 
-  ClusterView clusterView12_; 
-  ClusterView clusterView13_; 
-  ClusterView clusterView14_; 
-  ClusterView clusterView23_; 
-  ClusterView clusterView24_; 
-  ClusterView clusterView34_; 
+  ClusterView clusterViewXY_; 
+  ClusterView clusterViewXA_; 
+  ClusterView clusterViewXB_; 
+  ClusterView clusterViewYA_; 
+  ClusterView clusterViewYB_; 
+  ClusterView clusterViewAB_; 
 
   SpikeWaveView spikeWaveViewX_; 
   SpikeWaveView spikeWaveViewY_; 
