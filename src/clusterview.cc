@@ -63,8 +63,6 @@ ClusterView::~ClusterView()
 
 void ClusterView::on_realize()
 {
-  std::cout << "ClusterView::on_realize()" << std::endl; 
-
   
   // We need to call the base on_realize()
   Gtk::DrawingArea::on_realize();
@@ -76,7 +74,7 @@ void ClusterView::on_realize()
     return;
 
   //glEnable(GL_NORMALIZE);
-  glEnable(GL_POINT_SMOOTH); 
+  //glEnable(GL_POINT_SMOOTH); 
   glEnableClientState(GL_VERTEX_ARRAY); 
   glEnableClientState(GL_COLOR_ARRAY); 
   
@@ -92,8 +90,6 @@ void ClusterView::on_realize()
   
   gldrawable->gl_end();
   // *** OpenGL END ***
-  std::cout << "OnRealize done" << std::endl; 
-
 
 }
 
@@ -110,26 +106,15 @@ bool ClusterView::setViewingWindow(float x1, float y1,
 
 void ClusterView::updateViewingWindow()
 {
-  Glib::RefPtr<Gdk::GL::Drawable> gldrawable = get_gl_drawable();
 
-  // *** OpenGL BEGIN ***
-
-  if (!gldrawable->gl_begin(get_gl_context()))
-    return;
-  
-
-
-  std::cout << "setting glortho to " 
-	    << " X1 = " << viewX1_ << " x2 = " <<  viewX2_
-	    << " Y1 = " << viewY1_ << " Y2 = " << viewY2_ << std::endl; 
+  glMatrixMode(GL_PROJECTION);
   glLoadIdentity(); 
+
   glOrtho(viewX1_, viewX2_, viewY1_, viewY2_, -3, 3); 
 
   glViewport(0, 0, get_width(), get_height());
   
   viewChanged_ = true; 
-
-  gldrawable->gl_end();
 
 }
 
@@ -147,12 +132,8 @@ bool ClusterView::on_configure_event(GdkEventConfigure* event)
   gldrawable->wait_gdk(); 
   glDrawBuffer(GL_BACK); 
 
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity(); 
 
-  glOrtho(viewX1_, viewX2_, viewY1_, viewY2_, -3, 3); 
-		   
-  glViewport(0, 0, get_width(), get_height());
+  updateViewingWindow(); 
   
   glClearColor(0.0, 0.0, 0.0, 1.0); 
   glClear(GL_COLOR_BUFFER_BIT | GL_ACCUM_BUFFER_BIT ); 
@@ -187,6 +168,8 @@ bool ClusterView::on_expose_event(GdkEventExpose* event)
     gldrawable->wait_gl(); 
     viewChanged_ = false; 
   }
+  glPointSize(0.2); 
+
   // if buffer is empty do nothing
   if (viewEndIter_ == pspvl_->end() and
       viewStartIter_ == pspvl_->end())
@@ -274,7 +257,6 @@ bool ClusterView::on_map_event(GdkEventAny* event)
 
 bool ClusterView::on_unmap_event(GdkEventAny* event)
 {
-  std::cout << "ClusterView::on_unmap_event" << std::endl; 
 
   return true;
 }
@@ -393,7 +375,6 @@ void ClusterView::resetAccumBuffer(GLSPVect_tpList::iterator sstart,
   int pos = 0; 
   for (i = sstart; i != send; i++)
     {
-      //      std::cout << "reset accum buffer" << std::endl; 
       pos++; 
       renderSpikeVector(*i); 
       glAccum(GL_ACCUM, 1.0); 

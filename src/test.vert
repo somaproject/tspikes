@@ -24,7 +24,9 @@ void main()
      point = gl_Vertex.zwxy; 
   }
 
+  point.z = 0.0; 
   point.w = 1.0; 
+  
   // eliminate w point
   gl_Position = gl_ModelViewProjectionMatrix * point; 
 

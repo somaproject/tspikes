@@ -34,6 +34,7 @@ GLfloat points[N][4];
 GLSPVect_tpList spvl, spvlsrc; 
 GLSPVect_tpList::iterator spvlp; 
 
+const float GSCALE = 100.0 ; 
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -127,6 +128,13 @@ Vis::Vis(bool is_sync)
   spikePosScale_.set_size_request(200, 30);
   m_VBox.pack_start(spikePosScale_); 
 
+      clusterView34_.setViewingWindow(0, 0, 10.0 * GSCALE, 10.0 * GSCALE); 
+      clusterView12_.setViewingWindow(0, 0, 10.0 * GSCALE, 10.0 * GSCALE); 
+      clusterView13_.setViewingWindow(0, 0, 10.0 * GSCALE, 10.0 * GSCALE); 
+      clusterView14_.setViewingWindow(0, 0, 10.0 * GSCALE, 10.0 * GSCALE); 
+      clusterView23_.setViewingWindow(0, 0, 10.0 * GSCALE, 10.0 * GSCALE); 
+      clusterView24_.setViewingWindow(0, 0, 10.0 * GSCALE, 10.0 * GSCALE); 
+
   //
   // Simple quit button.
   //
@@ -211,12 +219,12 @@ bool Vis::on_key_press_event(GdkEventKey* event)
       break;
     case GDK_Up:
       std::cout << "Changing zoom" << std::endl; 
-      clusterView34_.setViewingWindow(0, 0, 300.0, 300.0); 
-      clusterView12_.setViewingWindow(0, 0, 300.0, 300.0); 
-      clusterView13_.setViewingWindow(0, 0, 300.0, 300.0); 
-      clusterView14_.setViewingWindow(0, 0, 300.0, 300.0); 
-      clusterView23_.setViewingWindow(0, 0, 300.0, 300.0); 
-      clusterView24_.setViewingWindow(0, 0, 300.0, 300.0); 
+      clusterView34_.setViewingWindow(0, 0, 10.0 * GSCALE, 10.0 * GSCALE); 
+      clusterView12_.setViewingWindow(0, 0, 10.0 * GSCALE, 10.0 * GSCALE); 
+      clusterView13_.setViewingWindow(0, 0, 10.0 * GSCALE, 10.0 * GSCALE); 
+      clusterView14_.setViewingWindow(0, 0, 10.0 * GSCALE, 10.0 * GSCALE); 
+      clusterView23_.setViewingWindow(0, 0, 10.0 * GSCALE, 10.0 * GSCALE); 
+      clusterView24_.setViewingWindow(0, 0, 10.0 * GSCALE, 10.0 * GSCALE); 
 
       break;
     case GDK_Down: 
@@ -280,7 +288,7 @@ bool Vis::on_idle()
 void spikesquares(void)
 {
   
-  float scale = 0.35; 
+  float scale = 0.007 * GSCALE; 
   const int MAXX = 30; 
   const int MAXY = 30; 
   

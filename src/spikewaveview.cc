@@ -84,7 +84,6 @@ void SpikeWaveView::setListLen(int len)
 
 void SpikeWaveView::on_realize()
 {
-  std::cout << "SpikeWaveView::on_realize()" << std::endl; 
 
   // We need to call the base on_realize()
   Gtk::DrawingArea::on_realize();
@@ -113,7 +112,6 @@ void SpikeWaveView::on_realize()
 bool SpikeWaveView::setViewingWindow(float x1, float y1, 
 				   float x2, float y2)
 {
-  std::cout << "Set viewing window" << std::endl; 
   glLoadIdentity(); 
 
   glOrtho(x1, x2, y1, y2, -3, 3); 
@@ -213,7 +211,7 @@ bool SpikeWaveView::renderSpikeWave(const GLSpikeWave_t & sw,
   if (plotPoints)
     {
       glColor4f(1.0, 1.0, 1.0, alpha); 
-      glPointSize(4.0); 
+      glPointSize(3.0); 
       glBegin(GL_POINTS); 
 	for (unsigned int i = 0; i < sw.wave.size(); i++)
 	  {
@@ -294,7 +292,6 @@ bool SpikeWaveView::on_map_event(GdkEventAny* event)
 
 bool SpikeWaveView::on_unmap_event(GdkEventAny* event)
 {
-  std::cout << "SpikeWaveView::on_unmap_event" << std::endl; 
 
   return true;
 }
