@@ -59,7 +59,8 @@ protected:
   virtual bool on_idle();
   void resetAccumBuffer(GLSPVect_tpList::iterator sstart, 
 				GLSPVect_tpList::iterator send); 
-  void renderSpikeVector(const GLSPVect_t * spvect); 
+  void renderSpikeVector(const GLSPVect_t * spvect, 
+			 bool live = false); 
   void updateView(); 
   void updateViewingWindow(); 
   

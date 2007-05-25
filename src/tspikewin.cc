@@ -57,10 +57,10 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
   clusterViewVBox_.pack_start(clusterTable_) ;
   
   
-  spikeWaveViewX_.set_size_request(150, 150); 
-  spikeWaveViewY_.set_size_request(150, 150); 
-  spikeWaveViewA_.set_size_request(150, 150); 
-  spikeWaveViewB_.set_size_request(150, 150); 
+  spikeWaveViewX_.set_size_request(175, 150); 
+  spikeWaveViewY_.set_size_request(175, 150); 
+  spikeWaveViewA_.set_size_request(175, 150); 
+  spikeWaveViewB_.set_size_request(175, 150); 
 
   spikeWaveTable_.attach(spikeWaveViewX_, 0, 1, 0, 1); 
   spikeWaveTable_.attach(spikeWaveViewY_, 1, 2, 0, 1); 
@@ -108,10 +108,10 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
   clusterViewAB_.setViewingWindow(0, 0, float(150e-6), float(150e-6));
 
 
-   spikeWaveViewX_.setViewingWindow(0, -100e-6, 32, 180e-6); 
-   spikeWaveViewY_.setViewingWindow(0, -100e-6, 32, 180e-6); 
-   spikeWaveViewA_.setViewingWindow(0, -100e-6, 32, 180e-6); 
-   spikeWaveViewB_.setViewingWindow(0, -100e-6, 32, 180e-6); 
+   spikeWaveViewX_.setViewingWindow(0, -100e-6, 32, 280e-6); 
+   spikeWaveViewY_.setViewingWindow(0, -100e-6, 32, 280e-6); 
+   spikeWaveViewA_.setViewingWindow(0, -100e-6, 32, 280e-6); 
+   spikeWaveViewB_.setViewingWindow(0, -100e-6, 32, 280e-6); 
 
   show_all();
 
@@ -189,18 +189,25 @@ bool TSpikeWin::dataRXCallback(Glib::IOCondition io_condition)
     {
       char x; 
       read(pNetwork_->getDataFifoPipe(), &x, 1); 
-      
       DataPacket_t * rdp = pNetwork_->getNewData(); 
+      
       // is this a spike? 
       if (rdp->typ == TSPIKE)
 	{
+
 	  // convert to a real spike packet
 	  TSpike_t ts = rawToTSpike(rdp); 
+
 	  // now what do we do with it? 
 	  appendTSpikeToSpikewaves(ts); 
 	  appendTSpikeToSPL(ts); 
 	}
+      else 
+	{
+	  std::cout << "Not a spike?"  << std::endl; 
+	}
 
+    
     }
   return true; 
 }
@@ -292,7 +299,7 @@ void TSpikeWin::appendTSpikeToSPL(const TSpike_t & tspike)
   
 
   spVectpList_.back()->push_back(sp); 
-  if (spVectpList_.back()->size() > 500)
+  if (spVectpList_.back()->size() > 1000)
     {
       spVectpList_.push_back(new GLSPVect_t); 
     }

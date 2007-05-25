@@ -15,53 +15,58 @@ bool from_string(T& t,
   return !(iss >> f >> t).fail();
 }
 
-ttreader::ttreader(std::string filename) {
- file_.open(filename.c_str(), std::ios::in | std::ios::binary);
- // position the file appropriately
+ttreader::ttreader(std::string filename) 
+{
+  file_.open(filename.c_str(), std::ios::in | std::ios::binary);
+  // position the file appropriately
 
- std::string line; 
- while (line != "%%ENDHEADER") {
-   getline(file_, line); 
-
+  std::string line; 
+  while (line != "%%ENDHEADER") {
+    getline(file_, line); 
+    
 //    boost::regex expr("% channel ([0-9]) (\\w+):\\s+([0-9]+).*");
 //    boost::cmatch matches ;
-
+    
 //    if(boost::regex_match(line.c_str(), matches, expr) )
 //      {
 //        std::
 //        std::string schan(matches[1].first, matches[1].second); 
 //        std::string stype(matches[2].first, matches[2].second); 
 //        std::string sval(matches[3].first, matches[3].second); 
-       
+    
 //      }
-   
-   
-   istringstream sin(line); 
-   char per; 
-   std::string chantext, keytext; 
-   int chanint, chanval; 
-   
-   sin >> per; 
-   sin >> chantext; 
-   sin >> chanint; 
-
-   if(per == '%' and chantext == "channel") 
-     {
-       sin >> keytext; 
-       sin >> chanval; 
-
-       if (keytext == "ampgain:") {
-	 gains_[chanint] = chanval; 
-       }
-
-       if (keytext == "threshold:") {
-	 thresholds_[chanint] = chanval; 
-       }
-
-     }
-   
- }
-
+    
+    
+    istringstream sin(line); 
+    char per; 
+    std::string chantext, keytext; 
+    int chanint, chanval; 
+    
+    sin >> per; 
+    sin >> chantext; 
+    sin >> chanint; 
+    
+    if(per == '%' and chantext == "channel") 
+      {
+	sin >> keytext; 
+	sin >> chanval; 
+	
+	if (keytext == "ampgain:") {
+	  gains_[chanint] = chanval; 
+	}
+	
+	if (keytext == "threshold:") {
+	  thresholds_[chanint] = chanval; 
+	}
+	
+      }
+    
+  }
+  // print out the results
+  for (int i = 0; i < 8; i++) {
+    std::cout << "For channel " << i << " gain = " << gains_[i] 
+	      << " thold = " << thresholds_[i] << std::endl; 
+  }
 }
 
 int32_t to_nv(int16_t val, int gain)
@@ -80,7 +85,7 @@ TSpike_t ttreader::getTSpike()
   tspike.time = time; 
   
   int   coffset = 0; 
-
+  
   tspike.x.filtid = 0; 
   tspike.y.filtid = 1; 
   tspike.a.filtid = 2; 
@@ -123,7 +128,7 @@ TSpike_t ttreader::getTSpike()
     
   }
   return tspike; 
-
+  
 }
 
 int ttreader::getSpike(ttspike * sp){

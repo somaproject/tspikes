@@ -74,7 +74,7 @@ void ClusterView::on_realize()
     return;
 
   //glEnable(GL_NORMALIZE);
-  //glEnable(GL_POINT_SMOOTH); 
+
   glEnableClientState(GL_VERTEX_ARRAY); 
   glEnableClientState(GL_COLOR_ARRAY); 
   
@@ -168,7 +168,7 @@ bool ClusterView::on_expose_event(GdkEventExpose* event)
     gldrawable->wait_gl(); 
     viewChanged_ = false; 
   }
-  glPointSize(0.2); 
+
 
   // if buffer is empty do nothing
   if (viewEndIter_ == pspvl_->end() and
@@ -215,7 +215,8 @@ bool ClusterView::on_expose_event(GdkEventExpose* event)
 	    }
 	  
 	} 
-      renderSpikeVector(pCurSPVect_); 
+      renderSpikeVector(pCurSPVect_, true); 
+
     }
   
 
@@ -293,11 +294,10 @@ bool ClusterView::on_idle()
 }
 
 
-void ClusterView::renderSpikeVector(const GLSPVect_t * spvect)
+void ClusterView::renderSpikeVector(const GLSPVect_t * spvect, bool live)
 {
   // take the spikes in the SPvect and render them on the current
   // buffer; we assume viewport and whatnot are already configured
-
 
   glColor3f(1.0, 1.0, 0.0); 
   glVertexPointer(4, GL_FLOAT, sizeof(GLSpikePoint_t),
@@ -357,8 +357,18 @@ void ClusterView::renderSpikeVector(const GLSPVect_t * spvect)
   glUniform1i(vp, viewMode_); 
 
   glDrawArrays(GL_POINTS, 0, spvect->size()); 
+  if(live and ! spvect->empty()) {
+    glColor4ubv((GLubyte*)&colors.back()); 
+    glPointSize(4.0); 
+    glBegin(GL_POINTS); 
+    glVertex4f(spvect->back().p1, 
+	       spvect->back().p2, 
+	       spvect->back().p3, 
+	       spvect->back().p4); 
+    glEnd(); 
+    glPointSize(1.0); 
 
-
+  }
 }
 
 void ClusterView::resetAccumBuffer(GLSPVect_tpList::iterator sstart, 
