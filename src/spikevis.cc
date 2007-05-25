@@ -149,8 +149,8 @@ Vis::Vis(bool is_sync)
   show_all();
 
   Glib::signal_idle().connect( sigc::mem_fun(*this, &Vis::on_idle) );
- timer_.start(); 
- dtimer_.start(); 
+  timer_.start(); 
+  dtimer_.start(); 
 }
 Vis::~Vis()
 {
@@ -211,11 +211,16 @@ bool Vis::on_key_press_event(GdkEventKey* event)
       break;
     case GDK_Up:
       std::cout << "Changing zoom" << std::endl; 
-      clusterView12_.setViewingWindow(0, 3, 0, 3); 
+      clusterView34_.setViewingWindow(0, 0, 3, 3); 
+      clusterView12_.setViewingWindow(0, 0, 3, 3); 
+      clusterView13_.setViewingWindow(0, 0, 3, 3); 
+      clusterView14_.setViewingWindow(0, 0, 3, 3); 
+      clusterView23_.setViewingWindow(0, 0, 3, 3); 
+      clusterView24_.setViewingWindow(0, 0, 3, 3); 
+
       break;
     case GDK_Down: 
       std::cout << "Changing zoom down" << std::endl; 
-      clusterView12_.setViewingWindow(0, 1, 0, 1); 
 
       break; 
     default:
@@ -324,7 +329,7 @@ int main(int argc, char** argv)
 
   spvlp = spvlsrc.begin(); 
 
-  int testmode = 1;
+  int testmode = 0;
   switch (testmode)
     {
     case 0:

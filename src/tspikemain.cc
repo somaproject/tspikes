@@ -29,7 +29,6 @@ DataPacket_t * FakeTTData::getSpikeDataPacket()
 {
   TSpike_t ts; 
   ts = ttreader_.getTSpike(); 
-  std::cout << ts.x.wave[7] << std::endl;
   return rawFromTSpike(ts); 
 
 } 
@@ -66,7 +65,7 @@ int main(int argc, char** argv)
 				 sigc::bind(sigc::mem_fun(&fttd, 
 							  &FakeTTData::appendToFakeNetwork), 
 					    &net),
-				 10); 
+				 100); 
   TSpikeWin tspikewin(&net);
   
   kit.run(tspikewin);

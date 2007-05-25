@@ -14,8 +14,10 @@ ClusterView::ClusterView(GLSPVect_tpList * pspvl, CViewMode cvm)
   : pspvl_(pspvl), 
     decayVal_(0.01), 
     decayMode_(LOG), 
+    viewChanged_(false), 
     m_Frames(0),
     viewMode_( cvm), 
+    viewX1_(0), viewX2_(10), viewY1_(0), viewY2_(10), 
     pCurSPVect_(pspvl->front())
 
 {
@@ -92,27 +94,42 @@ void ClusterView::on_realize()
   // *** OpenGL END ***
   std::cout << "OnRealize done" << std::endl; 
 
+
 }
 
 bool ClusterView::setViewingWindow(float x1, float y1, 
 				   float x2, float y2)
 {
-  glLoadIdentity(); 
 
-  glOrtho(x1, y1, x2, y2, -3, 3); 
+  viewX1_ = x1; 
+  viewX2_ = x2; 
+  viewY1_ = y1; 
+  viewY2_ = y2; 
+  viewChanged_ = true; 
+}
+
+void ClusterView::updateViewingWindow()
+{
+  Glib::RefPtr<Gdk::GL::Drawable> gldrawable = get_gl_drawable();
+
+  // *** OpenGL BEGIN ***
+
+  if (!gldrawable->gl_begin(get_gl_context()))
+    return;
+  
+
+
+  std::cout << "setting glortho to " 
+	    << " X1 = " << viewX1_ << " x2 = " <<  viewX2_
+	    << " Y1 = " << viewY1_ << " Y2 = " << viewY2_ << std::endl; 
+  glLoadIdentity(); 
+  glOrtho(viewX1_, viewX2_, viewY1_, viewY2_, -3, 3); 
 
   glViewport(0, 0, get_width(), get_height());
   
-  Glib::RefPtr<Gdk::GL::Drawable> gldrawable = get_gl_drawable();
+  viewChanged_ = true; 
 
-  if (!gldrawable->gl_begin(get_gl_context()))
-     return false;
-  gldrawable->wait_gdk(); 
-
-  resetAccumBuffer(viewStartIter_, viewEndIter_); 
   gldrawable->gl_end();
-  
-  return true; 
 
 }
 
@@ -132,8 +149,11 @@ bool ClusterView::on_configure_event(GdkEventConfigure* event)
 
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity(); 
-  glOrtho(0, 3, 0, 3, -3, 3);   
+
+  glOrtho(viewX1_, viewX2_, viewY1_, viewY2_, -3, 3); 
+		   
   glViewport(0, 0, get_width(), get_height());
+  
   glClearColor(0.0, 0.0, 0.0, 1.0); 
   glClear(GL_COLOR_BUFFER_BIT | GL_ACCUM_BUFFER_BIT ); 
   
@@ -161,7 +181,12 @@ bool ClusterView::on_expose_event(GdkEventExpose* event)
   if (!gldrawable->gl_begin(get_gl_context()))
     return false;
 
-
+  if (viewChanged_) {
+    updateViewingWindow(); 
+    updateView(); 
+    gldrawable->wait_gl(); 
+    viewChanged_ = false; 
+  }
   // if buffer is empty do nothing
   if (viewEndIter_ == pspvl_->end() and
       viewStartIter_ == pspvl_->end())
@@ -170,7 +195,7 @@ bool ClusterView::on_expose_event(GdkEventExpose* event)
     } 
   else
     {
-      
+
       glDrawBuffer(GL_BACK); 
       
       // copy things into current buffer
@@ -291,12 +316,15 @@ void ClusterView::renderSpikeVector(const GLSPVect_t * spvect)
   // take the spikes in the SPvect and render them on the current
   // buffer; we assume viewport and whatnot are already configured
 
+
   glColor3f(1.0, 1.0, 0.0); 
   glVertexPointer(4, GL_FLOAT, sizeof(GLSpikePoint_t),
 		  &((*spvect)[0])); 
   std::vector<CRGBA_t> colors(spvect->size()); 
+
   for(unsigned int i = 0; i < spvect->size(); i++)
     {
+
       CRGBA_t c = {0, 0, 0, 0}; 
       int tchan = (*spvect)[i].tchan; 
       switch (tchan) 
@@ -330,10 +358,16 @@ void ClusterView::renderSpikeVector(const GLSPVect_t * spvect)
 	  break; 
 
 	default:
+	  c.R = 255; 
+	  c.G = 255; 
+	  c.B = 255; 
+	  c.A = 255; 
+
 	  break;
 	}
       colors[i] = c; 
     }
+
   glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(CRGBA_t), 
  		 &colors[0]); 
 
@@ -359,6 +393,7 @@ void ClusterView::resetAccumBuffer(GLSPVect_tpList::iterator sstart,
   int pos = 0; 
   for (i = sstart; i != send; i++)
     {
+      //      std::cout << "reset accum buffer" << std::endl; 
       pos++; 
       renderSpikeVector(*i); 
       glAccum(GL_ACCUM, 1.0); 
@@ -391,13 +426,11 @@ void ClusterView::setView(GLSPVect_tpList::iterator sstart,
   decayVal_ = decayVal; 
   decayMode_ = dm;
   
+  viewChanged_ = true; 
 
-
-  Glib::RefPtr<Gdk::GL::Drawable> gldrawable = get_gl_drawable();
-
-  // *** OpenGL BEGIN ***
-
-  gldrawable->gl_begin(get_gl_context()); 
+}
+void ClusterView::updateView()
+{
   
   resetAccumBuffer(viewStartIter_, viewEndIter_); 
 
@@ -408,11 +441,8 @@ void ClusterView::setView(GLSPVect_tpList::iterator sstart,
       pCurSPVect_ = *viewEndIter_; 
     }
 
-  gldrawable->wait_gl(); 
   //gldrawable->wait_gdk(); 
   
-  gldrawable->gl_end();
-  // *** OpenGL END ***
 
 }
 

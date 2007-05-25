@@ -75,6 +75,36 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
   //
   // Show window.
   //
+  clusterView12_.setView(spVectpList_.begin(), 
+			 spVectpList_.end(), 
+			 0.0, LOG); 
+  clusterView12_.setViewingWindow(0, 0, float(10.0), float(10.0));
+
+  clusterView13_.setView(spVectpList_.begin(), 
+			 spVectpList_.end(), 
+			 0.0, LOG); 
+  clusterView13_.setViewingWindow(0, 0, float(10.0), float(10.0));
+
+  clusterView14_.setView(spVectpList_.begin(), 
+			 spVectpList_.end(), 
+			 0.0, LOG); 
+  clusterView14_.setViewingWindow(0, 0, float(10.0), float(10.0));
+
+  clusterView23_.setView(spVectpList_.begin(), 
+			 spVectpList_.end(), 
+			 0.0, LOG); 
+  clusterView23_.setViewingWindow(0, 0, float(10.0), float(10.0));
+
+  clusterView24_.setView(spVectpList_.begin(), 
+			 spVectpList_.end(), 
+			 0.0, LOG); 
+  clusterView24_.setViewingWindow(0, 0, float(10.0), float(10.0));
+
+  clusterView34_.setView(spVectpList_.begin(), 
+			 spVectpList_.end(), 
+			 0.0, LOG); 
+  clusterView34_.setViewingWindow(0, 0, float(10.0), float(10.0));
+
 
   show_all();
 
@@ -237,9 +267,20 @@ void TSpikeWin::appendTSpikeToSPL(const TSpike_t & tspike)
 	{
 	  sp.tchan = 3; 
 	}
-
+      
     }
-  spVectpList_.back()->push_back(sp); 
-
   
+  sp.p1 = GLfloat(2.0); 
+  sp.p2 = GLfloat(2.0); 
+  sp.p3 = GLfloat(3.0); 
+  sp.p4 = GLfloat(2.0); 
+  std::cout << sp.p1 - 2.0 << std::endl; 
+  spVectpList_.back()->push_back(sp); 
+  //if (spVectpList_.size() == 100)
+  //  {
+  //spVectpList_.push_back(new GLSPVect_t); 
+      //  }
+  
+ 
+ 
 }

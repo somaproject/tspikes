@@ -60,26 +60,24 @@ protected:
   void resetAccumBuffer(GLSPVect_tpList::iterator sstart, 
 				GLSPVect_tpList::iterator send); 
   void renderSpikeVector(const GLSPVect_t * spvect); 
-
+  void updateView(); 
+  void updateViewingWindow(); 
+  
   
   GLSPVect_tpList*  pspvl_; 
   float decayVal_; 
   DecayMode decayMode_; 
-  bool isLive_; 
+  bool viewChanged_;   
   GLSPVect_tpList::iterator viewStartIter_;  
   GLSPVect_tpList::iterator viewEndIter_;  
 
   int m_Frames;
   CViewMode viewMode_; 
   GLSPVect_t *  pCurSPVect_; 
-
+  GLfloat viewX1_, viewX2_, viewY1_, viewY2_; 
   
   GLuint gpuProg_; 
 
-public:
-
-
-protected:
 
 };
 #endif
