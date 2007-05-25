@@ -2,6 +2,7 @@
 #define TTREADER_H
 #include <fstream>
 #include <string>
+#include "network/data/tspike.h"
 
 struct ttspike {
   unsigned int ts; 
@@ -17,13 +18,16 @@ class ttreader {
   ttreader(std::string filename); 
   
   int getSpike(ttspike * sp); 
-  
-  //void getPeaks(ttspike *spike, SpikePoint *sp); 
+  TSpike_t getTSpike();
 
   bool eof(); 
+  
+  
  private:
   std::ifstream file_; 
-  int gain_; 
+  int gains_[8]; 
+  int thresholds_[8]; 
+
 };
   
 

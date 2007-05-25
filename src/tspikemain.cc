@@ -28,35 +28,8 @@ FakeTTData::FakeTTData(std::string filename, int rate):
 DataPacket_t * FakeTTData::getSpikeDataPacket()
 {
   TSpike_t ts; 
-  ts.src = 0; 
-  ts.time = 100; 
-  ts.x.filtid = 1; 
-  ts.y.filtid = 2; 
-  ts.a.filtid = 3; 
-  ts.b.filtid = 4; 
-  
-  ts.x.valid = 1; 
-  ts.y.valid = 1; 
-  ts.a.valid = 1; 
-  ts.b.valid = 1; 
-  
-  ts.x.threshold = 1000; 
-  ts.y.threshold = 2000; 
-  ts.a.threshold = 3000; 
-  ts.b.threshold = 4000; 
-  
-  
-  ttspike tts; 
-  ttreader_.getSpike(&tts); 
-  // copy
-  for (int i = 0; i < 32; i++)
-    {
-      ts.x.wave[i] = tts.w1[i]; 
-      ts.y.wave[i] = tts.w2[i]; 
-      ts.a.wave[i] = tts.w3[i]; 
-      ts.b.wave[i] = tts.w4[i]; 
-    }
-
+  ts = ttreader_.getTSpike(); 
+  std::cout << ts.x.wave[7] << std::endl;
   return rawFromTSpike(ts); 
 
 } 

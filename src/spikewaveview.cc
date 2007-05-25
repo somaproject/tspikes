@@ -107,7 +107,7 @@ void SpikeWaveView::on_realize()
 
   gldrawable->gl_end();
   // *** OpenGL END ***
-    setViewingWindow(0, -2000, 32, 2000); 
+    setViewingWindow(0, -100000, 32, 100000); 
 }
 
 bool SpikeWaveView::setViewingWindow(float x1, float y1, 
