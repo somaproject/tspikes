@@ -1,0 +1,19 @@
+
+we have:
+
+setMinorTick
+setMajorTick
+
+appendRate(float)
+
+setDecayRange(how many until black)
+
+decayRange_
+
+and some events that will be emitted
+
+Now, the fun part is we just create a vert/frag shader pair to render
+the gradient, and we set: 
+
+VisThresh = the latest location visible
+

@@ -13,4 +13,6 @@ GLuint loadGPUShader(const std::string & filename, GLuint shaderType);
 
 GLuint  createGPUProgram(const std::list<GLuint> &  shaders); 
 
+GLuint useGPUProgram(GLuint gpuProg); 
+
 #endif // SHADERS_H

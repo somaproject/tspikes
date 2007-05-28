@@ -45,7 +45,7 @@ GLuint loadGPUShader(const std::string & filename, GLuint shaderType)
   return shdr; 
 }
 
-GLuint  createGPUProgram(const std::list<GLuint> & shaders)
+GLuint createGPUProgram(const std::list<GLuint> & shaders)
 {
   
   GLuint gpuProg = glCreateProgram(); 
@@ -56,8 +56,8 @@ GLuint  createGPUProgram(const std::list<GLuint> & shaders)
     }
   
   glLinkProgram(gpuProg);
-  glUseProgram(gpuProg); 
-  //cout << "vShdr = " << vShdr << " fShdr = " << fShdr << " gpuProg = " << gpuProg_ << endl; 
+
+
   int progLogLen;
   char progLog[1000]; 
   
@@ -71,5 +71,11 @@ GLuint  createGPUProgram(const std::list<GLuint> & shaders)
   }
 
   return gpuProg; 
+
+}
+
+GLuint useGPUProgram(GLuint gpuProg)
+{
+  glUseProgram(gpuProg); 
 
 }

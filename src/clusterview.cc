@@ -303,7 +303,7 @@ void ClusterView::renderSpikeVector(const GLSPVect_t * spvect, bool live)
   glVertexPointer(4, GL_FLOAT, sizeof(GLSpikePoint_t),
 		  &((*spvect)[0])); 
   std::vector<CRGBA_t> colors(spvect->size()); 
-
+  useGPUProgram(gpuProg_); 
   for(unsigned int i = 0; i < spvect->size(); i++)
     {
 

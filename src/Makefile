@@ -14,7 +14,7 @@ wavevis: wavevis.o spikewaveview.o glconfig.o ttreader.o
 
 spikevis: spikevis.o clusterview.o shaders.o glconfig.o
 
-ratetimelinevis: ratetimelinevis.o ratetimeline.o
+ratetimelinevis: ratetimelinevis.o ratetimeline.o glconfig.o shaders.o ttreader.o
 
 clean:
 	rm *.o test
