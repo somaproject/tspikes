@@ -22,6 +22,7 @@
 
 #include "clusterview.h"
 #include "spikewaveview.h"
+#include "ratetimeline.h"
 
 class TSpikeWin : public Gtk::Window
 {
@@ -60,6 +61,8 @@ protected:
   SpikeWaveView spikeWaveViewA_; 
   SpikeWaveView spikeWaveViewB_; 
   
+  RateTimeline rateTimeline_; 
+
   // append data functions
   bool dataRXCallback(Glib::IOCondition io_condition); 
   void appendTSpikeToSpikewaves(const TSpike_t & tspike); 

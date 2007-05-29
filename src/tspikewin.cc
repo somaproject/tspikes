@@ -37,12 +37,13 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
   spVectpList_.push_back(new GLSPVect_t); 
   add(mainHBox_); 
 
-  clusterViewXY_.set_size_request(150, 150);
-  clusterViewXA_.set_size_request(150, 150);
-  clusterViewXB_.set_size_request(150, 150);
-  clusterViewYA_.set_size_request(150, 150);
-  clusterViewYB_.set_size_request(150, 150);
-  clusterViewAB_.set_size_request(150, 150);
+  int clusterWidth = 180; 
+  clusterViewXY_.set_size_request(clusterWidth, clusterWidth);
+  clusterViewXA_.set_size_request(clusterWidth, clusterWidth);
+  clusterViewXB_.set_size_request(clusterWidth, clusterWidth);
+  clusterViewYA_.set_size_request(clusterWidth, clusterWidth);
+  clusterViewYB_.set_size_request(clusterWidth, clusterWidth);
+  clusterViewAB_.set_size_request(clusterWidth, clusterWidth);
 
   
   clusterTable_.attach(clusterViewXY_, 0, 1, 0, 1);
@@ -53,14 +54,15 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
   clusterTable_.attach(clusterViewAB_, 2, 3, 1, 2);
 
 
+  rateTimeline_.set_size_request(clusterWidth*3, 60); 
 
   clusterViewVBox_.pack_start(clusterTable_) ;
+  clusterViewVBox_.pack_start(rateTimeline_); 
   
-  
-  spikeWaveViewX_.set_size_request(175, 150); 
-  spikeWaveViewY_.set_size_request(175, 150); 
-  spikeWaveViewA_.set_size_request(175, 150); 
-  spikeWaveViewB_.set_size_request(175, 150); 
+  spikeWaveViewX_.set_size_request(175, clusterWidth); 
+  spikeWaveViewY_.set_size_request(175, clusterWidth); 
+  spikeWaveViewA_.set_size_request(175, clusterWidth); 
+  spikeWaveViewB_.set_size_request(175, clusterWidth); 
 
   spikeWaveTable_.attach(spikeWaveViewX_, 0, 1, 0, 1); 
   spikeWaveTable_.attach(spikeWaveViewY_, 1, 2, 0, 1); 

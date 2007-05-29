@@ -8,13 +8,13 @@ all: tspikemain spikevis ratetimelinevis
 
 
 
-tspikemain: tspikemain.o tspikewin.o network/network.o network/datareceiver.o network/eventreceiver.o  clusterview.o shaders.o glconfig.o  spikewaveview.o glconfig.o ttreader.o network/fakenetwork.o
+tspikemain: tspikemain.o tspikewin.o network/network.o network/datareceiver.o network/eventreceiver.o  clusterview.o shaders.o glconfig.o  spikewaveview.o glconfig.o ttreader.o network/fakenetwork.o ratetimeline.o
 
 wavevis: wavevis.o spikewaveview.o glconfig.o ttreader.o
 
 spikevis: spikevis.o clusterview.o shaders.o glconfig.o
 
-ratetimelinevis: ratetimelinevis.o ratetimeline.o glconfig.o shaders.o ttreader.o
+ratetimelinevis: ratetimelinevis.o ratetimeline.o glconfig.o shaders.o ttreader.o ratetimeline.o
 
 clean:
 	rm *.o test
