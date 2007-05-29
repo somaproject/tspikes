@@ -4,16 +4,27 @@ we have:
 setMinorTick
 setMajorTick
 
-appendRate(float)
+isLive_ : when true, activePos_ follows the end of the array; this gives stripchart-like
+behavior. isLive in no way impacts our active viewing window, defined
+by [t1, t2, x1, x2]
 
-setDecayRange(how many until black)
+activePos_ : the position (t) value that is the most-recent that we
+are selecting/enabling or passing up to higher levels. Not really
+happy with the name. activePos_ follows the end of the data when isLive is true
 
-decayRange_
+decayRate_: luminance/alpha drops per unit time; for example, a decayRate
+of 0 means that we never decay. 
 
-and some events that will be emitted
 
-Now, the fun part is we just create a vert/frag shader pair to render
-the gradient, and we set: 
+--------------------------------------------------------------------
+render complexities
 
-VisThresh = the latest location visible
+Now we had originally planned on having this data slowly accumulate
+over time, "squishing" old data. This fails on two counts:
+   a. it looks ugly
+   b. it provides no information wrt the timeline of what you're looking at. 
+
+So it seems the smarter thing to do is have several possible zoom
+settings, and optionally let people scroll through things. Yes, it's
+more complex, but it's also a better UI. 
 

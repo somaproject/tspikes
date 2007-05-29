@@ -27,6 +27,21 @@
 #include "ttreader.h"
 
 
+
+void viewParamUpdate(bool isLive, float activePos, float decayRate)
+{
+  if (isLive) {
+    std::cout << "live"; 
+  }
+  else 
+    {
+      std::cout << "not live"; 
+    }
+  std::cout << " activePos=" << activePos << " decayRate=" << decayRate
+	    << std::endl;
+ 
+}
+
 class Vis : public Gtk::Window
 {
 public:
@@ -93,6 +108,7 @@ Vis::Vis(bool is_sync)
   show_all();
 
   Glib::signal_idle().connect( sigc::mem_fun(*this, &Vis::on_idle) );
+  rateTimeline_.viewSignal().connect(&viewParamUpdate); 
   timer_.start(); 
   dtimer_.start(); 
 }
@@ -135,7 +151,7 @@ bool Vis::on_idle()
 
   double seconds = timer_.elapsed();
   
-  if (seconds >= 0.01)
+  if (seconds >= 0.1)
     {
       // every second, read the next n-seconds of spike data in
       // we assume 100 usec timestamps on this data
@@ -143,7 +159,7 @@ bool Vis::on_idle()
       //rateTimeline_.appendRate(5.0); 
      
       TSpike_t tspike = ttdata_.getTSpike(); 
-      std::cout << tspike.time << std::endl; 
+      //std::cout << tspike.time << std::endl; 
       
       float secs = 5.0; 
       float tslen = secs * 10000; 
@@ -159,7 +175,7 @@ bool Vis::on_idle()
 	}
 	rateTimeline_.appendRate(float(scnt) / secs ); 
 	lastSpikeTime_ = tspike.time; 
-	std::cout << "scnt = " << scnt << std::endl; 
+	//std::cout << "scnt = " << scnt << std::endl; 
       }
       timer_.reset();
     }
@@ -169,7 +185,6 @@ bool Vis::on_idle()
      {
        dtimer_.reset(); 
      }
-
   
   return true;
 }

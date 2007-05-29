@@ -43,7 +43,11 @@ public:
   // Update window synchronously (fast).
   void update()
   { get_window()->process_updates(false); }
+  
+  typedef sigc::signal<void, bool, float, float> viewsignal_t;
+  viewsignal_t viewSignal(); 
 
+  
 protected:
 
   // signal handlers:
@@ -54,21 +58,34 @@ protected:
   virtual bool on_unmap_event(GdkEventAny* event);
   virtual bool on_visibility_notify_event(GdkEventVisibility* event);
 
+  // mouse gui 
+  bool on_button_press_event(GdkEventButton* event);
+  bool on_motion_notify_event(GdkEventMotion* event);
+  bool on_scroll_event(GdkEventScroll* event);
+  
   void updateViewingWindow();
+  void setZoom(float zoomval, float tcenter);
   
   // primary data source
-  
+  const float BASEDURATION; 
   // state variables
   int majorTick_; 
   int minorTick_; 
   
-  int decayRange_; 
-  int cutoffPos_; 
-  bool viewLatest_; 
-  float viewX1_, viewX2_, viewY1_, viewY2_; 
+  float viewT1_, viewT2_, viewX1_, viewX2_; 
+  float lastX_; 
+  float zoomLevel_; 
   std::vector<RateVal_t> rates_; 
   
   GLuint gpuProgGradient_; 
+
+  viewsignal_t viewSignal_; 
+
+  // selection/active range view variables
+  bool isLive_; 
+  float decayRate_; 
+  float activePos_; 
+
 
 };
 

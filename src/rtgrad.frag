@@ -1,18 +1,17 @@
-uniform float rate; 
-uniform float cutoff; 
+uniform float decayRate; 
+uniform float activePos; 
 
 varying vec4 passworld;
 
 void main()
 {		
-	//  float rate = 1000.0; 
-	//  float cutoff = 8000.0; 
-  vec4 test = {1.0, 1.0, 1.0, 0.0}; 	
-  if (passworld.x < cutoff)
+  vec4 outcolor = {1.0, 1.0, 1.0, 0.0}; 	
+
+  if (passworld.x < activePos)
   {	
-    test.w = 1.0 - (cutoff - passworld.x)/rate; 
+     outcolor.w = 1.0 - (activePos - passworld.x)*decayRate; 
   }
 
-  gl_FragColor = test; 
+  gl_FragColor = outcolor; 
 }	
 
