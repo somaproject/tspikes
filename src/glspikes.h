@@ -18,7 +18,7 @@ struct GLSpikePoint_t {
 }; 
 
 typedef std::vector<GLSpikePoint_t> GLSPVect_t; 
-typedef std::list<GLSPVect_t* > GLSPVect_tpList; 
+typedef std::list<GLSPVect_t* > GLSPVectpList_t; 
 
 struct CRGBA_t 
 {

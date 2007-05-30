@@ -10,9 +10,9 @@ int ClusterView::getFrames()
 
 }
 
-ClusterView::ClusterView(GLSPVect_tpList * pspvl, CViewMode cvm)
+ClusterView::ClusterView(GLSPVectpList_t * pspvl, CViewMode cvm)
   : pspvl_(pspvl), 
-    decayVal_(0.01), 
+    decayRate_(0.01), 
     decayMode_(LOG), 
     viewChanged_(false), 
     m_Frames(0),
@@ -186,7 +186,7 @@ bool ClusterView::on_expose_event(GdkEventExpose* event)
       if (viewEndIter_ == pspvl_->end() )
 	{
 	  // we are always viewing the latest data 
-	  GLSPVect_tpList::iterator lastp = viewEndIter_; 
+	  GLSPVectpList_t::iterator lastp = viewEndIter_; 
 	  lastp--; 
 	  if (*(lastp) != pCurSPVect_)
 	    {
@@ -197,10 +197,10 @@ bool ClusterView::on_expose_event(GdkEventExpose* event)
 	      
 	      switch(decayMode_) {
 	      case LINEAR:
-		glAccum(GL_ADD, -decayVal_); 
+		glAccum(GL_ADD, -decayRate_); 
 		break; 
 	      case LOG:
-		glAccum(GL_MULT, 1-decayVal_); 
+		glAccum(GL_MULT, 1-decayRate_); 
 		break; 
 	      default:
 		std::cerr << " should never get here" << std::endl; 
@@ -371,8 +371,8 @@ void ClusterView::renderSpikeVector(const GLSPVect_t * spvect, bool live)
   }
 }
 
-void ClusterView::resetAccumBuffer(GLSPVect_tpList::iterator sstart, 
-			      GLSPVect_tpList::iterator send)
+void ClusterView::resetAccumBuffer(GLSPVectpList_t::iterator sstart, 
+			      GLSPVectpList_t::iterator send)
 {
   // first clear accumulation buffer
   glClearAccum(0.0, 0.0, 0.0, 0.0); 
@@ -380,7 +380,7 @@ void ClusterView::resetAccumBuffer(GLSPVect_tpList::iterator sstart,
   
   glClear(GL_COLOR_BUFFER_BIT |  GL_ACCUM_BUFFER_BIT); 
   
-  GLSPVect_tpList::iterator i; 
+  GLSPVectpList_t::iterator i; 
   glReadBuffer(GL_BACK); 
   int pos = 0; 
   for (i = sstart; i != send; i++)
@@ -391,10 +391,10 @@ void ClusterView::resetAccumBuffer(GLSPVect_tpList::iterator sstart,
       
       switch(decayMode_) {
       case LINEAR:
-	glAccum(GL_ADD, -decayVal_); 
+	glAccum(GL_ADD, -decayRate_); 
 	break; 
       case LOG:
-	glAccum(GL_MULT, 1-decayVal_); 
+	glAccum(GL_MULT, 1-decayRate_); 
 	break; 
       default:
 	std::cerr << " should never get here" << std::endl; 
@@ -407,14 +407,14 @@ void ClusterView::resetAccumBuffer(GLSPVect_tpList::iterator sstart,
   
 }
 
-void ClusterView::setView(GLSPVect_tpList::iterator sstart, 
-			  GLSPVect_tpList::iterator send, 
-			  float decayVal, DecayMode dm)
+void ClusterView::setView(GLSPVectpList_t::iterator sstart, 
+			  GLSPVectpList_t::iterator send, 
+			  float decayRate, DecayMode dm)
 {
 
   viewStartIter_ = sstart; 
   viewEndIter_ = send; 
-  decayVal_ = decayVal; 
+  decayRate_ = decayRate; 
   decayMode_ = dm;
   
   viewChanged_ = true; 

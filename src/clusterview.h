@@ -33,11 +33,11 @@ enum CViewMode  {VIEW12, VIEW13, VIEW14, VIEW23, VIEW24, VIEW34};
 class ClusterView : public Gtk::GL::DrawingArea
 {
 public:
-  explicit ClusterView(GLSPVect_tpList * pspvl, CViewMode cvm);  
+  explicit ClusterView(GLSPVectpList_t * pspvl, CViewMode cvm);  
   virtual ~ClusterView();
-  void setView(GLSPVect_tpList::iterator sstart, 
-		   GLSPVect_tpList::iterator send, 
-		   float decayVal, DecayMode dm); 
+  void setView(GLSPVectpList_t::iterator sstart, 
+		   GLSPVectpList_t::iterator send, 
+		   float decayRate, DecayMode dm); 
   // Invalidate whole window.
   void inv(); 
   bool setViewingWindow(float x1, float y1,  float x2, float y2); 
@@ -57,20 +57,21 @@ protected:
   virtual bool on_unmap_event(GdkEventAny* event);
   virtual bool on_visibility_notify_event(GdkEventVisibility* event);
   virtual bool on_idle();
-  void resetAccumBuffer(GLSPVect_tpList::iterator sstart, 
-				GLSPVect_tpList::iterator send); 
+
+  void resetAccumBuffer(GLSPVectpList_t::iterator sstart, 
+				GLSPVectpList_t::iterator send); 
   void renderSpikeVector(const GLSPVect_t * spvect, 
 			 bool live = false); 
   void updateView(); 
   void updateViewingWindow(); 
   
   
-  GLSPVect_tpList*  pspvl_; 
-  float decayVal_; 
+  GLSPVectpList_t*  pspvl_; 
+  float decayRate_; 
   DecayMode decayMode_; 
   bool viewChanged_;   
-  GLSPVect_tpList::iterator viewStartIter_;  
-  GLSPVect_tpList::iterator viewEndIter_;  
+  GLSPVectpList_t::iterator viewStartIter_;  
+  GLSPVectpList_t::iterator viewEndIter_;  
 
   int m_Frames;
   CViewMode viewMode_; 
