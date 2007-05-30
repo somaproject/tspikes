@@ -18,7 +18,7 @@ ClusterView::ClusterView(GLSPVectpList_t * pspvl, CViewMode cvm)
     m_Frames(0),
     viewMode_( cvm), 
     viewX1_(0), viewX2_(10), viewY1_(0), viewY2_(10), 
-    pCurSPVect_(pspvl->front())
+    pCurSPVect_(pspvl->begin())
 
 {
   //assert (!pspvl->empty()); 
@@ -169,7 +169,7 @@ bool ClusterView::on_expose_event(GdkEventExpose* event)
     viewChanged_ = false; 
   }
 
-
+  assert(pCurSPVect_ != pspvl_->end()); 
   // if buffer is empty do nothing
   if (viewEndIter_ == pspvl_->end() and
       viewStartIter_ == pspvl_->end())
@@ -186,14 +186,14 @@ bool ClusterView::on_expose_event(GdkEventExpose* event)
       if (viewEndIter_ == pspvl_->end() )
 	{
 	  // we are always viewing the latest data 
-	  GLSPVectpList_t::iterator lastp = viewEndIter_; 
+	  GLSPVectpList_t::iterator lastp = pspvl_->end(); 
 	  lastp--; 
-	  if (*(lastp) != pCurSPVect_)
+	  if (pCurSPVect_ != lastp) // these are iterators
 	    {
 	      glClear(GL_COLOR_BUFFER_BIT); 
 	  
 	      // this is new data, render the old and go
-	      renderSpikeVector(pCurSPVect_); 
+	      renderSpikeVector(*pCurSPVect_); 
 	      
 	      switch(decayMode_) {
 	      case LINEAR:
@@ -211,11 +211,11 @@ bool ClusterView::on_expose_event(GdkEventExpose* event)
 	      
 	      glAccum(GL_RETURN, 1.0); 
 	      
-	      pCurSPVect_ = *(lastp); 
+	      pCurSPVect_ = lastp; 
 	    }
 	  
 	} 
-      renderSpikeVector(pCurSPVect_, true); 
+      renderSpikeVector(*pCurSPVect_, true); 
 
     }
   
@@ -294,21 +294,21 @@ bool ClusterView::on_idle()
 }
 
 
-void ClusterView::renderSpikeVector(const GLSPVect_t * spvect, bool live)
+void ClusterView::renderSpikeVector(const GLSPVect_t & spvect, bool live)
 {
   // take the spikes in the SPvect and render them on the current
   // buffer; we assume viewport and whatnot are already configured
 
   glColor3f(1.0, 1.0, 0.0); 
   glVertexPointer(4, GL_FLOAT, sizeof(GLSpikePoint_t),
-		  &((*spvect)[0])); 
-  std::vector<CRGBA_t> colors(spvect->size()); 
+		  &spvect[0] ); 
+  std::vector<CRGBA_t> colors(spvect.size()); 
   useGPUProgram(gpuProg_); 
-  for(unsigned int i = 0; i < spvect->size(); i++)
+  for(unsigned int i = 0; i < spvect.size(); i++)
     {
 
       CRGBA_t c = {0, 0, 0, 0}; 
-      int tchan = (*spvect)[i].tchan; 
+      int tchan = spvect[i].tchan; 
       switch (tchan) 
 	{
 	case 0:
@@ -356,15 +356,15 @@ void ClusterView::renderSpikeVector(const GLSPVect_t * spvect, bool live)
   GLint vp = glGetUniformLocation(gpuProg_, "axes"); 
   glUniform1i(vp, viewMode_); 
 
-  glDrawArrays(GL_POINTS, 0, spvect->size()); 
-  if(live and ! spvect->empty()) {
+  glDrawArrays(GL_POINTS, 0, spvect.size()); 
+  if(live and ! spvect.empty()) {
     glColor4ubv((GLubyte*)&colors.back()); 
     glPointSize(4.0); 
     glBegin(GL_POINTS); 
-    glVertex4f(spvect->back().p1, 
-	       spvect->back().p2, 
-	       spvect->back().p3, 
-	       spvect->back().p4); 
+    glVertex4f(spvect.back().p1, 
+	       spvect.back().p2, 
+	       spvect.back().p3, 
+	       spvect.back().p4); 
     glEnd(); 
     glPointSize(1.0); 
 
@@ -402,7 +402,7 @@ void ClusterView::resetAccumBuffer(GLSPVectpList_t::iterator sstart,
       }
 	  
       glClear(GL_COLOR_BUFFER_BIT); 
-      pCurSPVect_ = *i; 
+      pCurSPVect_ = i; 
     }
   
 }
@@ -427,9 +427,9 @@ void ClusterView::updateView()
 
   if (viewEndIter_ == pspvl_->end() )
     {
-      pCurSPVect_ = pspvl_->back(); 
+      pCurSPVect_ = --pspvl_->end(); 
     } else {
-      pCurSPVect_ = *viewEndIter_; 
+      pCurSPVect_ = viewEndIter_; 
     }
 
   //gldrawable->wait_gdk(); 

@@ -24,7 +24,9 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
   spikeWaveViewX_(CHANX), 
   spikeWaveViewY_(CHANY), 
   spikeWaveViewA_(CHANA), 
-  spikeWaveViewB_(CHANB)    
+  spikeWaveViewB_(CHANB),
+
+  currentTime_(0.0)
     
 {
   //
@@ -34,7 +36,8 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
   set_title("Tetrode Spike Viewer");
 
   set_reallocate_redraws(true);
-  spVectpList_.push_back(new GLSPVect_t); 
+  spVectpList_.insert(currentTime_, new GLSPVect_t);
+
   add(mainHBox_); 
 
   int clusterWidth = 180; 
@@ -300,12 +303,19 @@ void TSpikeWin::appendTSpikeToSPL(const TSpike_t & tspike)
     }
   
 
-  spVectpList_.back()->push_back(sp); 
-  if (spVectpList_.back()->size() > 1000)
-    {
-      spVectpList_.push_back(new GLSPVect_t); 
-    }
+  (--spVectpList_.end())->push_back(sp); 
+ 
+}
+
+void TSpikeWin::setTime(rtime_t t)
+{
   
- 
- 
+  if (t - currentTime_  > 1.0 )
+    {
+      spVectpList_.insert(t, new GLSPVect_t); 
+      currentTime_ = t; 
+
+    }
+
+
 }

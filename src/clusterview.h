@@ -60,7 +60,7 @@ protected:
 
   void resetAccumBuffer(GLSPVectpList_t::iterator sstart, 
 				GLSPVectpList_t::iterator send); 
-  void renderSpikeVector(const GLSPVect_t * spvect, 
+  void renderSpikeVector(const GLSPVect_t & spvect, 
 			 bool live = false); 
   void updateView(); 
   void updateViewingWindow(); 
@@ -75,7 +75,7 @@ protected:
 
   int m_Frames;
   CViewMode viewMode_; 
-  GLSPVect_t *  pCurSPVect_; 
+  GLSPVectpList_t::iterator pCurSPVect_; 
   GLfloat viewX1_, viewX2_, viewY1_, viewY2_; 
   
   GLuint gpuProg_; 

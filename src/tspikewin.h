@@ -16,6 +16,8 @@
 #include <windows.h>
 #endif
 
+#include <boost/ptr_container/ptr_map.hpp>
+
 #include "network/networkinterface.h"
 #include "network/data/tspike.h"
 #include "network/data/rawdata.h"
@@ -30,6 +32,8 @@ public:
   explicit TSpikeWin(NetworkInterface * network);
   virtual ~TSpikeWin();
 
+  void setTime(rtime_t t);
+
 protected:
   virtual bool on_idle();
 
@@ -40,7 +44,7 @@ protected:
 
   GLSPVect_t *  spvect_; 
 
-  GLSPVect_tpList spVectpList_; 
+  GLSPVectpList_t spVectpList_; 
 
   // member widgets:
 
@@ -67,6 +71,9 @@ protected:
   bool dataRXCallback(Glib::IOCondition io_condition); 
   void appendTSpikeToSpikewaves(const TSpike_t & tspike); 
   void appendTSpikeToSPL(const TSpike_t & tspike);
+
+  // timeline manipulation, heh
+  rtime_t currentTime_; 
 
 };
 

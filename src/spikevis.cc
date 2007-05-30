@@ -6,8 +6,7 @@
 #include <assert.h>
 
 #include <stdlib.h>
-#include <gtkmm.h>
-
+#include <gtkmm.h> 
 #define GL_GLEXT_PROTOTYPES
 
 
@@ -31,8 +30,8 @@ const int M = 6000;
 GLfloat points[N][4]; 
 
 
-GLSPVect_tpList spvl, spvlsrc; 
-GLSPVect_tpList::iterator spvlp; 
+GLSPVectpList_t spvl, spvlsrc; 
+GLSPVectpList_t::iterator spvlp; 
 
 const float GSCALE = 100.0 ; 
 
@@ -171,14 +170,14 @@ void Vis::on_button_quit_clicked()
 void Vis::updateSpikePosFromAdj()
 {
   std::cout << "updateSpikePosFromAdj: " << spikePosAdjustment_.get_value() << std::endl; 
-  GLSPVect_tpList::iterator svpliter = spvl.begin(); 
+  GLSPVectpList_t::iterator svpliter = spvl.begin(); 
   
   for (int i = 0; i < spikePosAdjustment_.get_value(); i++)
     {
       svpliter++; 
     }
 
-//   GLSPVect_tpList::iterator svpliter2 = svpliter; 
+//   GLSPVectpList_t::iterator svpliter2 = svpliter; 
 
 //   clusterView12_.setHistView(spvl.begin(), svpliter, 
 // 			     0.01, LOG); 
@@ -271,10 +270,14 @@ bool Vis::on_idle()
 
       if (spvlp != spvlsrc.end())
 	{
-	  spvl.push_back(*spvlp); 
+	  rtime_t rt = spvlp.key(); 
+	  spvl.insert(rt, new GLSPVect_t); 
+	  *(--spvl.end()) = *spvlp; 
 	  spvlp++; 
+
 	} else {
-	  spvl.push_back(new GLSPVect_t); 
+	  rtime_t rt = 1.0; 
+	  spvl.insert(rt, new GLSPVect_t); 
 	}
       
       dtimer_.reset(); 
@@ -299,8 +302,9 @@ void spikesquares(void)
     { 
       for (int j = 0 ; j < 20; j++)
 	{
-	  GLSPVect_t * spv = new GLSPVect_t; 
-	  
+	  rtime_t rt = i * 20 + j;
+	  spvlsrc.insert(rt, new GLSPVect_t); 
+
 	  for (int x = 0; x < MAXX; x++) 
 	    { 
 	      for (int y = 0; y < MAXY; y++)
@@ -314,10 +318,9 @@ void spikesquares(void)
 		  sp1.p4 = float( y + i * SPACEY) * scale/2.0; 
 		  sp1.ts = 1000; 
 		  sp1.tchan = j % 4; 
-		  spv->push_back(sp1); 
+		  (--spvlsrc.end())->push_back(sp1); 
 		}
 	    }
-	  spvlsrc.push_back(spv); 
 
 	}
     }
@@ -338,20 +341,23 @@ int main(int argc, char** argv)
   spvlp = spvlsrc.begin(); 
 
   int testmode = 0;
+  rtime_t t = 0.0; 
+      
   switch (testmode)
     {
     case 0:
       // empty pointers
-      spvl.push_back(*spvlp); 
+      spvl.insert(t, new GLSPVect_t); 
+      *(--spvl.end()) = *spvlp; 
       spvlp++; 
       break; 
     case 1:
       // partly populated
-      for (int i =0; i < 207; i++)
-	{
-	  spvl.push_back(*spvlp); 
-	  spvlp++; 
-	}
+//       for (int i =0; i < 207; i++)
+// 	{
+// 	  spvl.push_back(*spvlp); 
+// 	  spvlp++; 
+// 	}
       break ; 
     default:
       break; 
