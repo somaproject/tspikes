@@ -56,6 +56,9 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
   clusterTable_.attach(clusterViewYB_, 1, 2, 1, 2);
   clusterTable_.attach(clusterViewAB_, 2, 3, 1, 2);
 
+  clusterTable_.set_border_width(1.0); 
+  clusterTable_.set_row_spacings(1.0); 
+  clusterTable_.set_col_spacings(1.0); 
 
   rateTimeline_.set_size_request(clusterWidth*3, 60); 
 
@@ -72,7 +75,9 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
   spikeWaveTable_.attach(spikeWaveViewA_, 0, 1, 1, 2); 
   spikeWaveTable_.attach(spikeWaveViewB_, 1, 2, 1, 2); 
 
- 
+  spikeWaveTable_.set_border_width(1.0); 
+  spikeWaveTable_.set_row_spacings(1.0); 
+  spikeWaveTable_.set_col_spacings(1.0); 
   spikeWaveVBox_.pack_start(spikeWaveTable_); 
   
   mainHBox_.pack_start(spikeWaveVBox_); 
@@ -312,7 +317,13 @@ void TSpikeWin::setTime(rtime_t t)
   
   if (t - currentTime_  > 1.0 )
     {
+      RateVal_t rv = (--spVectpList_.end())->size(); 
+      //std::cout << "Rateval = " << rv << std::endl; 
+      rateTimeline_.appendRate(rv); 
+
+
       spVectpList_.insert(t, new GLSPVect_t); 
+
       currentTime_ = t; 
 
     }

@@ -3,7 +3,7 @@
 #include "shaders.h"
 
 RateTimeline::RateTimeline() : 
-  BASEDURATION(100.0), 
+  BASEDURATION(10.0), 
   majorTick_(BASEDURATION), 
   minorTick_(BASEDURATION/10.0), 
   viewT1_(0.0), 
@@ -151,7 +151,7 @@ void RateTimeline::appendRate(RateVal_t x)
   }
   // invalidate
   updateViewingWindow(); 
-  get_window()->invalidate_rect(get_allocation(), true);
+  invalidate(); 
   
 }
 
@@ -319,7 +319,8 @@ bool RateTimeline::on_button_press_event(GdkEventButton* event)
       float windowPos = float(x) / get_width() * (viewT2_ - viewT1_); 
 
       activePos_ = windowPos + viewT1_; 
-      get_window()->invalidate_rect(get_allocation(), true);
+
+      invalidate(); 
       viewSignal_.emit(isLive_, activePos_, decayRate_); 
 
       
@@ -348,10 +349,9 @@ bool RateTimeline::on_motion_notify_event(GdkEventMotion* event)
       
       viewT1_ -= windowDelta; 
       viewT2_ -= windowDelta;
-      get_window()->invalidate_rect(get_allocation(), true);
       
-
-      //invalidate(); 
+      invalidate(); 
+      
       update();
     } 
   else if (event->state & GDK_BUTTON3_MASK)
@@ -360,8 +360,8 @@ bool RateTimeline::on_motion_notify_event(GdkEventMotion* event)
       float windowPos = float(x) / get_width() * (viewT2_ - viewT1_); 
 
       activePos_ = viewT1_ + windowPos; 
-      get_window()->invalidate_rect(get_allocation(), true);
-      
+      invalidate(); 
+
       viewSignal_.emit(isLive_, activePos_, decayRate_); 
       update();
     }
@@ -409,7 +409,7 @@ bool RateTimeline::on_scroll_event(GdkEventScroll* event)
     viewSignal_.emit(isLive_, activePos_, decayRate_); 
 	  
     
-    get_window()->invalidate_rect(get_allocation(), true);
+    invalidate();
     
     update();
 
@@ -434,7 +434,7 @@ bool RateTimeline::on_scroll_event(GdkEventScroll* event)
       
       updateViewingWindow(); 
       
-      get_window()->invalidate_rect(get_allocation(), true);
+      invalidate(); 
       
       update();
     }
