@@ -150,7 +150,7 @@ void RateTimeline::appendRate(RateVal_t x)
     //viewX2_ = x+ 1; 
   }
   // invalidate
-  updateViewingWindow(); 
+  //updateViewingWindow(); 
   invalidate(); 
   
 }
@@ -159,7 +159,6 @@ bool RateTimeline::on_expose_event(GdkEventExpose* event)
 {
 
   Glib::RefPtr<Gdk::GL::Drawable> gldrawable = get_gl_drawable();
-
 
   // *** OpenGL BEGIN ***
   if (!gldrawable->gl_begin(get_gl_context()))
@@ -431,8 +430,6 @@ bool RateTimeline::on_scroll_event(GdkEventScroll* event)
       }
       
       setZoom(newzoom, centerPos); 
-      
-      updateViewingWindow(); 
       
       invalidate(); 
       

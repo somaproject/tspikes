@@ -1,0 +1,33 @@
+1. How do we indicate we are currently looking at "live" data? 
+
+2. Have we fully documented the architecutre? 
+
+3. What about command and event serialization and deserialization? 
+
+4. Do we want historical waveform views?  
+
+It seems silly to continue looking at live waveforms while looking at
+   historical data. At the same time, d215.tt is ~ 200 MB. A spi,ke is
+   512 bytes, so worst-case new data arrival is at 1843.2
+   MB/hr. That's a lot of data. 
+
+   If we broke it up into recording _images_, and say each image set
+   is 4*200*200 bytes, or 160 kB -- if we chunk at 10 sec, then we get
+   57 MB/hr, which is much less suckful, but still ass. 
+
+
+
+5. how do we render axes and text? 
+
+6. how do we interface and control? 
+
+7. How does the historical viewer snap? 
+
+8. How do we load fake data to test, esp a large amount of it? 
+
+9. Do we want the horizontal graph layers to scale out? 
+
+10. How do we give status data? 
+
+11. Do we want clusters to zoom? 
+

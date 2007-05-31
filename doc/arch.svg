@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="765"
+   height="990"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.45"
+   version="1.0"
+   sodipodi:docbase="/home/jonas/tspikes/doc"
+   sodipodi:docname="arch.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   sodipodi:modified="true">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.83866153"
+     inkscape:cx="891.24503"
+     inkscape:cy="572.32277"
+     inkscape:document-units="pt"
+     inkscape:current-layer="layer1"
+     width="612pt"
+     height="792pt"
+     units="pt"
+     showgrid="true"
+     gridspacingx="5pt"
+     gridspacingy="5pt"
+     gridanglex="24pt"
+     gridanglez="24pt"
+     grid_units="pt"
+     inkscape:object-paths="false"
+     inkscape:grid-bbox="false"
+     inkscape:grid-points="true"
+     inkscape:window-width="1600"
+     inkscape:window-height="1125"
+     inkscape:window-x="0"
+     inkscape:window-y="25" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;opacity:0.32967033"
+       id="rect3229"
+       width="93.75"
+       height="93.75"
+       x="375"
+       y="115" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;opacity:0.32967033"
+       id="rect3227"
+       width="93.75"
+       height="93.75"
+       x="368.75"
+       y="108.75" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;opacity:0.32967033"
+       id="rect3225"
+       width="93.75"
+       height="93.75"
+       x="362.5"
+       y="102.5" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;opacity:0.32967033"
+       id="rect3223"
+       width="93.75"
+       height="93.75"
+       x="356.25"
+       y="96.25" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;opacity:0.32967033"
+       id="rect3221"
+       width="93.75"
+       height="93.75"
+       x="350"
+       y="90" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2178"
+       width="93.75"
+       height="93.75"
+       x="343.75"
+       y="83.75" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="356.25"
+       y="133.75"
+       id="text2180"><tspan
+         sodipodi:role="line"
+         id="tspan2182"
+         x="356.25"
+         y="133.75">ClusterView</tspan></text>
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;opacity:0.21978022"
+       id="rect2243"
+       width="125"
+       height="93.75"
+       x="112.5"
+       y="102.5" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;opacity:0.21978022"
+       id="rect2241"
+       width="125"
+       height="93.75"
+       x="106.25"
+       y="96.25" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;opacity:0.21978022"
+       id="rect2239"
+       width="125"
+       height="93.75"
+       x="100"
+       y="90" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2191"
+       width="125"
+       height="93.75"
+       x="93.75"
+       y="83.75" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="106.25"
+       y="133.75"
+       id="text2193"><tspan
+         sodipodi:role="line"
+         id="tspan2195"
+         x="106.25"
+         y="133.75">SpikeWaveView</tspan></text>
+    <g
+       id="g2197"
+       transform="translate(500,0)">
+      <rect
+         y="83.75"
+         x="93.75"
+         height="93.75"
+         width="125"
+         id="rect2199"
+         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text
+         id="text2201"
+         y="133.75"
+         x="106.25"
+         style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="133.75"
+           x="106.25"
+           id="tspan2203"
+           sodipodi:role="line">RateTimeline</tspan></text>
+    </g>
+    <rect
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2207"
+       width="643.75"
+       height="262.5"
+       x="87.5"
+       y="71.25" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="-333.75"
+       y="81.25"
+       id="text2209"
+       transform="matrix(0,-1,1,0,0,0)"><tspan
+         sodipodi:role="line"
+         id="tspan2211"
+         x="-333.75"
+         y="81.25">TSpikeWin</tspan></text>
+    <rect
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2216"
+       width="368.75"
+       height="75"
+       x="350"
+       y="383.75" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="-458.75"
+       y="343.75"
+       id="text2218"
+       transform="matrix(0,-1,1,0,0,0)"><tspan
+         sodipodi:role="line"
+         id="tspan2220"
+         x="-458.75"
+         y="343.75">NetCodec</tspan></text>
+    <rect
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2222"
+       width="218.75"
+       height="75"
+       x="87.5"
+       y="383.75" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="-458.75"
+       y="81.25"
+       id="text2224"
+       transform="matrix(0,-1,1,0,0,0)"><tspan
+         sodipodi:role="line"
+         id="tspan2226"
+         x="-458.75"
+         y="81.25">DBusIO</tspan></text>
+    <rect
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2228"
+       width="218.75"
+       height="75"
+       x="500"
+       y="521.25" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="-596.25"
+       y="493.75"
+       id="text2230"
+       transform="matrix(0,-1,1,0,0,0)"><tspan
+         sodipodi:role="line"
+         id="tspan2232"
+         x="-596.25"
+         y="493.75">Network</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="-281.25"
+       y="146.25"
+       id="text3231"><tspan
+         sodipodi:role="line"
+         id="tspan3233"
+         x="-281.25"
+         y="146.25">What are the state bits we care about for spikes? </tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="-196.97975"
+       y="165.21045"
+       id="text3235"><tspan
+         sodipodi:role="line"
+         id="tspan3237"
+         x="-196.97975"
+         y="165.21045">enabled</tspan><tspan
+         sodipodi:role="line"
+         x="-196.97975"
+         y="180.21045"
+         id="tspan3450">gain</tspan><tspan
+         sodipodi:role="line"
+         x="-196.97975"
+         y="195.21045"
+         id="tspan3239">spikefilten</tspan><tspan
+         sodipodi:role="line"
+         x="-196.97975"
+         y="210.21045"
+         id="tspan3241">filter</tspan><tspan
+         sodipodi:role="line"
+         x="-196.97975"
+         y="225.21045"
+         id="tspan3243">threshold</tspan><tspan
+         sodipodi:role="line"
+         x="-196.97975"
+         y="240.21045"
+         id="tspan3245" /></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="-232.85715"
+       y="373.57144"
+       id="text3452"><tspan
+         sodipodi:role="line"
+         id="tspan3454"
+         x="-232.85715"
+         y="373.57144">How should we control the &quot;is-a</tspan></text>
+    <path
+       style="opacity:0.32967033;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 87.5,221.25 L 731.25,221.25"
+       id="path3456"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="140.80392"
+       y="360.17648"
+       id="text3458"><tspan
+         sodipodi:role="line"
+         id="tspan3460"
+         x="140.80392"
+         y="360.17648">GUI signals</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="500"
+       y="365"
+       id="text3462"><tspan
+         sodipodi:role="line"
+         id="tspan3464"
+         x="500"
+         y="365">Soma Signals</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="-245.62949"
+       y="502.31815"
+       id="text3466"><tspan
+         sodipodi:role="line"
+         id="tspan3468"
+         x="-245.62949"
+         y="502.31815">Example GUI signals:</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="-218.80103"
+       y="524.97333"
+       id="text3470"><tspan
+         sodipodi:role="line"
+         x="-218.80103"
+         y="524.97333"
+         id="tspan3474">reset all zooms</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="893.08972"
+       y="45.638096"
+       id="text3478"><tspan
+         sodipodi:role="line"
+         id="tspan3480"
+         x="893.08972"
+         y="45.638096">Data Structures for TSpikeWin</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="868.75"
+       y="71.25"
+       id="text3482"><tspan
+         sodipodi:role="line"
+         id="tspan3484"
+         x="868.75"
+         y="71.25">GLSpikePoint</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="862.5"
+       y="90"
+       id="text3486"><tspan
+         sodipodi:role="line"
+         id="tspan3488"
+         x="862.5"
+         y="90">GLSPVect:  std::Vector&lt;GLSpikePoint&gt;</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="862.5"
+       y="108.75"
+       id="text3490"><tspan
+         sodipodi:role="line"
+         id="tspan3492"
+         x="862.5"
+         y="108.75">GLSPVectpList : a map of smart pointers to GLSPVects</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="1190.0883"
+       y="84.892159"
+       id="text3494"><tspan
+         sodipodi:role="line"
+         id="tspan3496"
+         x="1190.0883"
+         y="84.892159">ideally a GLSPVect is ~ T seconds</tspan><tspan
+         sodipodi:role="line"
+         x="1190.0883"
+         y="99.892159"
+         id="tspan3498">worth of arriving spike points</tspan><tspan
+         sodipodi:role="line"
+         x="1190.0883"
+         y="114.89216"
+         id="tspan3502">   rendered as a set</tspan><tspan
+         sodipodi:role="line"
+         x="1190.0883"
+         y="129.89216"
+         id="tspan3504">   time-indexed</tspan><tspan
+         sodipodi:role="line"
+         x="1190.0883"
+         y="144.89216"
+         id="tspan3506">   can obviously be empty if no data arrives</tspan><tspan
+         sodipodi:role="line"
+         x="1190.0883"
+         y="159.89216"
+         id="tspan3500" /></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="936.72546"
+       y="285.98038"
+       id="text3508"><tspan
+         sodipodi:role="line"
+         id="tspan3510"
+         x="936.72546"
+         y="285.98038">what sort of query do we need to answer? </tspan><tspan
+         sodipodi:role="line"
+         x="936.72546"
+         y="300.98038"
+         id="tspan3512">   Plot clusters from t1 to t2</tspan><tspan
+         sodipodi:role="line"
+         x="936.72546"
+         y="315.98038"
+         id="tspan3514">this will require us to define what the</tspan><tspan
+         sodipodi:role="line"
+         x="936.72546"
+         y="330.98038"
+         id="tspan3516">actual constraints on the interval are, and plot them</tspan><tspan
+         sodipodi:role="line"
+         x="936.72546"
+         y="345.98038"
+         id="tspan3518" /><tspan
+         sodipodi:role="line"
+         x="936.72546"
+         y="360.98038"
+         id="tspan3520">effectively we're only going to have granularity on the order of</tspan><tspan
+         sodipodi:role="line"
+         x="936.72546"
+         y="375.98038"
+         id="tspan3522">the duration of a GLSPVect, whcih is fine</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="924.92157"
+       y="482.43137"
+       id="text3524"><tspan
+         sodipodi:role="line"
+         id="tspan3526"
+         x="924.92157"
+         y="482.43137">clusterView.setView()</tspan></text>
+    <path
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 618.75,177.5 L 618.75,240 L 506.25,240"
+       id="path3528"
+       sodipodi:nodetypes="ccc" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="525"
+       y="233.75"
+       id="text3530"><tspan
+         sodipodi:role="line"
+         id="tspan3532"
+         x="525"
+         y="233.75">viewChanged()</tspan></text>
+  </g>
+</svg>

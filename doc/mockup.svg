@@ -17,7 +17,7 @@
    version="1.0"
    sodipodi:docname="mockup.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   sodipodi:docbase="/home/jonas/soma/tspikes/doc"
+   sodipodi:docbase="/home/jonas/tspikes/doc"
    sodipodi:modified="true">
   <defs
      id="defs4">
@@ -57,9 +57,9 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.979899"
-     inkscape:cx="543.57998"
-     inkscape:cy="-43.82867"
+     inkscape:zoom="0.70000001"
+     inkscape:cx="488.40818"
+     inkscape:cy="-142.48848"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      width="800px"
@@ -73,7 +73,7 @@
      showguides="true"
      inkscape:guide-bbox="true"
      inkscape:window-width="1600"
-     inkscape:window-height="1129"
+     inkscape:window-height="1125"
      inkscape:window-x="0"
      inkscape:window-y="25" />
   <metadata
@@ -409,5 +409,90 @@
        sodipodi:ry="5"
        d="M 820 385 A 5 5 0 1 1  810,385 A 5 5 0 1 1  820 385 z"
        transform="translate(-22.321429,1.0714286)" />
+    <rect
+       style="fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:1.25000012;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3420"
+       width="119.58275"
+       height="180.12448"
+       x="0.20862129"
+       y="-0.1244812" />
+    <rect
+       style="fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:1.25000012;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3422"
+       width="119.58275"
+       height="180.12448"
+       x="120.41725"
+       y="0" />
+    <rect
+       style="fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:1.25000012;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3424"
+       width="119.58275"
+       height="169.92975"
+       x="0"
+       y="180.03513" />
+    <rect
+       style="fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:1.25000012;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3426"
+       width="119.58275"
+       height="169.92975"
+       x="120.41725"
+       y="180.07025" />
+    <rect
+       style="opacity:0.32967033;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3428"
+       width="360"
+       height="190"
+       x="-380"
+       y="30" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="-380"
+       y="20"
+       id="text3430"><tspan
+         sodipodi:role="line"
+         id="tspan3432"
+         x="-380"
+         y="20">Separate settings dialog?</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="-345.47217"
+       y="69.175041"
+       id="text3434"><tspan
+         sodipodi:role="line"
+         id="tspan3436"
+         x="-345.47217"
+         y="69.175041">Channel</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="-270"
+       y="70"
+       id="text3438"><tspan
+         sodipodi:role="line"
+         id="tspan3440"
+         x="-270"
+         y="70">Gain</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="-220"
+       y="70"
+       id="text3442"><tspan
+         sodipodi:role="line"
+         id="tspan3444"
+         x="-220"
+         y="70">Filter</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="-170"
+       y="70"
+       id="text3446"><tspan
+         sodipodi:role="line"
+         id="tspan3448"
+         x="-170"
+         y="70">Filter</tspan></text>
   </g>
 </svg>

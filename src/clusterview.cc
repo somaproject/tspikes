@@ -219,7 +219,7 @@ bool ClusterView::on_expose_event(GdkEventExpose* event)
 
     }
   
-
+  
   
   // Swap buffers.
   gldrawable->swap_buffers();
@@ -437,6 +437,4 @@ void ClusterView::updateView()
 
 }
 
-void ClusterView::inv() {
-  get_window()->invalidate_rect(get_allocation(), true);
-}
+

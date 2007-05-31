@@ -94,7 +94,7 @@ int main(int argc, char** argv)
 				 sigc::bind(sigc::mem_fun(&fttd, 
 							  &FakeTTData::appendToFakeNetwork), 
 					    &net),
-				 100); 
+				 10); 
   Glib::signal_timeout().connect(
 				 sigc::bind(sigc::ptr_fun(fakesettime), 
 					    &tspikewin),

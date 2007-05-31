@@ -39,7 +39,14 @@ public:
 		   GLSPVectpList_t::iterator send, 
 		   float decayRate, DecayMode dm); 
   // Invalidate whole window.
-  void inv(); 
+
+  void invalidate() {
+    Glib::RefPtr<Gdk::Window> win = get_window();
+    Gdk::Rectangle r(0, 0, get_allocation().get_width(),
+		     get_allocation().get_height());
+    win->invalidate_rect(r, false);
+
+  }
   bool setViewingWindow(float x1, float y1,  float x2, float y2); 
   int getFrames(); 
 
@@ -59,7 +66,7 @@ protected:
   virtual bool on_idle();
 
   void resetAccumBuffer(GLSPVectpList_t::iterator sstart, 
-				GLSPVectpList_t::iterator send); 
+			GLSPVectpList_t::iterator send); 
   void renderSpikeVector(const GLSPVect_t & spvect, 
 			 bool live = false); 
   void updateView(); 

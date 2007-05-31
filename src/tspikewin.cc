@@ -61,7 +61,7 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
   clusterTable_.set_col_spacings(1.0); 
 
   rateTimeline_.set_size_request(clusterWidth*3, 60); 
-
+  
   clusterViewVBox_.pack_start(clusterTable_) ;
   clusterViewVBox_.pack_start(rateTimeline_); 
   
@@ -129,6 +129,9 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
   Glib::signal_io().connect(sigc::mem_fun(*this, &TSpikeWin::dataRXCallback), 
 			    pNetwork_->getDataFifoPipe(), Glib::IO_IN); 
   
+  rateTimeline_.viewSignal().connect(sigc::mem_fun(*this, 
+						   &TSpikeWin::updateClusterView)); 
+
   
 }
 
@@ -140,13 +143,13 @@ TSpikeWin::~TSpikeWin()
 bool TSpikeWin::on_idle()
 
 {
-  clusterViewXY_.get_window()->invalidate_rect(get_allocation(), true);
-  clusterViewXA_.get_window()->invalidate_rect(get_allocation(), true);
-  clusterViewXB_.get_window()->invalidate_rect(get_allocation(), true);
-  clusterViewYA_.get_window()->invalidate_rect(get_allocation(), true);
-  clusterViewYB_.get_window()->invalidate_rect(get_allocation(), true);
-  clusterViewAB_.get_window()->invalidate_rect(get_allocation(), true);
 
+  clusterViewXY_.invalidate(); 
+  clusterViewXA_.invalidate(); 
+  clusterViewXB_.invalidate(); 
+  clusterViewYA_.invalidate(); 
+  clusterViewYB_.invalidate(); 
+  clusterViewAB_.invalidate(); 
 
   spikeWaveViewX_.get_window()->invalidate_rect(get_allocation(), true);
   spikeWaveViewY_.get_window()->invalidate_rect(get_allocation(), true);
@@ -328,5 +331,101 @@ void TSpikeWin::setTime(rtime_t t)
 
     }
 
+
+}
+
+
+void TSpikeWin::updateClusterView(bool isLive, float activePos, float decayRate)
+{
+  // decayRate is a rate, luminance/alpha drops per unit time
+
+  
+  std::cout << "updateCluterView called, activePos="
+	    << activePos 
+	    << "decayRate = " << decayRate << std::endl; 
+  
+  // compute time range
+  float t2 = activePos; 
+  float t1; 
+  if (decayRate > 0 ) {
+    float winsize = 1 / decayRate; 
+    t1 = t2 - winsize; 
+  } else {
+    t1 = spVectpList_.begin().key(); 
+  }
+  
+  // now find iterators
+  GLSPVectpList_t::iterator t1i, t2i; 
+
+  // -----------------------------------------------------------
+  // get lower bound
+  // -----------------------------------------------------------
+  t1i =  spVectpList_.lower_bound(t1); 
+
+  if (t1i == spVectpList_.end())
+    {
+      // there is now element lower than t1
+
+      // DO SOMETHING
+      
+    } 
+  else if (t1i == spVectpList_.begin())
+    {
+      // the first element, don't dec
+    } 
+  else 
+    {
+      // normal, we want to go one further to get a superset of the times
+      t1i--; 
+    }
+
+  // -----------------------------------------------------------
+  // get upper bound
+  // -----------------------------------------------------------
+  t2i =  spVectpList_.lower_bound(t2); 
+
+  if (t2i == spVectpList_.end())
+    {
+      // there is now element lower than t1 - that's okay, we want the fullr
+      // range
+
+    } 
+  else 
+    {
+      // normal, we want to go one further to get a superset of the times
+
+      t2i++; 
+    }
+
+  // tada, now we extract out the relevant times
+  std::cout << "t1 = " << t1i.key() 
+	    << " t2 = " << t2i.key () << std::endl;  
+  
+  
+  // now update internal iterators
+  clusterViewXY_.setView(t1i, t2i, 
+			 decayRate, LOG); 
+
+  clusterViewXA_.setView(t1i, t2i, 
+			 decayRate, LOG); 
+
+  clusterViewXB_.setView(t1i, t2i, 
+			 decayRate, LOG); 
+
+  clusterViewYA_.setView(t1i, t2i, 
+			 decayRate, LOG); 
+
+  clusterViewYB_.setView(t1i, t2i, 
+			 decayRate, LOG); 
+
+  clusterViewAB_.setView(t1i, t2i, 
+			 decayRate, LOG); 
+
+  clusterViewXY_.invalidate(); 
+  clusterViewXA_.invalidate(); 
+  clusterViewXB_.invalidate(); 
+  clusterViewYA_.invalidate(); 
+  clusterViewYB_.invalidate(); 
+  clusterViewAB_.invalidate(); 
 
 }

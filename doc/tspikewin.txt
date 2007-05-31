@@ -1,0 +1,9 @@
+Tspikewin creates the GLSPvectPlist out of inbound TSpikes
+Segmentation comes from assertion of SetTime()
+
+we will have a clusterSetTimeWindow(t1, t2) function that will 
+set the time to view data from t1 to t2
+   it does this by querying the internal SPVectTimeIndex_ function, which
+   is a map from time to a spiter
+
+

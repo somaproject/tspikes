@@ -72,6 +72,10 @@ protected:
   void appendTSpikeToSpikewaves(const TSpike_t & tspike); 
   void appendTSpikeToSPL(const TSpike_t & tspike);
 
+  // update clusters
+  void updateClusterView(bool, float, float); 
+
+
   // timeline manipulation, heh
   rtime_t currentTime_; 
 
