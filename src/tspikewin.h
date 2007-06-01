@@ -33,6 +33,7 @@ public:
   virtual ~TSpikeWin();
 
   void setTime(rtime_t t);
+  void loadExistingSpikes(const std::vector<TSpike_t> & spikes); 
 
 protected:
   virtual bool on_idle();
@@ -45,6 +46,8 @@ protected:
   GLSPVect_t *  spvect_; 
 
   GLSPVectpList_t spVectpList_; 
+
+  float spVectDuration_; 
 
   // member widgets:
 

@@ -155,6 +155,7 @@ void RateTimeline::appendRate(RateVal_t x)
   
 }
 
+
 bool RateTimeline::on_expose_event(GdkEventExpose* event)
 {
 

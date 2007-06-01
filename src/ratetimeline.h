@@ -35,6 +35,7 @@ public:
   virtual ~RateTimeline();
 
   void appendRate(RateVal_t x); 
+  void appendRate(float t, RateVal_t x); 
 
 
   // Invalidate whole window.

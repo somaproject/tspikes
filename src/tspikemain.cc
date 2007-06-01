@@ -9,6 +9,7 @@ class FakeTTData
   FakeTTData(std::string filename, int rate); 
   DataPacket_t *  getSpikeDataPacket(); 
   bool appendToFakeNetwork(FakeNetwork* fn);
+  std::vector<TSpike_t>  getManySpikes(int n); 
 
  private:
   ttreader ttreader_; 
@@ -25,6 +26,23 @@ FakeTTData::FakeTTData(std::string filename, int rate):
   
   std::cout << spikeNum_ << std::endl;
   timer_.start(); 
+
+}
+
+std::vector<TSpike_t> FakeTTData::getManySpikes(int n)
+{
+
+  std::vector<TSpike_t> spikes;
+  spikes.reserve(n); 
+
+  for (int i = 0; i < 100000; i++)
+    {
+      TSpike_t ts; 
+      ts = ttreader_.getTSpike(); 
+      spikes.push_back(ts); 
+    }
+
+  return spikes; 
 
 }
 
@@ -79,6 +97,7 @@ bool fakesettime(TSpikeWin* tsw)
 
 
 }
+
 int main(int argc, char** argv)
 {
   Gtk::Main kit(argc, argv);
@@ -86,19 +105,23 @@ int main(int argc, char** argv)
   Gtk::GL::init(argc, argv);
   
   FakeNetwork net; 
-  FakeTTData fttd("../../d118.tt", 100); 
+  FakeTTData fttd("../../d215.tt", 100); 
   
   TSpikeWin tspikewin(&net);
+  std::vector<TSpike_t> spikes = fttd.getManySpikes(100000); 
+  tspikewin.loadExistingSpikes(spikes); 
 
-  Glib::signal_timeout().connect(
-				 sigc::bind(sigc::mem_fun(&fttd, 
-							  &FakeTTData::appendToFakeNetwork), 
-					    &net),
-				 10); 
-  Glib::signal_timeout().connect(
-				 sigc::bind(sigc::ptr_fun(fakesettime), 
-					    &tspikewin),
-				 1000); 
+  
+
+//   Glib::signal_timeout().connect(
+// 				 sigc::bind(sigc::mem_fun(&fttd, 
+// 							  &FakeTTData::appendToFakeNetwork), 
+// 					    &net),
+// 				 10); 
+//   Glib::signal_timeout().connect(
+// 				 sigc::bind(sigc::ptr_fun(fakesettime), 
+// 					    &tspikewin),
+// 				 1000); 
   
   kit.run(tspikewin);
 

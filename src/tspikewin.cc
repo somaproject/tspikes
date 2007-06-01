@@ -6,7 +6,7 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
   pNetwork_(pNetwork), 
   
   spVectpList_(), 
-
+  spVectDuration_(5.0), 
 
   clusterTable_(2, 3), 
   spikeWaveTable_(2, 2), 
@@ -318,11 +318,11 @@ void TSpikeWin::appendTSpikeToSPL(const TSpike_t & tspike)
 void TSpikeWin::setTime(rtime_t t)
 {
   
-  if (t - currentTime_  > 1.0 )
+  if (t - currentTime_  > spVectDuration_ )
     {
-      RateVal_t rv = (--spVectpList_.end())->size(); 
+      RateVal_t rv =( (--spVectpList_.end())->size() ) / spVectDuration_; 
       //std::cout << "Rateval = " << rv << std::endl; 
-      rateTimeline_.appendRate(rv); 
+      rateTimeline_.appendRate(t, rv); 
 
 
       spVectpList_.insert(t, new GLSPVect_t); 
@@ -428,4 +428,20 @@ void TSpikeWin::updateClusterView(bool isLive, float activePos, float decayRate)
   clusterViewYB_.invalidate(); 
   clusterViewAB_.invalidate(); 
 
+}
+
+
+void TSpikeWin::loadExistingSpikes(const std::vector<TSpike_t> & spikes)
+{
+  std::vector<TSpike_t>::const_iterator pts; 
+  for (pts = spikes.begin(); pts != spikes.end(); pts++)
+    {
+      
+      appendTSpikeToSpikewaves(*pts); 
+      appendTSpikeToSPL(*pts); 
+      
+      rtime_t t = float(pts->time) / 10e3; 
+      setTime(t);
+
+    }
 }

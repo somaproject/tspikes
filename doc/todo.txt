@@ -15,7 +15,12 @@ It seems silly to continue looking at live waveforms while looking at
    is 4*200*200 bytes, or 160 kB -- if we chunk at 10 sec, then we get
    57 MB/hr, which is much less suckful, but still ass. 
 
-
+   we could always memap and save to disk... in the limit, it would be
+   512 kB/sec/app instance, which isn't bad at all... 
+   
+   remember that the purpose of this app is not to be a full-featured
+   visualization application, but simply something that lets us do
+   what we need real-time.
 
 5. how do we render axes and text? 
 
@@ -23,11 +28,22 @@ It seems silly to continue looking at live waveforms while looking at
 
 7. How does the historical viewer snap? 
 
-8. How do we load fake data to test, esp a large amount of it? 
+8. How do we load fake data to test, esp a large amount of it?  
+
+At the momemnt we're just going to take in an existing std::vector of
+tspikes and append them internally, using their own time to set the
+appropriate spvect boundaries and whatnot.
+
 
 9. Do we want the horizontal graph layers to scale out? 
 
 10. How do we give status data? 
 
 11. Do we want clusters to zoom? 
+
+12. how to handle the realities of timing? 
+
+Often when we startup the app, or start reading data, we'll be dealing
+with a non-zero start time. So how do we decide what this "start-up
+time" is?
 

@@ -17,4 +17,4 @@ spikevis: spikevis.o clusterview.o shaders.o glconfig.o
 ratetimelinevis: ratetimelinevis.o ratetimeline.o glconfig.o shaders.o ttreader.o ratetimeline.o
 
 clean:
-	rm *.o test
+	rm *.o 
