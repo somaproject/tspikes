@@ -13,11 +13,6 @@
 
 #include <gtkglmm.h>
 
-#ifdef G_OS_WIN32
-#define WIN32_LEAN_AND_MEAN 1
-#include <windows.h>
-#endif
-
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glext.h>
@@ -73,9 +68,14 @@ protected:
 
   bool renderSpikeWave(const GLSpikeWave_t & sw, 
 		       float alpha, bool plotPoints);
+  void renderGrid(); 
+  void renderText(); 
 
-  
   int m_Frames;
+
+  GLuint texName1; 
+  void setupTexture(); 
+  void renderTexture(); 
 
 };
 

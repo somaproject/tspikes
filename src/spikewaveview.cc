@@ -1,6 +1,8 @@
 #include "spikewaveview.h"
 #include "shaders.h"
 #include "glconfig.h"
+#include <cairomm/context.h>
+#include <cairomm/surface.h>
 
 int SpikeWaveView::getFrames()
 {
@@ -106,6 +108,8 @@ void SpikeWaveView::on_realize()
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
   updateViewingWindow(); 
+
+  setupTexture(); 
 
   gldrawable->gl_end();
   // *** OpenGL END ***
@@ -243,6 +247,7 @@ bool SpikeWaveView::on_expose_event(GdkEventExpose* event)
   glClearColor(0.0, 0.0, 0.0, 1.0); 
   glClear(GL_COLOR_BUFFER_BIT | GL_ACCUM_BUFFER_BIT ); 
 
+  renderGrid(); 
 
   // real work 
   SpikeWaveList_t::iterator csIter; 
@@ -265,6 +270,8 @@ bool SpikeWaveView::on_expose_event(GdkEventExpose* event)
     {
       renderSpikeWave(swl_.back(), 1.0, true); 
     }
+
+  renderText(); 
 
   // Swap buffers.
   gldrawable->swap_buffers();
@@ -341,4 +348,121 @@ void SpikeWaveView::inv() {
 void SpikeWaveView::setTime(uint64_t ts)
 {
   currentTime_ = ts; 
+}
+
+void SpikeWaveView::renderGrid()
+{
+  // draw the various vertical markings, at 100 uV
+  const float GRIDINC = 100e-6; 
+
+  glLineWidth(3.0); 
+   
+  glColor4f(1.0, 1.0, 1.0, 1.0); 
+  // plot zero line
+  glBegin(GL_LINES); 
+  glVertex2f(viewX1_, 0.0); 
+  glVertex2f(viewX2_, 0.0); 
+  glEnd(); 
+
+  glColor4f(1.0, 1.0, 1.0, 0.5); 
+  glLineWidth(1.0); 
+ 
+  float ydelta = viewY2_ - viewY1_; 
+  int lnumpos = int(viewY2_/GRIDINC); 
+
+  for (int i = 0; i < lnumpos; i++)
+    {
+      glBegin(GL_LINES); 
+      glVertex2f(viewX1_, GRIDINC*(i+1)); 
+      glVertex2f(viewX2_, GRIDINC*(i+1)); 
+      glEnd(); 
+    }
+  
+}
+
+void SpikeWaveView::renderText()
+{
+
+  glEnable(GL_TEXTURE_2D);
+  
+  glBindTexture(GL_TEXTURE_2D, texName1); 
+
+  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  
+  glBegin(GL_QUADS);
+ 
+ 
+  glTexCoord2f(0.0, 0.0); 
+  glVertex2f(viewX1_, 300e-6);
+  
+  glTexCoord2f(1.0, 0.0); 
+  glVertex2f(viewX2_, 300e-6);
+  
+  glTexCoord2f(1.0, 1.0); 
+  glVertex2f(viewX2_, 00e-6);
+  
+  glTexCoord2f(0.0, 1.0);  
+  glVertex2f(viewX1_, 00e-6);
+  
+  glEnd();
+  glDisable(GL_TEXTURE_2D); 
+
+}
+
+void SpikeWaveView::setupTexture()
+{
+
+
+  glEnable(GL_TEXTURE_2D);
+  
+  glGenTextures(1, &texName1); 
+  glBindTexture(GL_TEXTURE_2D, texName1); 
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); 
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); 
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); 
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); 
+  
+  glDisable(GL_TEXTURE_2D); 
+  renderTexture(); 
+
+}
+
+void SpikeWaveView::renderTexture()
+{
+
+  Cairo::RefPtr<Cairo::ImageSurface> surface =
+    Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 256, 256);
+  
+  Cairo::RefPtr<Cairo::Context> pContext = 
+    Cairo::Context::create(surface); 
+
+
+  pContext->move_to(60.0, 80.0);
+  pContext->set_source_rgba(1.0, 1.0, 1.0, 1.0);   
+  pContext->select_font_face("Sans", Cairo::FONT_SLANT_NORMAL,
+ 			     Cairo::FONT_WEIGHT_NORMAL); 
+  pContext->set_font_size(15.0); 
+
+
+  pContext->show_text("ABCD"); 
+
+  pContext->move_to(0.0, 0.0);
+
+  pContext->rel_line_to(0.0, 50.0);
+  pContext->rel_line_to(50.0, 0.0);
+  pContext->rel_line_to(00.0, -50.0);
+  pContext->close_path();
+  pContext->set_line_width(10.0); 
+  pContext->set_source_rgba(0, 0, 1, 1);
+  pContext->stroke();
+  
+  glEnable(GL_TEXTURE_2D);
+  
+  glBindTexture(GL_TEXTURE_2D, texName1); 
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256, 256, 0, 
+	       GL_BGRA, GL_UNSIGNED_BYTE, surface->get_data()); 
+  glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+
+  glDisable(GL_TEXTURE_2D); 
+
 }

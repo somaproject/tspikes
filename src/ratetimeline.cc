@@ -155,6 +155,22 @@ void RateTimeline::appendRate(RateVal_t x)
   
 }
 
+void RateTimeline::appendRate(float t, RateVal_t x)
+{
+  
+  rates_.push_back(x); 
+
+  //viewT2_ = rates_.size(); 
+
+  if (x > viewX2_) {
+    //viewX2_ = x+ 1; 
+  }
+  // invalidate
+  //updateViewingWindow(); 
+  invalidate(); 
+  
+}
+
 
 bool RateTimeline::on_expose_event(GdkEventExpose* event)
 {
