@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="765"
+   height="990"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.45"
+   sodipodi:modified="true"
+   version="1.0">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.2118421"
+     inkscape:cx="434.31736"
+     inkscape:cy="820.50217"
+     inkscape:document-units="pt"
+     inkscape:current-layer="layer1"
+     width="765px"
+     height="990px"
+     showgrid="true"
+     gridspacingx="5pt"
+     gridspacingy="5pt"
+     gridanglex="24pt"
+     gridanglez="24pt"
+     grid_units="pt"
+     inkscape:object-paths="false"
+     inkscape:grid-bbox="false"
+     inkscape:grid-points="true"
+     inkscape:window-width="1600"
+     inkscape:window-height="1125"
+     inkscape:window-x="0"
+     inkscape:window-y="25" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2160"
+       width="125"
+       height="93.75"
+       x="-31.25"
+       y="146.25" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="-31.25"
+       y="140"
+       id="text2162"><tspan
+         sodipodi:role="line"
+         id="tspan2164"
+         x="-31.25"
+         y="140">StreamSource</tspan></text>
+    <rect
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2220"
+       width="174.89867"
+       height="243.66072"
+       x="181.27136"
+       y="127.54465" />
+    <rect
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2166"
+       width="62.5"
+       height="93.75"
+       x="187.5"
+       y="146.25" />
+    <rect
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2168"
+       width="62.5"
+       height="93.75"
+       x="281.25"
+       y="146.25" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="187.5"
+       y="140"
+       id="text2170"><tspan
+         sodipodi:role="line"
+         id="tspan2172"
+         x="187.5"
+         y="140">Filter</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="281.25"
+       y="140"
+       id="text2174"><tspan
+         sodipodi:role="line"
+         id="tspan2176"
+         x="281.25"
+         y="140">Render</tspan></text>
+    <rect
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2178"
+       width="62.5"
+       height="93.75"
+       x="281.25"
+       y="271.25" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="281.25"
+       y="265"
+       id="text2180"><tspan
+         sodipodi:role="line"
+         id="tspan2182"
+         x="281.25"
+         y="265">Triger</tspan></text>
+    <path
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 250,165 L 262.5,165 L 262.5,296.25 L 281.25,296.25"
+       id="path2186" />
+    <path
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 262.5,165 L 281.25,165"
+       id="path2188" />
+    <rect
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2190"
+       width="62.5"
+       height="93.75"
+       x="187.5"
+       y="427.5" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="187.5"
+       y="421.25"
+       id="text2192"><tspan
+         sodipodi:role="line"
+         id="tspan2194"
+         x="187.5"
+         y="421.25">FFT</tspan></text>
+    <rect
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2196"
+       width="62.5"
+       height="93.75"
+       x="281.25"
+       y="427.5" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="281.25"
+       y="421.25"
+       id="text2198"><tspan
+         sodipodi:role="line"
+         id="tspan2200"
+         x="281.25"
+         y="421.25">Render</tspan></text>
+    <rect
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2202"
+       width="62.5"
+       height="93.75"
+       x="281.25"
+       y="565" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="281.25"
+       y="558.75"
+       id="text2204"><tspan
+         sodipodi:role="line"
+         id="tspan2206"
+         x="281.25"
+         y="558.75">Triger</tspan></text>
+    <path
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 250,458.75 L 262.5,458.75 L 262.5,590 L 281.25,590"
+       id="path2208" />
+    <path
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 281.25,458.75 L 262.5,458.75"
+       id="path2210" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="181.54179"
+       y="96.319221"
+       id="text2212"><tspan
+         sodipodi:role="line"
+         id="tspan2214"
+         x="181.54179"
+         y="96.319221">Filter will always be associated with a single renderer and a single trigger, right? </tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="453.02933"
+       y="144.18024"
+       id="text2216"><tspan
+         sodipodi:role="line"
+         id="tspan2218"
+         x="453.02933"
+         y="144.18024">Right</tspan></text>
+    <path
+       style="opacity:1;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;fill:none"
+       d="M 350,202.5 C 352.08333,202.5 354.16667,202.5 356.25,202.5 C 376.69589,202.5 360.80411,208.75 381.25,208.75 C 401.69589,208.75 385.80411,215 406.25,215 C 427.83817,215 390.91183,221.25 412.5,221.25 C 428.5,221.25 402.75,227.5 418.75,227.5 C 429.53266,227.5 425,243.15315 425,252.5 C 425,265.54971 418.75,251.95029 418.75,265 C 418.75,290.26275 406.25,267.39507 406.25,283.75 C 406.25,287.91667 410.41667,296.25 406.25,296.25 C 404.16667,296.25 400,294.16667 400,296.25 C 400,298.33333 402.08333,302.5 400,302.5 C 376.87221,302.5 416.87779,308.75 393.75,308.75 C 380.20833,308.75 394.79167,315 381.25,315 C 366.79389,315 359.16768,324.35729 343.75,321.25 C 337.5,321.25 356.25,321.25 362.5,321.25 C 370.5,321.25 367,327.5 375,327.5 C 375,335.83333 372.91667,333.75 381.25,333.75 C 394.79167,333.75 380.20833,340 393.75,340 C 395.83333,340 388.54167,352.5 400,352.5 C 420.53828,352.5 385.71172,358.75 406.25,358.75 C 408.33333,358.75 401.04167,371.25 412.5,371.25 C 414.58333,371.25 407.29167,383.75 418.75,383.75 C 420.83333,383.75 413.54167,396.25 425,396.25 C 429.16667,396.25 425,404.58333 425,408.75 C 425,421.79829 431.25,408.20171 431.25,421.25 C 431.25,441.69589 437.5,425.80411 437.5,446.25 C 437.5,468.61174 431.25,450.59485 431.25,465 C 422.91667,465 425,462.91667 425,471.25 C 416.66667,471.25 418.75,469.16667 418.75,477.5 C 418.75,479.58333 406.25,472.29167 406.25,483.75 C 406.25,487.91667 397.91667,483.75 393.75,483.75 C 380.61853,483.75 375.63147,490 362.5,490 C 353.67965,490 343.75,485.80628 343.75,496.25"
+       id="path2224" />
+  </g>
+</svg>
