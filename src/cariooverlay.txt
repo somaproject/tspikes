@@ -1,0 +1,30 @@
+We want to be able to render text (or any cairo-thingie) to a given
+either pixel range or what. We just want to make sure that there's a
+1:1 pixel/screen correspondence.
+
+We want a function that will keep a list of cairo-rendered textures
+and quads and render those in the scene. It's actually a bit tricky,
+because how do we handle the obvious scaling issues?
+
+So, cairo surfaces will always be rendered 1:1. 
+
+so we pick a point (pixels, or float) and render the text. 
+
+We'd like to be able to render text for vertical text. 
+
+We create a list of smart pointers of objects. 
+
+So each cairo renderer object has: 
+
+1. coordinates in either real or pixel coord
+2. 
+
+
+-----------------------------
+How do we manipulate text strings? 
+
+The set of string objects has a "render" object
+
+GLString("text")
+Glstring.setText
+GLstring.setPosition(real val, real val); 
