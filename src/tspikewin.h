@@ -18,9 +18,9 @@
 
 #include <boost/ptr_container/ptr_map.hpp>
 
-#include "network/networkinterface.h"
-#include "network/data/tspike.h"
-#include "network/data/rawdata.h"
+#include <somanetwork/networkinterface.h>
+#include <somanetwork/tspike.h>
+#include <somanetwork/datapacket.h>
 
 #include "clusterview.h"
 #include "spikewaveview.h"

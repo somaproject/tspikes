@@ -1,6 +1,6 @@
 #include "ttreader.h"
 #include <iostream>
-#include "network/data/tspike.h"
+#include <somanetwork/tspike.h>
 #include <boost/regex.hpp>
 #include <sstream>
 

@@ -1,5 +1,5 @@
 #include "tspikewin.h"
-#include "network/fakenetwork.h"
+#include <somanetwork/fakenetwork.h>
 #include "ttreader.h"
 #include <sigc++/sigc++.h>
 

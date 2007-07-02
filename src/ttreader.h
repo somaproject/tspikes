@@ -2,7 +2,7 @@
 #define TTREADER_H
 #include <fstream>
 #include <string>
-#include "network/data/tspike.h"
+#include <somanetwork/tspike.h>
 
 struct ttspike {
   unsigned int ts; 

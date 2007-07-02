@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <assert.h>
+#include <boost/shared_ptr.hpp>
 
 #include <stdlib.h>
 #include <gtkmm.h>
@@ -19,6 +20,8 @@
 
 #include "glconfig.h"
 #include "glspikes.h"
+#include "glstring.h"
+
 
 const int SPIKEWAVE_LEN = 32; 
 
@@ -72,7 +75,7 @@ protected:
   void renderText(); 
 
   int m_Frames;
-
+  boost::shared_ptr<GLString> pGLString_; 
   GLuint texName1; 
   void setupTexture(); 
   void renderTexture(); 
