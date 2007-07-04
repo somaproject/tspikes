@@ -28,3 +28,8 @@ The set of string objects has a "render" object
 GLString("text")
 Glstring.setText
 GLstring.setPosition(real val, real val); 
+
+-------------------------------------------------------------------------
+two problems: we can't pick the texture size in advance that we're
+going to render the cairo text to, right? I guess we could render, and
+if the extents are too small, rerender (good idea!) 
