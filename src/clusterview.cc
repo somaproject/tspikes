@@ -80,14 +80,14 @@ void ClusterView::on_realize()
   
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-
+#if OPENGL2
   GLuint vshdr = loadGPUShader("test.vert", GL_VERTEX_SHADER); 
   GLuint fshdr = loadGPUShader("test.frag", GL_FRAGMENT_SHADER); 
   std::list<GLuint> shaders; 
   shaders.push_back(vshdr); 
   shaders.push_back(fshdr); 
   gpuProg_ = createGPUProgram(shaders); 
-  
+#endif // OPENGL2
   gldrawable->gl_end();
   // *** OpenGL END ***
 
@@ -154,7 +154,7 @@ bool ClusterView::on_configure_event(GdkEventConfigure* event)
 bool ClusterView::on_expose_event(GdkEventExpose* event)
 {
 
-
+#if OPENGL2
   Glib::RefPtr<Gdk::GL::Drawable> gldrawable = get_gl_drawable();
 
 
@@ -227,7 +227,7 @@ bool ClusterView::on_expose_event(GdkEventExpose* event)
 
   ++m_Frames;
   
-  
+#endif // OPENGL2
   
   return true;
 }
@@ -303,7 +303,9 @@ void ClusterView::renderSpikeVector(const GLSPVect_t & spvect, bool live)
   glVertexPointer(4, GL_FLOAT, sizeof(GLSpikePoint_t),
 		  &spvect[0] ); 
   std::vector<CRGBA_t> colors(spvect.size()); 
+  #if OPENGL2
   useGPUProgram(gpuProg_); 
+  #endif //OPENGL2 
   for(unsigned int i = 0; i < spvect.size(); i++)
     {
 
@@ -353,8 +355,10 @@ void ClusterView::renderSpikeVector(const GLSPVect_t & spvect, bool live)
   glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(CRGBA_t), 
  		 &colors[0]); 
 
+#if OPENGL2
   GLint vp = glGetUniformLocation(gpuProg_, "axes"); 
   glUniform1i(vp, viewMode_); 
+#endif // OPENGL2
 
   glDrawArrays(GL_POINTS, 0, spvect.size()); 
   if(live and ! spvect.empty()) {
@@ -374,7 +378,9 @@ void ClusterView::renderSpikeVector(const GLSPVect_t & spvect, bool live)
 void ClusterView::resetAccumBuffer(GLSPVectpList_t::iterator sstart, 
 			      GLSPVectpList_t::iterator send)
 {
-  // first clear accumulation buffer
+ 
+#if OPENGL2
+ // first clear accumulation buffer
   glClearAccum(0.0, 0.0, 0.0, 0.0); 
   glClearColor(0.0, 0.0, 0.0, 0.0); 
   
@@ -404,7 +410,7 @@ void ClusterView::resetAccumBuffer(GLSPVectpList_t::iterator sstart,
       glClear(GL_COLOR_BUFFER_BIT); 
       pCurSPVect_ = i; 
     }
-  
+#endif  
 }
 
 void ClusterView::setView(GLSPVectpList_t::iterator sstart, 

@@ -18,19 +18,12 @@ struct textprop_t
   std::string text; 
   int size; 
 }; 
-struct ltstr
-{
-  bool operator()(const char* s1, const char* s2) const
-  {
-    return strcmp(s1, s2) < 0;
-  }
-};
 
 struct textPropCompare
 {
   bool operator()(const textprop_t x, const textprop_t  y) const
   {
-  return x.text < y.text && x.size < y.size; 
+    return (x.text < y.text) or x.size < y.size; 
   }
 }; 
 

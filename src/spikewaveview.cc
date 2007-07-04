@@ -108,8 +108,6 @@ void SpikeWaveView::on_realize()
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
   updateViewingWindow(); 
-  pGLString_ = boost::shared_ptr<GLString>(new GLString("This is Test", 40)); 
-  
   
   gldrawable->gl_end();
   // *** OpenGL END ***
@@ -271,7 +269,12 @@ bool SpikeWaveView::on_expose_event(GdkEventExpose* event)
       renderSpikeWave(swl_.back(), 1.0, true); 
     }
 
-  pGLString_->render(); 
+  int y = get_height(); 
+  
+  glString_.drawWinText(4, y-20, "Gain : 100", 20); 
+  glString_.drawWinText(4, y-42, "Filter : On ", 20); 
+  glString_.drawWinText(4, y-64, "Filter : On ", 10); 
+
 
   // Swap buffers.
   gldrawable->swap_buffers();

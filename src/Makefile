@@ -8,7 +8,7 @@ all: tspikemain
 
 
 
-tspikemain: tspikemain.o tspikewin.o clusterview.o shaders.o glconfig.o  spikewaveview.o glconfig.o ttreader.o ratetimeline.o glstring.o
+tspikemain: tspikemain.o tspikewin.o clusterview.o shaders.o glconfig.o  spikewaveview.o glconfig.o ttreader.o ratetimeline.o cairogltext/glstring.o
 
 clean:
 	rm *.o 

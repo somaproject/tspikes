@@ -1,5 +1,6 @@
 #include "glstring.h"
 #include <iostream>
+#include <assert.h>
 
 GLString::GLString()
 {
@@ -19,8 +20,7 @@ void GLString::drawWinText(int x, int y, std::string text, int size)
   tp.size = size; 
 
   cacheItem_t ci = cacheQuery(tp); 
-  std::cout << "rendering cache item with " << ci.textureID << std::endl;
-  renderWinLoc(x, y, ci); 
+  renderPixLoc(x, y, ci); 
   
 }
 void GLString::drawWorldText(float x, float y, std::string text, int size)
@@ -30,7 +30,6 @@ void GLString::drawWorldText(float x, float y, std::string text, int size)
   tp.size = size; 
 
   cacheItem_t ci = cacheQuery(tp); 
-  std::cout << "rendering cache item with " << ci.textureID << std::endl;
   renderWorldLoc(x, y, ci); 
   
 }
@@ -42,7 +41,6 @@ void GLString::setupTexture()
 
 cacheItem_t GLString::generateTexture(textprop_t tp)
 {
-  std::cout << "generating texture for " << tp.text << std::endl; 
 
   textureID_t textureName; 
   // generate the GL texture
@@ -216,7 +214,7 @@ cacheItem_t GLString::cacheQuery(textprop_t tp)
   cacheQueryMap_t::iterator pos; 
   pos = cacheQueryMap_.find(tp); 
   if (pos != cacheQueryMap_.end() ) {
-    // It was a hit, return the resulting textureID
+    // It was a hit, return the resulting cache item
     return *pos->second; 
 
   }  else {
@@ -235,7 +233,11 @@ void GLString::cacheDelLRU()
   // delete the oldest
   cacheItem_t tpdel = cacheList_.back(); 
   
+
   cacheList_t::iterator tppdel = cacheQueryMap_[tpdel.textprop]; 
+  GLuint tdel[1]; 
+  tdel[0]  = tppdel->textureID; 
+  glDeleteTextures( tppdel->textureSize, tdel); 
   cacheQueryMap_.erase(tppdel->textprop); 
   cacheList_.erase(tppdel); 
   

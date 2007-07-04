@@ -82,14 +82,14 @@ void RateTimeline::on_realize()
   glEnableClientState(GL_VERTEX_ARRAY); 
   
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
+#if OPENGL2
   GLuint vshdr = loadGPUShader("rtgrad.vert", GL_VERTEX_SHADER); 
   GLuint fshdr = loadGPUShader("rtgrad.frag", GL_FRAGMENT_SHADER); 
   std::list<GLuint> shaders; 
   shaders.push_back(vshdr); 
   shaders.push_back(fshdr); 
   gpuProgGradient_ = createGPUProgram(shaders); 
-
+#endif // OPENGL2; 
   updateViewingWindow(); 
 
   gldrawable->gl_end();
@@ -215,14 +215,14 @@ bool RateTimeline::on_expose_event(GdkEventExpose* event)
     }
 
   // draw actual primary line
-
-
+#if OPENGL2
   useGPUProgram(gpuProgGradient_); 
   // now draw filled segment gradient
   GLint vp = glGetUniformLocation(gpuProgGradient_, "decayRate"); 
   glUniform1f(vp, decayRate_); 
   GLint vp2 = glGetUniformLocation(gpuProgGradient_, "activePos"); 
   glUniform1f(vp2, activePos_); 
+#endif; 
   	       
 
 
@@ -242,8 +242,9 @@ bool RateTimeline::on_expose_event(GdkEventExpose* event)
     }
 
   glEnd(); 
+#if OPENGL2
   useGPUProgram(0); 
-
+#endif
   // main line
   glColor4f(1.0, 1.0, 1.0, 1.0); 
 

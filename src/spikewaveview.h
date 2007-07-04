@@ -20,7 +20,8 @@
 
 #include "glconfig.h"
 #include "glspikes.h"
-#include "glstring.h"
+
+#include "cairogltext/glstring.h"
 
 
 const int SPIKEWAVE_LEN = 32; 
@@ -75,7 +76,7 @@ protected:
   void renderText(); 
 
   int m_Frames;
-  boost::shared_ptr<GLString> pGLString_; 
+  GLString glString_; 
   GLuint texName1; 
   void setupTexture(); 
   void renderTexture(); 
