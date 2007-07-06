@@ -1,7 +1,11 @@
+#include <boost/program_options.hpp>
+
 #include "tspikewin.h"
 #include <somanetwork/fakenetwork.h>
 #include "ttreader.h"
 #include <sigc++/sigc++.h>
+
+
 
 class FakeTTData
 {
@@ -21,13 +25,14 @@ class FakeTTData
 FakeTTData::FakeTTData(std::string filename, int rate):
   ttreader_(filename.c_str()), 
   rate_(rate),
-  spikeNum_(0)
+  spikeNum_(0), 
+  timer_()
 {
-  
-  std::cout << spikeNum_ << std::endl;
-  timer_.start(); 
 
+  timer_.start(); 
+  
 }
+
 
 std::vector<TSpike_t> FakeTTData::getManySpikes(int n)
 {
@@ -39,6 +44,7 @@ std::vector<TSpike_t> FakeTTData::getManySpikes(int n)
     {
       TSpike_t ts; 
       ts = ttreader_.getTSpike(); 
+
       spikes.push_back(ts); 
     }
 
@@ -59,11 +65,14 @@ DataPacket_t * FakeTTData::getSpikeDataPacket()
 bool FakeTTData::appendToFakeNetwork(FakeNetwork* fn)
 {
 
-
-  double seconds = timer_.elapsed(); // number of secs since last call
+  
+  double seconds; 
+  unsigned long useconds; 
+  seconds = timer_.elapsed(useconds); // number of secs since last call
   int numtotx = int (rate_* seconds); 
 
-  
+  numtotx = 5; 
+
   if (numtotx > 0 )
     {
       for (int i = 0; i < numtotx; i++) {
@@ -98,19 +107,69 @@ bool fakesettime(TSpikeWin* tsw)
 
 }
 
+namespace po = boost::program_options;
+
 int main(int argc, char** argv)
 {
   Gtk::Main kit(argc, argv);
 
   Gtk::GL::init(argc, argv);
   
-  FakeNetwork net; 
-  FakeTTData fttd("../../d215.tt", 100); 
-  
-  TSpikeWin tspikewin(&net);
-  std::vector<TSpike_t> spikes = fttd.getManySpikes(100000); 
-  tspikewin.loadExistingSpikes(spikes); 
+  // now our own command options
 
+  po::options_description desc("Allowed options");
+  desc.add_options()
+    ("help", "produce help message")
+    ("ttfile", po::value<std::string>(), "ttfile to read in data from")
+    ("ttprenum", po::value<int>(), "number of spikes to read from ttfile")
+    ("ttrate", po::value<int>(), "rough rate of spike arrival")
+    ;
+  
+  po::variables_map vm;
+  po::store(po::parse_command_line(argc, argv, desc), vm);
+  po::notify(vm);    
+  
+  if (vm.count("help")) {
+    std::cout << desc << "\n";
+    return 1;
+  }
+  
+
+  FakeNetwork net; 
+
+  TSpikeWin tspikewin(&net);
+
+  int ttrate = 0; 
+  if (vm.count("ttfile")) {
+    
+
+    if (vm.count("ttrate") )
+      {
+	ttrate = vm["ttrate"].as<int>(); 
+	
+      }
+  }    
+  FakeTTData fttd(vm["ttfile"].as<std::string>(), ttrate); 
+  if (vm.count("ttprenum") )
+    {
+      
+      
+	std::vector<TSpike_t> spikes 
+	  = fttd.getManySpikes(vm["ttprenum"].as<int>()); 
+	
+	tspikewin.loadExistingSpikes(spikes); 
+    }
+  if (vm.count("ttrate") )
+    
+    {
+      // actually run from network
+      Glib::signal_timeout().connect(sigc::bind(sigc::mem_fun(fttd, 
+							      &FakeTTData::appendToFakeNetwork), &net), 50);
+      
+      
+    }
+
+  net.run(); 
   
 
   kit.run(tspikewin);

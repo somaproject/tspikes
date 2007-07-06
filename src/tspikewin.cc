@@ -151,10 +151,10 @@ bool TSpikeWin::on_idle()
   clusterViewYB_.invalidate(); 
   clusterViewAB_.invalidate(); 
 
-  spikeWaveViewX_.get_window()->invalidate_rect(get_allocation(), true);
-  spikeWaveViewY_.get_window()->invalidate_rect(get_allocation(), true);
-  spikeWaveViewA_.get_window()->invalidate_rect(get_allocation(), true);
-  spikeWaveViewB_.get_window()->invalidate_rect(get_allocation(), true);
+  spikeWaveViewX_.inv(); 
+  spikeWaveViewY_.inv(); 
+  spikeWaveViewA_.inv(); 
+  spikeWaveViewB_.inv(); 
 
 //   double seconds = timer_.elapsed();
   
@@ -203,7 +203,6 @@ bool TSpikeWin::dataRXCallback(Glib::IOCondition io_condition)
       char x; 
       read(pNetwork_->getDataFifoPipe(), &x, 1); 
       DataPacket_t * rdp = pNetwork_->getNewData(); 
-      
       // is this a spike? 
       if (rdp->typ == TSPIKE)
 	{

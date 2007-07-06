@@ -57,6 +57,7 @@ SpikeWaveView::~SpikeWaveView()
 
 void SpikeWaveView::newSpikeWave(const GLSpikeWave_t & sw)
 {
+  //std::cout << sw.wave[0] << std::endl; 
   if (spikeWaveListFull_)
     {
       swl_.push_back(sw); 
@@ -172,7 +173,6 @@ bool SpikeWaveView::renderSpikeWave(const GLSpikeWave_t & sw,
 				    bool plotPoints = false)
 {
   // assume we are in a primary GL loop
-  
   // first we render the line  
   switch (chan_) 
     {
@@ -345,7 +345,11 @@ bool SpikeWaveView::on_idle()
 
 
 void SpikeWaveView::inv() {
-  get_window()->invalidate_rect(get_allocation(), true);
+  Glib::RefPtr<Gdk::Window> win = get_window();
+  Gdk::Rectangle r(0, 0, get_allocation().get_width(),
+		   get_allocation().get_height());
+  win->invalidate_rect(r, false);
+
 }
 
 void SpikeWaveView::setTime(uint64_t ts)
