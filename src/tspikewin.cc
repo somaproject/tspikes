@@ -40,7 +40,7 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
 
   add(mainHBox_); 
 
-  int clusterWidth = 180; 
+  int clusterWidth = 165; 
   clusterViewXY_.set_size_request(clusterWidth, clusterWidth);
   clusterViewXA_.set_size_request(clusterWidth, clusterWidth);
   clusterViewXB_.set_size_request(clusterWidth, clusterWidth);
@@ -65,10 +65,10 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
   clusterViewVBox_.pack_start(clusterTable_) ;
   clusterViewVBox_.pack_start(rateTimeline_); 
   
-  spikeWaveViewX_.set_size_request(175, clusterWidth); 
-  spikeWaveViewY_.set_size_request(175, clusterWidth); 
-  spikeWaveViewA_.set_size_request(175, clusterWidth); 
-  spikeWaveViewB_.set_size_request(175, clusterWidth); 
+  spikeWaveViewX_.set_size_request(150, clusterWidth); 
+  spikeWaveViewY_.set_size_request(150, clusterWidth); 
+  spikeWaveViewA_.set_size_request(150, clusterWidth); 
+  spikeWaveViewB_.set_size_request(150, clusterWidth); 
 
   spikeWaveTable_.attach(spikeWaveViewX_, 0, 1, 0, 1); 
   spikeWaveTable_.attach(spikeWaveViewY_, 1, 2, 0, 1); 
@@ -118,10 +118,10 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
   clusterViewAB_.setViewingWindow(0, 0, float(150e-6), float(150e-6));
 
 
-   spikeWaveViewX_.setViewingWindow(0, -100e-6, 32, 280e-6); 
-   spikeWaveViewY_.setViewingWindow(0, -100e-6, 32, 280e-6); 
-   spikeWaveViewA_.setViewingWindow(0, -100e-6, 32, 280e-6); 
-   spikeWaveViewB_.setViewingWindow(0, -100e-6, 32, 280e-6); 
+   spikeWaveViewX_.setViewingWindow(0, -100e-6, 31, 280e-6); 
+   spikeWaveViewY_.setViewingWindow(0, -100e-6, 31, 280e-6); 
+   spikeWaveViewA_.setViewingWindow(0, -100e-6, 31, 280e-6); 
+   spikeWaveViewB_.setViewingWindow(0, -100e-6, 31, 280e-6); 
 
   show_all();
 

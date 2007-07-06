@@ -242,7 +242,8 @@ bool SpikeWaveView::on_expose_event(GdkEventExpose* event)
     {
       updateViewingWindow(); 
     }
-  glClearColor(0.0, 0.0, 0.0, 1.0); 
+
+  glClearColor(0.1, 0.0, 0.0, 1.0); 
   glClear(GL_COLOR_BUFFER_BIT | GL_ACCUM_BUFFER_BIT ); 
 
   renderGrid(); 
@@ -271,9 +272,9 @@ bool SpikeWaveView::on_expose_event(GdkEventExpose* event)
 
   int y = get_height(); 
   
-  glString_.drawWinText(4, y-20, "Gain : 100", 20); 
-  glString_.drawWinText(4, y-42, "Filter : On ", 20); 
-  glString_.drawWinText(4, y-64, "Filter : On ", 10); 
+  glString_.drawWinText(4, y-15, "Gain : 100", 12); 
+  glString_.drawWinText(4, y-30, "Spike HW Filter : On ", 12); 
+  glString_.drawWinText(4, y-45, "Filter : 6 kHz ", 12); 
 
 
   // Swap buffers.
