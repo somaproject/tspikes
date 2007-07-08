@@ -156,37 +156,6 @@ bool TSpikeWin::on_idle()
   spikeWaveViewA_.inv(); 
   spikeWaveViewB_.inv(); 
 
-//   double seconds = timer_.elapsed();
-  
-//   if (seconds >= 1.0)
-//     {
-//       std::cout.setf(std::ios_base::fixed, std::ios_base::floatfield);
-//       std::cout.setf(std::ios::fixed, std::ios::floatfield);
-//       std::cout.precision(3);
-//       int m_Frames = clusterViewXY_.getFrames(); 
-//       std::cout << m_Frames << " frames in "
-//                 << seconds << " seconds = "
-//                 << (m_Frames / seconds) << " FPS\n";
-//       timer_.reset();
-
-//     }
-
-//   double dseconds = dtimer_.elapsed();
-//   if (dseconds >= 0.1)
-//     {
-
-//       if (spvlp != spvlsrc.end())
-// 	{
-// 	  spvl.push_back(*spvlp); 
-// 	  spvlp++; 
-// 	} else {
-// 	  spvl.push_back(new GLSPVect); 
-// 	}
-      
-//       dtimer_.reset(); 
-//     }
-
-  
   return true;
 }
 
