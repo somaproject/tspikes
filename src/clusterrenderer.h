@@ -16,6 +16,8 @@
 
 #include "glconfig.h"
 #include "glspikes.h"
+#include "cairogltext/glstring.h"
+
 
 enum DecayMode {LINEAR, LOG}; 
 enum CViewMode  {VIEW12, VIEW13, VIEW14, VIEW23, VIEW24, VIEW34}; 
@@ -29,6 +31,7 @@ class ClusterRenderer
   void setView(GLSPVectpList_t::iterator sstart, 
 		   GLSPVectpList_t::iterator send, 
 		   float decayRate, DecayMode dm); 
+  void setGrid(float); 
 
   bool setViewingWindow(float x1, float y1,  float x2, float y2); 
   
@@ -59,7 +62,11 @@ class ClusterRenderer
   GLfloat viewX1_, viewX2_, viewY1_, viewY2_; 
   
   GLuint gpuProg_; 
+  GLString glString_; 
 
+  float gridSpacing_; 
+  void renderGrid(); 
+  
 
 };
 #endif

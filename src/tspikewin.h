@@ -55,6 +55,7 @@ protected:
   Gtk::Table spikeWaveTable_; 
   Gtk::VBox spikeWaveVBox_, clusterViewVBox_; 
   Gtk::HBox mainHBox_; 
+  Gtk::HBox timeLineHBox_; 
 
   ClusterView clusterViewXY_; 
   ClusterView clusterViewXA_; 
@@ -79,8 +80,10 @@ protected:
   void updateClusterView(bool, float, float); 
 
 
-  // timeline manipulation, heh
+
+  // timeline manipulation
   rtime_t currentTime_; 
+  Gtk::ToggleButton liveButton_; 
 
 };
 

@@ -26,7 +26,8 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
   spikeWaveViewA_(CHANA), 
   spikeWaveViewB_(CHANB),
 
-  currentTime_(0.0)
+  currentTime_(0.0),
+  liveButton_("Live\n1:00:0")
     
 {
   //
@@ -63,7 +64,9 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
   rateTimeline_.set_size_request(clusterWidth*3, 60); 
   
   clusterViewVBox_.pack_start(clusterTable_) ;
-  clusterViewVBox_.pack_start(rateTimeline_); 
+  clusterViewVBox_.pack_start(timeLineHBox_); 
+  timeLineHBox_.pack_start(rateTimeline_); 
+  timeLineHBox_.pack_start(liveButton_); 
   
   spikeWaveViewX_.set_size_request(150, clusterWidth); 
   spikeWaveViewY_.set_size_request(150, clusterWidth); 

@@ -41,11 +41,16 @@ public:
   }
 
   bool setViewingWindow(float x1, float y1,  float x2, float y2); 
+
   int getFrames(); 
 
   // Update window synchronously (fast).
   void update()
   { get_window()->process_updates(false); }
+  
+  void setGrid(float val); 
+  void zoomX(float factor); 
+  void zoomY(float factor); 
 
 protected:
 
@@ -56,11 +61,15 @@ protected:
   virtual bool on_map_event(GdkEventAny* event);
   virtual bool on_unmap_event(GdkEventAny* event);
   virtual bool on_visibility_notify_event(GdkEventVisibility* event);
-  virtual bool on_idle();
 
   void updateView(); 
   void updateViewingWindow(); 
   int frameCount_; 
+
+  float x1_;
+  float y1_;
+  float x2_;
+  float y2_; 
   
   GLSPVectpList_t*  pspvl_; 
   ClusterRenderer clusterRenderer_; 

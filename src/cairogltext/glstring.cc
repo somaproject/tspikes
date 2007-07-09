@@ -188,38 +188,41 @@ void GLString::renderPixLoc(int x, int y, cacheItem_t tp)
 
   // convert to pixel coords
 
-  gluOrtho2D(vp[0], vp[2], vp[1], vp[3]); 
+ gluOrtho2D(vp[0], vp[2], vp[1], vp[3]); 
 
-  glTranslatef(float(x), 
-	       float(y) - float(tp.textureSize) + float(tp.extentsY)/2.0, 0.); 
+ glTranslatef(float(x), 
+	      float(y) - float(tp.textureSize) + float(tp.extentsY)/2.0, 0.); 
 
-  glMatrixMode (GL_MODELVIEW); 
-  glPushMatrix(); 
-  glLoadIdentity(); 
-  glTranslatef(0.375, 0.375, 0.0); 
+ glMatrixMode (GL_MODELVIEW); 
+ glPushMatrix(); 
+ glLoadIdentity(); 
+ glTranslatef(0.375, 0.375, 0.0); 
 
-  glBegin(GL_QUADS);
+ //glColor4f(1.0, 0.0, 0.0, 1.0); 
+ glBegin(GL_QUADS);
+ 
+ glTexCoord2f(0.0, 0.0); 
+ glVertex2i(0, tp.textureSize);
+ 
+ glTexCoord2f(1.0, 0.0); 
+ glVertex2i(tp.textureSize, tp.textureSize);
+ 
+ glTexCoord2f(1.0, 1.0); 
+ glVertex2i(tp.textureSize, 0);
+ 
+ glTexCoord2f(0.0, 1.0);  
+ glVertex2i(0, 0);
+ 
+ glEnd();
+ glPopMatrix(); 
+ 
+ 
+ glDisable(GL_TEXTURE_2D); 
+ 
+ 
+ glMatrixMode(GL_PROJECTION); 
+ glPopMatrix();
 
-  glTexCoord2f(0.0, 0.0); 
-  glVertex2i(0, tp.textureSize);
-  
-  glTexCoord2f(1.0, 0.0); 
-  glVertex2i(tp.textureSize, tp.textureSize);
-  
-  glTexCoord2f(1.0, 1.0); 
-  glVertex2i(tp.textureSize, 0);
-  
-  glTexCoord2f(0.0, 1.0);  
-  glVertex2i(0, 0);
-  
-  glEnd();
-  glDisable(GL_TEXTURE_2D); 
-
-  glPopMatrix(); 
-  glMatrixMode(GL_PROJECTION); 
-
-  glPopMatrix();
-  
 }
 
 cacheItem_t GLString::cacheQuery(textprop_t tp)

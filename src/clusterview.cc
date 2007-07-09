@@ -74,7 +74,12 @@ void ClusterView::on_realize()
 bool ClusterView::setViewingWindow(float x1, float y1, 
 				   float x2, float y2)
 {
-  clusterRenderer_.setViewingWindow(x1, y1, x2, y2); 
+  x1_ = x1; 
+  x2_ = x2; 
+  y1_ = y1; 
+  y2_ = y2; 
+
+  clusterRenderer_.setViewingWindow(x1_, y1_, x2_, y2_); 
 
 }
 
@@ -95,8 +100,9 @@ bool ClusterView::on_configure_event(GdkEventConfigure* event)
     return false;
   gldrawable->wait_gdk(); 
 
-  clusterRenderer_.reset(); 
+
   glViewport(0, 0, get_width(), get_height()); 
+  clusterRenderer_.reset(); 
 
   gldrawable->wait_gl(); 
   
@@ -136,8 +142,8 @@ bool ClusterView::on_map_event(GdkEventAny* event)
     return false;
   gldrawable->wait_gdk(); 
 
-  clusterRenderer_.reset(); 
   glViewport(0, 0, get_width(), get_height()); 
+  clusterRenderer_.reset(); 
 
   gldrawable->wait_gl(); 
   
@@ -160,8 +166,9 @@ bool ClusterView::on_visibility_notify_event(GdkEventVisibility* event)
     return false;
   gldrawable->wait_gdk(); 
 
-  clusterRenderer_.reset(); 
+
   glViewport(0, 0, get_width(), get_height()); 
+  clusterRenderer_.reset(); 
 
   gldrawable->wait_gl(); 
   //gldrawable->wait_gdk(); 
@@ -171,15 +178,6 @@ bool ClusterView::on_visibility_notify_event(GdkEventVisibility* event)
   return true;
 }
 
-bool ClusterView::on_idle()
-{
-
-  // Invalidate the whole window.
-
-  return true;
-}
-
-
 
 void ClusterView::setView(GLSPVectpList_t::iterator sstart, 
 			  GLSPVectpList_t::iterator send, 
@@ -187,5 +185,24 @@ void ClusterView::setView(GLSPVectpList_t::iterator sstart,
 {
 
   clusterRenderer_.setView(sstart, send, decayRate, dm); 
+
+}
+
+void ClusterView::zoomX(float factor)
+{
+  x2_ = x2_ * factor; 
+  setViewingWindow(x1_, y1_, x2_, y2_); 
+}
+
+void ClusterView::zoomY(float factor)
+{
+  y2_ = y2_ * factor; 
+  setViewingWindow(x1_, y1_, x2_, y2_); 
+
+}
+
+void ClusterView::setGrid(float g)
+{
+  clusterRenderer_.setGrid(g); 
 
 }

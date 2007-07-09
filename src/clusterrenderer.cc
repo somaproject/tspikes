@@ -9,7 +9,8 @@ ClusterRenderer::ClusterRenderer(GLSPVectpList_t * pspvl, CViewMode cvm)
     viewMode_( cvm), 
     viewX1_(0), viewX2_(10), viewY1_(0), viewY2_(10), 
     pCurSPVect_(pspvl->begin()), 
-    isSetup_(false)
+    isSetup_(false),
+    gridSpacing_(50e-6)
 
 {
 
@@ -32,6 +33,9 @@ void ClusterRenderer::setup()
   glEnableClientState(GL_COLOR_ARRAY); 
   
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+  glEnable (GL_BLEND); 
+  glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
 
   GLuint vshdr = loadGPUShader("test.vert", GL_VERTEX_SHADER); 
   GLuint fshdr = loadGPUShader("test.frag", GL_FRAGMENT_SHADER); 
@@ -91,6 +95,7 @@ void ClusterRenderer::render()
       
       // copy things into current buffer
       glAccum(GL_RETURN, 1.0); 
+
       if (viewEndIter_ == pspvl_->end() )
 	{
 	  // we are always viewing the latest data 
@@ -123,11 +128,15 @@ void ClusterRenderer::render()
 	    }
 	  
 	} 
+      renderGrid();   
       renderSpikeVector(*pCurSPVect_, true); 
-
+      
     }
   
-  
+  glColor4f(1.0, 1.0, 1.0, 1.0); 
+
+  // render text for axes
+  glString_.drawWinText(0, 120, "Test text", 10); 
   
 }
 
@@ -206,6 +215,8 @@ void ClusterRenderer::renderSpikeVector(const GLSPVect_t & spvect, bool live)
     glPointSize(1.0); 
 
   }
+  useGPUProgram(0); 
+    
 }
 
 void ClusterRenderer::resetAccumBuffer(GLSPVectpList_t::iterator sstart, 
@@ -218,8 +229,10 @@ void ClusterRenderer::resetAccumBuffer(GLSPVectpList_t::iterator sstart,
   
   glClear(GL_COLOR_BUFFER_BIT |  GL_ACCUM_BUFFER_BIT); 
   
+  
   GLSPVectpList_t::iterator i; 
   glReadBuffer(GL_BACK); 
+  
   int pos = 0; 
   for (i = sstart; i != send; i++)
     {
@@ -283,5 +296,39 @@ void ClusterRenderer::reset()
   glClear(GL_COLOR_BUFFER_BIT | GL_ACCUM_BUFFER_BIT ); 
   
   resetAccumBuffer(viewStartIter_, viewEndIter_); 
+
+}
+
+void ClusterRenderer::renderGrid()
+{
+  // render horizontal and vertical grid
+  
+  glColor4f(1.0, 1.0, 1.0, 0.2); 
+
+  glBegin(GL_LINES); 
+
+  for (int i = 0; (i*gridSpacing_) < viewX2_; i++)
+    {
+      float x = float(i) * gridSpacing_; 
+      glVertex2f(x, viewY1_); 
+      glVertex2f(x, viewY2_); 
+    }
+  glEnd(); 
+
+  glBegin(GL_LINES); 
+
+  for (int i = 0; (i*gridSpacing_) < viewY2_; i++)
+    {
+      float y = float(i) * gridSpacing_; 
+      glVertex2f(viewX1_, y); 
+      glVertex2f(viewX2_, y); 
+    }
+  glEnd(); 
+
+}
+
+void ClusterRenderer::setGrid(float g)
+{
+  gridSpacing_ = g; 
 
 }

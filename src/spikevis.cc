@@ -126,17 +126,21 @@ Vis::Vis(bool is_sync)
   spikePosScale_.set_draw_value();
   spikePosScale_.set_size_request(200, 30);
   m_VBox.pack_start(spikePosScale_); 
+  
+  clusterView34_.setViewingWindow(0, 0, 10.0 * GSCALE, 10.0 * GSCALE); 
+  clusterView12_.setViewingWindow(0, 0, 10.0 * GSCALE, 10.0 * GSCALE); 
+  clusterView13_.setViewingWindow(0, 0, 10.0 * GSCALE, 10.0 * GSCALE); 
+  clusterView14_.setViewingWindow(0, 0, 10.0 * GSCALE, 10.0 * GSCALE); 
+  clusterView23_.setViewingWindow(0, 0, 10.0 * GSCALE, 10.0 * GSCALE); 
+  clusterView24_.setViewingWindow(0, 0, 10.0 * GSCALE, 10.0 * GSCALE); 
+  
+  clusterView12_.setGrid(GSCALE); 
+  clusterView13_.setGrid(GSCALE); 
+  clusterView14_.setGrid(GSCALE); 
+  clusterView23_.setGrid(GSCALE); 
+  clusterView24_.setGrid(GSCALE); 
+  clusterView34_.setGrid(GSCALE); 
 
-      clusterView34_.setViewingWindow(0, 0, 10.0 * GSCALE, 10.0 * GSCALE); 
-      clusterView12_.setViewingWindow(0, 0, 10.0 * GSCALE, 10.0 * GSCALE); 
-      clusterView13_.setViewingWindow(0, 0, 10.0 * GSCALE, 10.0 * GSCALE); 
-      clusterView14_.setViewingWindow(0, 0, 10.0 * GSCALE, 10.0 * GSCALE); 
-      clusterView23_.setViewingWindow(0, 0, 10.0 * GSCALE, 10.0 * GSCALE); 
-      clusterView24_.setViewingWindow(0, 0, 10.0 * GSCALE, 10.0 * GSCALE); 
-
-  //
-  // Simple quit button.
-  //
 
   m_ButtonQuit.signal_clicked().connect(
     sigc::mem_fun(*this, &Vis::on_button_quit_clicked));

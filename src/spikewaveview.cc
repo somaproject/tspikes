@@ -95,8 +95,9 @@ void SpikeWaveView::on_realize()
     return;
 
   //glEnable(GL_NORMALIZE);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	
   glEnable(GL_BLEND); 
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	
+
 
   glEnable(GL_LINE_SMOOTH); 
   glEnable(GL_POINT_SMOOTH); 
@@ -125,11 +126,26 @@ bool SpikeWaveView::setViewingWindow(float x1, float y1,
 void SpikeWaveView::updateViewingWindow()
 
 {
+  std::cout << "updating viewing window " << std::endl; 
+  std::cout << viewX1_ << ' ' << viewX2_  << ' '
+	    << viewY1_ << ' ' << viewY2_ << std::endl;
+  
+  glMatrixMode(GL_MODELVIEW); 
+  glLoadIdentity(); 
+
+  glMatrixMode(GL_PROJECTION); 
   glLoadIdentity(); 
 
   glOrtho(viewX1_, viewX2_, viewY1_, viewY2_, -3, 3); 
 
-  glViewport(0, 0, get_width(), get_height());
+  int winX, winY; 
+  winX = get_width(); 
+  winY = get_height(); 
+  glViewport(0, 0, winX, winY); 
+
+
+  std::cout << "viewport to " << winX << ' ' << winY << std::endl; 
+
   viewChanged_ = false; 
   
 }
@@ -137,6 +153,7 @@ void SpikeWaveView::updateViewingWindow()
 bool SpikeWaveView::on_configure_event(GdkEventConfigure* event)
 {
 
+  std::cout << "SPikeWaveView::on_configure_event" << std::endl;
 
   Glib::RefPtr<Gdk::GL::Drawable> gldrawable = get_gl_drawable();
 
@@ -147,11 +164,11 @@ bool SpikeWaveView::on_configure_event(GdkEventConfigure* event)
     return false;
   gldrawable->wait_gdk(); 
   glDrawBuffer(GL_BACK); 
+  
+  viewChanged_ = true; 
 
-  updateViewingWindow(); 
-
-  glClearColor(0.0, 0.0, 0.0, 1.0); 
-  glClear(GL_COLOR_BUFFER_BIT | GL_ACCUM_BUFFER_BIT ); 
+//   glClearColor(0.0, 0.0, 0.0, 1.0); 
+//   glClear(GL_COLOR_BUFFER_BIT | GL_ACCUM_BUFFER_BIT ); 
   
 
   gldrawable->wait_gl(); 
@@ -201,6 +218,7 @@ bool SpikeWaveView::renderSpikeWave(const GLSpikeWave_t & sw,
     {
       glLineWidth(1.0); 
     }
+  
   glBegin(GL_LINE_STRIP); 
   for (unsigned int i = 0; i < sw.wave.size(); i++)
     {
@@ -226,6 +244,7 @@ bool SpikeWaveView::renderSpikeWave(const GLSpikeWave_t & sw,
 
 bool SpikeWaveView::on_expose_event(GdkEventExpose* event)
 {
+
 
   Glib::RefPtr<Gdk::GL::Drawable> gldrawable = get_gl_drawable();
 
@@ -272,7 +291,6 @@ bool SpikeWaveView::on_expose_event(GdkEventExpose* event)
   glString_.drawWinText(4, y-30, "Spike HW Filter : On ", 12); 
   glString_.drawWinText(4, y-45, "Filter : 6 kHz ", 12); 
 
-
   // Swap buffers.
   gldrawable->swap_buffers();
   gldrawable->gl_end();
@@ -285,6 +303,8 @@ bool SpikeWaveView::on_expose_event(GdkEventExpose* event)
 bool SpikeWaveView::on_map_event(GdkEventAny* event)
 {
 
+  std::cout << "SPikeWaveView::on_map_event" << std::endl;
+  
   Glib::RefPtr<Gdk::GL::Drawable> gldrawable = get_gl_drawable();
 
   if (!gldrawable->gl_begin(get_gl_context()))
