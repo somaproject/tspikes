@@ -39,10 +39,6 @@ SpikeWaveView::SpikeWaveView(GLChan_t chan) :
   // print frame buffer attributes.
   GLConfigUtil::examine_gl_attrib(glconfig);
 
-  //
-  // Set OpenGL-capability to the widget.
-  //
-
   set_gl_capability(glconfig);
 
   // Add events.
@@ -300,7 +296,6 @@ bool SpikeWaveView::on_map_event(GdkEventAny* event)
   updateViewingWindow(); 
 
   gldrawable->wait_gl(); 
-  //gldrawable->wait_gdk(); 
   
   gldrawable->gl_end();
   // *** OpenGL END ***
@@ -338,8 +333,6 @@ bool SpikeWaveView::on_visibility_notify_event(GdkEventVisibility* event)
 
 bool SpikeWaveView::on_idle()
 {
-
-  // Invalidate the whole window.
   
   return true;
 }

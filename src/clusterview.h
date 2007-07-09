@@ -11,13 +11,7 @@
 
 #define GL_GLEXT_PROTOTYPES
 
-
 #include <gtkglmm.h>
-
-#ifdef G_OS_WIN32
-#define WIN32_LEAN_AND_MEAN 1
-#include <windows.h>
-#endif
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -25,9 +19,7 @@
 
 #include "glconfig.h"
 #include "glspikes.h"
-
-enum DecayMode {LINEAR, LOG}; 
-enum CViewMode  {VIEW12, VIEW13, VIEW14, VIEW23, VIEW24, VIEW34}; 
+#include "clusterrenderer.h"
 
 
 class ClusterView : public Gtk::GL::DrawingArea
@@ -47,6 +39,7 @@ public:
     win->invalidate_rect(r, false);
 
   }
+
   bool setViewingWindow(float x1, float y1,  float x2, float y2); 
   int getFrames(); 
 
@@ -65,28 +58,12 @@ protected:
   virtual bool on_visibility_notify_event(GdkEventVisibility* event);
   virtual bool on_idle();
 
-  void resetAccumBuffer(GLSPVectpList_t::iterator sstart, 
-			GLSPVectpList_t::iterator send); 
-  void renderSpikeVector(const GLSPVect_t & spvect, 
-			 bool live = false); 
   void updateView(); 
   void updateViewingWindow(); 
-  
+  int frameCount_; 
   
   GLSPVectpList_t*  pspvl_; 
-  float decayRate_; 
-  DecayMode decayMode_; 
-  bool viewChanged_;   
-  GLSPVectpList_t::iterator viewStartIter_;  
-  GLSPVectpList_t::iterator viewEndIter_;  
-
-  int m_Frames;
-  CViewMode viewMode_; 
-  GLSPVectpList_t::iterator pCurSPVect_; 
-  GLfloat viewX1_, viewX2_, viewY1_, viewY2_; 
+  ClusterRenderer clusterRenderer_; 
   
-  GLuint gpuProg_; 
-
-
 };
 #endif

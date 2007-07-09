@@ -354,7 +354,7 @@ void TSpikeWin::updateClusterView(bool isLive, float activePos, float decayRate)
 
   if (t2i == spVectpList_.end())
     {
-      // there is now element lower than t1 - that's okay, we want the fullr
+      // there is now element lower than t1 - that's okay, we want the full
       // range
 
     } 

@@ -242,12 +242,12 @@ bool Vis::on_idle()
 
 {
 
-  clusterView12_.get_window()->invalidate_rect(get_allocation(), true);
-  clusterView13_.get_window()->invalidate_rect(get_allocation(), true);
-  clusterView14_.get_window()->invalidate_rect(get_allocation(), true);
-  clusterView23_.get_window()->invalidate_rect(get_allocation(), true);
-  clusterView24_.get_window()->invalidate_rect(get_allocation(), true);
-  clusterView34_.get_window()->invalidate_rect(get_allocation(), true);
+  clusterView12_.invalidate(); 
+  clusterView13_.invalidate(); 
+  clusterView14_.invalidate(); 
+  clusterView23_.invalidate(); 
+  clusterView24_.invalidate(); 
+  clusterView34_.invalidate();
 
   double seconds = timer_.elapsed();
   

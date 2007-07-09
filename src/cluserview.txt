@@ -1,3 +1,4 @@
+
 A clusterview is an opengl viewer for spikes. We take in a pointer to
 a GLSPVectpList, a list of pointers to vectors containing spike
 points.

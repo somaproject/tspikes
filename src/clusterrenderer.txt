@@ -1,0 +1,16 @@
+The ClusterRenderer abstracts away all of the necessary cluster
+rendering operations that manipulate the openGL state machine. The
+goal is to have a GL-framework-independent mechanism for rendering
+spike/cluster points.
+
+We take in a pointer to a sorted container of spike point vectors. 
+
+Each spike point vector can easily be rendered as a vertex array,
+accelerating the rendering process. We use the accumulation buffer to
+accumulate / fade previous spike points. As new points arrive, we
+render them on top of the current accumulation buffer -- once we are
+done with this particular spike point vector, we fade the current
+accumulation buffer and render it into the buffer.
+
+[ this needs a better explanation] 
+
