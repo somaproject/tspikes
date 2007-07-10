@@ -121,16 +121,18 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
   clusterViewAB_.setViewingWindow(0, 0, float(150e-6), float(150e-6));
 
 
-   spikeWaveViewX_.setViewingWindow(0, -100e-6, 31, 280e-6); 
-   spikeWaveViewY_.setViewingWindow(0, -100e-6, 31, 280e-6); 
-   spikeWaveViewA_.setViewingWindow(0, -100e-6, 31, 280e-6); 
-   spikeWaveViewB_.setViewingWindow(0, -100e-6, 31, 280e-6); 
+  spikeWaveViewX_.setViewingWindow(0, -100e-6, 31, 280e-6); 
+  spikeWaveViewY_.setViewingWindow(0, -100e-6, 31, 280e-6); 
+  spikeWaveViewA_.setViewingWindow(0, -100e-6, 31, 280e-6); 
+  spikeWaveViewB_.setViewingWindow(0, -100e-6, 31, 280e-6); 
 
   show_all();
 
   Glib::signal_idle().connect( sigc::mem_fun(*this, &TSpikeWin::on_idle) );
   Glib::signal_io().connect(sigc::mem_fun(*this, &TSpikeWin::dataRXCallback), 
 			    pNetwork_->getDataFifoPipe(), Glib::IO_IN); 
+  Glib::signal_io().connect(sigc::mem_fun(*this, &TSpikeWin::eventRXCallback), 
+			    pNetwork_->getEventFifoPipe(), Glib::IO_IN); 
   
   rateTimeline_.viewSignal().connect(sigc::mem_fun(*this, 
 						   &TSpikeWin::updateClusterView)); 
@@ -292,13 +294,15 @@ void TSpikeWin::setTime(rtime_t t)
   if (t - currentTime_  > spVectDuration_ )
     {
       rateval_t rv =( (--spVectpList_.end())->size() ) / spVectDuration_; 
-      std::cout << "Rateval = " << rv << std::endl; 
+      
       RatePoint_t rp; 
       rp.rate = rv; 
       rp.time = t; 
       rateTimeline_.appendRate(rp); 
-
+      
       spVectpList_.insert(t, new GLSPVect_t); 
+      std::cout << "At t=" << rp.time << " the rate is " << rp.rate
+		<< std::endl; 
 
       currentTime_ = t; 
 
@@ -418,3 +422,42 @@ void TSpikeWin::loadExistingSpikes(const std::vector<TSpike_t> & spikes)
 
     }
 }
+
+
+bool TSpikeWin::eventRXCallback(Glib::IOCondition io_condition)
+{
+  
+  if ((io_condition & Glib::IO_IN) == 0) {
+    std::cerr << "Invalid fifo response" << std::endl;
+    return false; 
+  }
+  else 
+    {
+      char x; 
+      read(pNetwork_->getEventFifoPipe(), &x, 1); 
+      EventList_t * pel = pNetwork_->getNewEvents(); 
+      
+      EventList_t::iterator i; 
+      for (i = pel->begin(); i != pel->end(); i++)
+	{
+	  // we really need to figure out how to FACTOR THIS OUT
+	  
+	  if (i->src == 0x00 && i->cmd == 0x10 )
+	    {
+	      // this is the time
+	      uint64_t time = 0; 
+	      time = i->data[0]; 
+	      time = time << 16; 
+	      time |= i->data[1]; 
+	      time = time << 16; 
+	      time |= i->data[2]; 
+	      float ftime = float(time) / 50e3; 
+
+	      setTime(ftime); 
+	    }
+
+	}
+    }
+  return true; 
+}
+

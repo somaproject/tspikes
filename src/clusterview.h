@@ -70,7 +70,7 @@ protected:
   float y1_;
   float x2_;
   float y2_; 
-  
+  CViewMode viewMode_;   
   GLSPVectpList_t*  pspvl_; 
   ClusterRenderer clusterRenderer_; 
   

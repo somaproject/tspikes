@@ -14,6 +14,7 @@ class FakeTTData
   DataPacket_t *  getSpikeDataPacket(); 
   bool appendToFakeNetwork(FakeNetwork* fn);
   std::vector<TSpike_t>  getManySpikes(int n); 
+  void setTime(FakeNetwork * fn, unsigned long usec);
 
  private:
   ttreader ttreader_; 
@@ -79,8 +80,9 @@ bool FakeTTData::appendToFakeNetwork(FakeNetwork* fn)
 	TSpike_t ts = ttreader_.getTSpike();
 	ts.time = ts.time * 5; 
 	DataPacket_t *  dp = rawFromTSpike(ts); 
-
 	fn->appendDataOut(dp); 
+	setTime(fn, ts.time); 
+	
       }
       
       timer_.reset(); 
@@ -90,6 +92,25 @@ bool FakeTTData::appendToFakeNetwork(FakeNetwork* fn)
   
   return true; 
 
+
+}
+
+void FakeTTData::setTime(FakeNetwork * fn, uint64_t usec)
+{
+  Event_t event; 
+  event.src = 0; 
+  event.cmd = 0x10; 
+  event.data[0] = (usec >> 32) & 0xFFFF;
+  event.data[1] = (usec >> 16 ) & 0xFFFF; 
+  event.data[2] = usec & 0xFFFF; 
+//   std::cout << "Sending time = " << usec << " event" << std::endl; 
+//   std::cout << "0 = " << event.data[0] 
+// 	    << " 1 = " << event.data[1] 
+// 	    << " 2 = " << event.data[2] << std::endl; 
+
+  EventList_t * pelt = new EventList_t; 
+  pelt->push_back(event); 
+  fn->appendEventOut(pelt); 
 
 }
 

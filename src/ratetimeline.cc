@@ -141,7 +141,9 @@ bool RateTimeline::on_configure_event(GdkEventConfigure* event)
 void RateTimeline::appendRate(RatePoint_t rp)
 {
   if (rates_.empty() ){
+    viewT2_ = viewT2_ - viewT1_; 
     viewT1_ = rp.time; 
+    viewT2_ += viewT1_; 
   }
 
   rates_.push_back(rp); 
@@ -155,9 +157,10 @@ void RateTimeline::appendRate(RatePoint_t rp)
       viewT1_ = viewT2_ - width; 
     }
   }
-  updateViewingWindow(); 
+  //updateViewingWindow(); 
   invalidate(); 
 
+  
 }
 
 
@@ -239,7 +242,7 @@ bool RateTimeline::on_expose_event(GdkEventExpose* event)
 
   glEnd(); 
    
-   useGPUProgram(0); 
+  useGPUProgram(0); 
 
   // main line
   glColor4f(1.0, 1.0, 1.0, 1.0); 
@@ -259,6 +262,9 @@ bool RateTimeline::on_expose_event(GdkEventExpose* event)
 //   glVertex2f(float(N-1), viewX1_); 
 //   glVertex2f(float(N-1), viewX2_); 
 //   glEnd(); 
+  
+  std::cout << "rendered between T1 =" << viewT1_ 
+	    << " and T2 = " << viewT2_ << std::endl; 
 
   // Swap buffers.
   gldrawable->swap_buffers();

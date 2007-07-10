@@ -139,6 +139,12 @@ void ClusterRenderer::render()
   glString_.drawWinText(160, 11, "X", 20); 
   glString_.drawWinText(4, 150, "Y", 20); 
   
+  GLenum g = glGetError(); 
+  while (g != GL_NO_ERROR) {
+    std::cerr << "There was a GL error " << g << " in " << 
+      viewMode_ << std::endl; 
+    g = glGetError(); 
+  }
 }
 
 void ClusterRenderer::renderSpikeVector(const GLSPVect_t & spvect, bool live)

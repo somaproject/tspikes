@@ -13,7 +13,8 @@ int ClusterView::getFrames()
 ClusterView::ClusterView(GLSPVectpList_t * pspvl, CViewMode cvm)
   : 
   clusterRenderer_(pspvl, cvm), 
-  frameCount_(0)
+  frameCount_(0),
+  viewMode_(cvm)
 
 {
   //assert (!pspvl->empty()); 
@@ -54,7 +55,7 @@ ClusterView::~ClusterView()
 
 void ClusterView::on_realize()
 {
-  
+  std::cout << "ClusterView::on_realize " << viewMode_  << std::endl; 
   // We need to call the base on_realize()
   Gtk::DrawingArea::on_realize();
 
@@ -92,7 +93,7 @@ void ClusterView::updateViewingWindow()
 
 bool ClusterView::on_configure_event(GdkEventConfigure* event)
 {
-
+  std::cout << "ClusterView::on_configure_event " << viewMode_  << std::endl; 
 
   Glib::RefPtr<Gdk::GL::Drawable> gldrawable = get_gl_drawable();
 
@@ -114,14 +115,17 @@ bool ClusterView::on_configure_event(GdkEventConfigure* event)
 
 bool ClusterView::on_expose_event(GdkEventExpose* event)
 {
+  //std::cout << "ClusterView::on_expose_event " << viewMode_ << std::endl; 
 
   Glib::RefPtr<Gdk::GL::Drawable> gldrawable = get_gl_drawable();
 
 
   // *** OpenGL BEGIN ***
-  if (!gldrawable->gl_begin(get_gl_context()))
-    return false;
+  if (!gldrawable->gl_begin(get_gl_context())) {
 
+      assert(0 == 1);
+      return false;
+    }
   clusterRenderer_.render(); 
   
   // Swap buffers.
@@ -135,6 +139,8 @@ bool ClusterView::on_expose_event(GdkEventExpose* event)
 
 bool ClusterView::on_map_event(GdkEventAny* event)
 {
+
+  std::cout << "ClusterView::on_map_event " << viewMode_ << std::endl; 
 
   Glib::RefPtr<Gdk::GL::Drawable> gldrawable = get_gl_drawable();
 
@@ -159,6 +165,7 @@ bool ClusterView::on_unmap_event(GdkEventAny* event)
 
 bool ClusterView::on_visibility_notify_event(GdkEventVisibility* event)
 {
+  std::cout << "ClusterView::on_visibility_notify_event" << viewMode_ << std::endl; 
 
   Glib::RefPtr<Gdk::GL::Drawable> gldrawable = get_gl_drawable();
 
