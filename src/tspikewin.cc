@@ -291,10 +291,12 @@ void TSpikeWin::setTime(rtime_t t)
   
   if (t - currentTime_  > spVectDuration_ )
     {
-      RateVal_t rv =( (--spVectpList_.end())->size() ) / spVectDuration_; 
-      //std::cout << "Rateval = " << rv << std::endl; 
-      rateTimeline_.appendRate(t, rv); 
-
+      rateval_t rv =( (--spVectpList_.end())->size() ) / spVectDuration_; 
+      std::cout << "Rateval = " << rv << std::endl; 
+      RatePoint_t rp; 
+      rp.rate = rv; 
+      rp.time = t; 
+      rateTimeline_.appendRate(rp); 
 
       spVectpList_.insert(t, new GLSPVect_t); 
 

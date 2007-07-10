@@ -7,6 +7,7 @@ LDFLAGS = `pkg-config --libs gtkmm-2.4 gdkmm-2.4 gtkglextmm-1.2 somanetwork-1.0`
 all: tspikemain spikevis
 
 spikevis: spikevis.o clusterview.o clusterrenderer.o glconfig.o shaders.o cairogltext/glstring.o
+ratetimeline: ratetimelinevis.o ttreader.o ratetimeline.o glconfig.o shaders.o cairogltext/glstring.o
 
 tspikemain: tspikemain.o tspikewin.o clusterview.o shaders.o glconfig.o  spikewaveview.o glconfig.o ttreader.o ratetimeline.o cairogltext/glstring.o clusterrenderer.o
 

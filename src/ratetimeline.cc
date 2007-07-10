@@ -3,15 +3,14 @@
 #include "shaders.h"
 
 RateTimeline::RateTimeline() : 
-  BASEDURATION(10.0), 
+  BASEDURATION(1000.0), 
   majorTick_(BASEDURATION), 
   minorTick_(BASEDURATION/10.0), 
   viewT1_(0.0), 
   viewT2_(BASEDURATION), 
   viewX1_(0.0), 
   viewX2_(100.0),
-  zoomLevel_(1.0),
-  isLive_(false), 
+  isLive_(true), 
   decayRate_(0.01), 
   activePos_(100.0)
 {
@@ -82,14 +81,14 @@ void RateTimeline::on_realize()
   glEnableClientState(GL_VERTEX_ARRAY); 
   
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-#if OPENGL2
+
   GLuint vshdr = loadGPUShader("rtgrad.vert", GL_VERTEX_SHADER); 
   GLuint fshdr = loadGPUShader("rtgrad.frag", GL_FRAGMENT_SHADER); 
   std::list<GLuint> shaders; 
   shaders.push_back(vshdr); 
   shaders.push_back(fshdr); 
   gpuProgGradient_ = createGPUProgram(shaders); 
-#endif // OPENGL2; 
+
   updateViewingWindow(); 
 
   gldrawable->gl_end();
@@ -139,39 +138,65 @@ bool RateTimeline::on_configure_event(GdkEventConfigure* event)
   return true;
 }
 
-void RateTimeline::appendRate(RateVal_t x)
+void RateTimeline::appendRate(RatePoint_t rp)
 {
-  
-  rates_.push_back(x); 
+  if (rates_.empty() ){
+    viewT1_ = rp.time; 
+  }
+
+  rates_.push_back(rp); 
 
   //viewT2_ = rates_.size(); 
-
-  if (x > viewX2_) {
-    //viewX2_ = x+ 1; 
+  if (isLive_) {
+    activePos_ = rp.time; 
+    if (rp.time > viewT2_ ) {
+      float width = viewT2_ - viewT1_; 
+      viewT2_ = rp.time ; 
+      viewT1_ = viewT2_ - width; 
+    }
   }
-  // invalidate
-  //updateViewingWindow(); 
+  updateViewingWindow(); 
   invalidate(); 
-  
-}
 
-void RateTimeline::appendRate(float t, RateVal_t x)
-{
-  
-  rates_.push_back(x); 
-
-  //viewT2_ = rates_.size(); 
-
-  if (x > viewX2_) {
-    //viewX2_ = x+ 1; 
-  }
-  // invalidate
-  //updateViewingWindow(); 
-  invalidate(); 
-  
 }
 
 
+void RateTimeline::drawTicks()
+{
+
+  int N = rates_.size(); 
+  
+
+
+  glLineWidth(1.0); 
+  // draw minor ticks
+  glColor4f(0.0, 0.0, 1.0, 0.5); 
+  
+  for (int i = 0; i*minorTick_ < viewT2_ ; i++)
+    {
+      glBegin(GL_LINE_STRIP); 
+      glVertex2f(float(i*minorTick_), viewX1_); 
+      glVertex2f(float(i*minorTick_), viewX2_); 
+
+      glEnd(); 
+	
+    }
+
+  // draw major ticks
+  glColor4f(0.7, 0.7, 1.0, 0.9); 
+
+  for (int i = 0; i * majorTick_ <= viewT2_; i++)
+    {
+      glBegin(GL_LINE_STRIP); 
+      glVertex2f(float(i*majorTick_), viewX1_); 
+      glVertex2f(float(i*majorTick_), viewX2_); 
+
+      glEnd(); 
+	
+    }
+
+  // draw actual primary line
+}
 bool RateTimeline::on_expose_event(GdkEventExpose* event)
 {
 
@@ -185,84 +210,55 @@ bool RateTimeline::on_expose_event(GdkEventExpose* event)
   glClear(GL_COLOR_BUFFER_BIT | GL_ACCUM_BUFFER_BIT ); 
   updateViewingWindow(); 
 
-  int N = rates_.size(); 
+  drawTicks(); 
   
-  glLineWidth(1.0); 
-  // draw minor ticks
-  glColor4f(0.0, 0.0, 1.0, 0.5); 
-
-  for (int i = 0; i < (N / minorTick_ + 1); i++)
-    {
-      glBegin(GL_LINE_STRIP); 
-      glVertex2f(float(i*minorTick_), 0.0); 
-      glVertex2f(float(i*minorTick_), viewX2_); 
-
-      glEnd(); 
-	
-    }
-
-  // draw major ticks
-  glColor4f(0.7, 0.7, 1.0, 0.9); 
-
-  for (int i = 0; i < (N / majorTick_ + 1); i++)
-    {
-      glBegin(GL_LINE_STRIP); 
-      glVertex2f(float(i*majorTick_), 0.0); 
-      glVertex2f(float(i*majorTick_), viewX2_); 
-
-      glEnd(); 
-	
-    }
-
-  // draw actual primary line
-#if OPENGL2
   useGPUProgram(gpuProgGradient_); 
   // now draw filled segment gradient
   GLint vp = glGetUniformLocation(gpuProgGradient_, "decayRate"); 
   glUniform1f(vp, decayRate_); 
   GLint vp2 = glGetUniformLocation(gpuProgGradient_, "activePos"); 
   glUniform1f(vp2, activePos_); 
-#endif; 
-  	       
 
 
   // primary polygons (filled)
 
-  for (int i = 1; i < N ; i++)
+  for (int i = 1; i < rates_.size() ; i++)
     {
-
-      glBegin(GL_POLYGON); 
-      float ratel = rates_[i-1]; 
-      float rater = rates_[i]; 
-      glVertex2f(float(i-1), 0.0);
-      glVertex2f(float(i-1), ratel); 
-      glVertex2f(float(i), rater); 
-      glVertex2f(float(i), 0.0); 
-      glEnd(); 
-    }
+      
+       glBegin(GL_POLYGON); 
+       timeval_t timel = rates_[i-1].time; 
+       timeval_t timeh = rates_[i].time; 
+       rateval_t ratel = rates_[i-1].rate; 
+       rateval_t rater = rates_[i].rate; 
+       glVertex2f(timel, 0.0);
+       glVertex2f(timel, ratel); 
+       glVertex2f(timeh, rater); 
+       glVertex2f(timeh, 0.0); 
+       glEnd(); 
+     }
 
   glEnd(); 
-#if OPENGL2
-  useGPUProgram(0); 
-#endif
+   
+   useGPUProgram(0); 
+
   // main line
   glColor4f(1.0, 1.0, 1.0, 1.0); 
 
   glBegin(GL_LINE_STRIP); 
-  for (int i = 0; i < N ; i++)
+  for (int i = 0; i < rates_.size() ; i++)
     {
-      glVertex2f(float(i), rates_[i]); 
+      glVertex2f(rates_[i].time, rates_[i].rate); 
     }
 
   glEnd(); 
 
-  //active Line
-  glLineWidth(4.0); 
-  glColor4f(0.0, 1.0, 0.0, 1.0); 
-  glBegin(GL_LINE_STRIP); 
-  glVertex2f(float(N-1), viewX1_); 
-  glVertex2f(float(N-1), viewX2_); 
-  glEnd(); 
+//   //active Line
+//   glLineWidth(4.0); 
+//   glColor4f(0.0, 1.0, 0.0, 1.0); 
+//   glBegin(GL_LINE_STRIP); 
+//   glVertex2f(float(N-1), viewX1_); 
+//   glVertex2f(float(N-1), viewX2_); 
+//   glEnd(); 
 
   // Swap buffers.
   gldrawable->swap_buffers();
@@ -284,7 +280,6 @@ bool RateTimeline::on_map_event(GdkEventAny* event)
   
   // set zoom to be correct
   int pixnum = get_width(); 
-  setZoom(4.0, 0.0); 
   
   updateViewingWindow(); 
 
@@ -342,7 +337,6 @@ bool RateTimeline::on_button_press_event(GdkEventButton* event)
 
       
       update();
-      std::cout << "button 3 " << std::endl;
     }
   
   lastX_ = event->x; 
@@ -387,26 +381,6 @@ bool RateTimeline::on_motion_notify_event(GdkEventMotion* event)
   return true;
 }
 
-void RateTimeline::setZoom(float zoomval, float tcenter)
-{
-  /*
-    tcenter == the position along the t axis under the cursor
-  
-  */
-  float newViewWidth = BASEDURATION / zoomval; 
-  float newT1 = tcenter - (tcenter - viewT1_) / (viewT2_ - viewT1_) * newViewWidth; 
-  
-  float newT2 = tcenter + (viewT2_ - tcenter) / (viewT2_ - viewT1_) * newViewWidth; 
-  
-  viewT1_ = newT1; 
-  viewT2_ = newT2; 
-  zoomLevel_ = zoomval; 
-
-  
-  //std::cout << newviewwidth/oldviewwidth - zoomval / oldZoom << std::endl; 
-}
-
-
 bool RateTimeline::on_scroll_event(GdkEventScroll* event)
 {
 
@@ -440,14 +414,14 @@ bool RateTimeline::on_scroll_event(GdkEventScroll* event)
       
       if (event->direction == 0) {
 	// UP? zoom out
-	newzoom = zoomLevel_ *  1.41421356237;
+	//newzoom = zoomLevel_ *  1.41421356237;
 	
       } else {
-	newzoom = zoomLevel_ / 1.41421356237; 
+	//newzoom = zoomLevel_ / 1.41421356237; 
 	
       }
       
-      setZoom(newzoom, centerPos); 
+      //setZoom(newzoom, centerPos); 
       
       invalidate(); 
       
@@ -460,4 +434,11 @@ RateTimeline::viewsignal_t RateTimeline::viewSignal()
 {
   return viewSignal_;
   
+}
+
+void RateTimeline::setLive(bool v)
+{
+  isLive_ = v; 
+  invalidate(); 
+
 }

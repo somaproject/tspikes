@@ -133,10 +133,11 @@ void ClusterRenderer::render()
       
     }
   
-  glColor4f(1.0, 1.0, 1.0, 1.0); 
+  glColor4f(1.0, 1.0, 1.0, 0.4); 
 
   // render text for axes
-  glString_.drawWinText(0, 120, "Test text", 10); 
+  glString_.drawWinText(160, 11, "X", 20); 
+  glString_.drawWinText(4, 150, "Y", 20); 
   
 }
 

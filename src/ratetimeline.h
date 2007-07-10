@@ -25,7 +25,15 @@
 #include "glconfig.h"
 #include "glspikes.h"
 
-typedef float RateVal_t; 
+typedef float rateval_t; 
+typedef float timeval_t; 
+
+struct RatePoint_t
+{
+  timeval_t time; 
+  rateval_t rate; 
+
+};
 
 class RateTimeline : public Gtk::GL::DrawingArea
 {
@@ -34,12 +42,7 @@ public:
 
   virtual ~RateTimeline();
 
-  void appendRate(RateVal_t x); 
-  void appendRate(float t, RateVal_t x); 
-
-
-  // Invalidate whole window.
-  void inv(); 
+  void appendRate(RatePoint_t rp); 
 
   // Update window synchronously (fast).
   void update()
@@ -56,7 +59,8 @@ public:
   typedef sigc::signal<void, bool, float, float> viewsignal_t;
   viewsignal_t viewSignal(); 
 
-  
+  void setLive(bool);
+
 protected:
 
   // signal handlers:
@@ -73,7 +77,6 @@ protected:
   bool on_scroll_event(GdkEventScroll* event);
   
   void updateViewingWindow();
-  void setZoom(float zoomval, float tcenter);
   
   // primary data source
   const float BASEDURATION; 
@@ -83,8 +86,7 @@ protected:
   
   float viewT1_, viewT2_, viewX1_, viewX2_; 
   float lastX_; 
-  float zoomLevel_; 
-  std::vector<RateVal_t> rates_; 
+  std::vector<RatePoint_t> rates_; 
   
   GLuint gpuProgGradient_; 
 
@@ -94,6 +96,8 @@ protected:
   bool isLive_; 
   float decayRate_; 
   float activePos_; 
+
+  void drawTicks(); 
 
 
 };

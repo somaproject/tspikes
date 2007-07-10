@@ -13,10 +13,6 @@
 
 #include <gtkglmm.h>
 
-#ifdef G_OS_WIN32
-#define WIN32_LEAN_AND_MEAN 1
-#include <windows.h>
-#endif
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -58,20 +54,24 @@ protected:
   Gtk::VBox m_VBox;
   Glib::Timer timer_; 
   Glib::Timer dtimer_; 
-  Gtk::Button m_ButtonQuit;
+  Gtk::HBox controlHBox_; 
+  Gtk::Button buttonQuit_;
+  Gtk::CheckButton liveCheckButton_; 
   RateTimeline rateTimeline_; 
   ttreader ttdata_; 
   uint64_t lastSpikeTime_; 
+  uint64_t firstSpikeTime_; 
   void updateSpikePosFromAdj(); 
   sigc::connection m_ConnectionIdle;
   virtual bool on_key_press_event(GdkEventKey* event); 
-
-
+  void on_live_clicked(); 
+  
 };
 
 Vis::Vis(bool is_sync)
   : m_VBox(false, 0), 
-    m_ButtonQuit("Quit"), 
+    buttonQuit_("Quit"), 
+    liveCheckButton_("Live"),
     rateTimeline_(),
     ttdata_("../../d118.tt"), 
     lastSpikeTime_(0)
@@ -99,16 +99,22 @@ Vis::Vis(bool is_sync)
   // Simple quit button.
   //
 
-  m_ButtonQuit.signal_clicked().connect(
+  buttonQuit_.signal_clicked().connect(
     sigc::mem_fun(*this, &Vis::on_button_quit_clicked));
   
   m_VBox.pack_start(rateTimeline_); 
-  m_VBox.pack_start(m_ButtonQuit, Gtk::PACK_SHRINK, 0);
-
+  m_VBox.pack_start(controlHBox_); 
+  controlHBox_.pack_start(buttonQuit_, Gtk::PACK_SHRINK, 0);
+  controlHBox_.pack_start(liveCheckButton_); 
+  liveCheckButton_.set_active(true); 
   show_all();
 
   Glib::signal_idle().connect( sigc::mem_fun(*this, &Vis::on_idle) );
   rateTimeline_.viewSignal().connect(&viewParamUpdate); 
+
+  liveCheckButton_.signal_clicked().connect(sigc::mem_fun(*this,
+							  &Vis::on_live_clicked)); 
+
   timer_.start(); 
   dtimer_.start(); 
 }
@@ -120,6 +126,7 @@ Vis::~Vis()
 void Vis::on_button_quit_clicked()
 {
   // we should quit
+  
 }
 
 bool Vis::on_key_press_event(GdkEventKey* event)
@@ -166,6 +173,7 @@ bool Vis::on_idle()
       
       if (lastSpikeTime_ == 0) {
 	lastSpikeTime_ = tspike.time; 
+	firstSpikeTime_ = tspike.time; 
       } else {
 	int scnt = 0; 
 	while((tspike.time - lastSpikeTime_ ) < tslen) {
@@ -173,7 +181,11 @@ bool Vis::on_idle()
 	  tspike = ttdata_.getTSpike(); 
 	  
 	}
-	rateTimeline_.appendRate(float(scnt) / secs ); 
+	float ttime = (lastSpikeTime_ - firstSpikeTime_) / 10000.0; 
+	RatePoint_t rp; 
+	rp.time = ttime; 
+	rp.rate = float(scnt) / secs; 
+	rateTimeline_.appendRate(rp); 
 	lastSpikeTime_ = tspike.time; 
 	//std::cout << "scnt = " << scnt << std::endl; 
       }
@@ -189,6 +201,12 @@ bool Vis::on_idle()
   return true;
 }
 
+void Vis::on_live_clicked()
+{
+
+  rateTimeline_.setLive(liveCheckButton_.get_active()); 
+  
+}
 
 void spikeWaves(void)
 {

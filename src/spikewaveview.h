@@ -43,11 +43,13 @@ public:
   void newSpikeWave(const GLSpikeWave_t & sw); 
   void setListLen(int len);
 
-
+  void setLiveState(bool); 
 
   // Update window synchronously (fast).
   void update()
   { get_window()->process_updates(false); }
+
+  void setPaused(bool state); 
 
 protected:
 
@@ -80,6 +82,10 @@ protected:
   GLuint texName1; 
   void setupTexture(); 
   void renderTexture(); 
+
+  bool isLive_; 
+  void renderPaused(); 
+  
 
 };
 

@@ -3,6 +3,9 @@
 #include "glconfig.h"
 #include <cairomm/context.h>
 #include <cairomm/surface.h>
+#include <sys/time.h>
+#include <time.h>
+
 
 int SpikeWaveView::getFrames()
 {
@@ -18,7 +21,8 @@ SpikeWaveView::SpikeWaveView(GLChan_t chan) :
   decayVal_(0.0), 
   spikeWaveListFull_(false), 
   spikeWaveListTgtLen_(25), 
-  m_Frames(0)
+  m_Frames(0),
+  isLive_(true)
 {
 
   //
@@ -257,20 +261,21 @@ bool SpikeWaveView::on_expose_event(GdkEventExpose* event)
     {
       updateViewingWindow(); 
     }
-
-  glClearColor(0.1, 0.0, 0.0, 1.0); 
-  glClear(GL_COLOR_BUFFER_BIT | GL_ACCUM_BUFFER_BIT ); 
-
-  renderGrid(); 
-
-  // real work 
-  SpikeWaveList_t::iterator csIter; 
-  // always show the last N spikes, and only the last N. 
-  float alpha = 0.5; 
-
-  for (csIter = swl_.begin(); 
-       csIter != swl_.end(); 
-       csIter ++ ) 
+  
+  if (isLive_) { 
+    glClearColor(0.1, 0.0, 0.0, 1.0); 
+    glClear(GL_COLOR_BUFFER_BIT | GL_ACCUM_BUFFER_BIT ); 
+    
+    renderGrid(); 
+    
+    // real work 
+    SpikeWaveList_t::iterator csIter; 
+    // always show the last N spikes, and only the last N. 
+    float alpha = 0.5; 
+    
+    for (csIter = swl_.begin(); 
+	 csIter != swl_.end(); 
+	 csIter ++ ) 
     {
       alpha -= decayVal_; 
       if (alpha < 0.0)
@@ -279,18 +284,27 @@ bool SpikeWaveView::on_expose_event(GdkEventExpose* event)
 	}
       renderSpikeWave(*csIter, alpha, false); 
     }
-
-  if (! swl_.empty()) 
+    
+    if (! swl_.empty()) 
     {
       renderSpikeWave(swl_.back(), 1.0, true); 
     }
+    
+    int y = get_height(); 
+    
+    glString_.drawWinText(4, y-15, "Gain : 100", 10); 
+    glString_.drawWinText(4, y-25, "HW HPF: On ", 10); 
+    glString_.drawWinText(4, y-35, "Filter : 6 kHz ", 10); 
+    glString_.drawWinText(4, y-45, "Thold : 320 uV ", 10); 
+    
+  } else { 
+    // we are in a "pasued state" 
+    // don't show new data
 
-  int y = get_height(); 
-  
-  glString_.drawWinText(4, y-15, "Gain : 100", 12); 
-  glString_.drawWinText(4, y-30, "Spike HW Filter : On ", 12); 
-  glString_.drawWinText(4, y-45, "Filter : 6 kHz ", 12); 
+    renderPaused();
 
+  }
+    
   // Swap buffers.
   gldrawable->swap_buffers();
   gldrawable->gl_end();
@@ -402,3 +416,43 @@ void SpikeWaveView::renderGrid()
 }
 
 
+void SpikeWaveView::setPaused(bool state)
+{
+  
+
+}
+
+void SpikeWaveView::renderPaused()
+{
+
+  glMatrixMode(GL_MODELVIEW); 
+  glLoadIdentity(); 
+
+  glMatrixMode(GL_PROJECTION); 
+  glLoadIdentity(); 
+  
+  int MAXX = get_width(); 
+  int MAXY = get_height(); 
+  glOrtho(0, MAXX,
+	  0, MAXY, -3, 3); 
+  
+  timeval t; 
+  gettimeofday(&t, NULL); 
+  float intens = float(t.tv_sec) * 1000000  + float(t.tv_usec); 
+  float alpha = sin(intens/1e6 / 5); 
+
+  
+  glColor4f(1.0, 0.0, 0.0, alpha); 
+  
+  glBegin(GL_POLYGON);
+  glVertex2i(0, MAXY/2 + 20); 
+  glVertex2i(MAXX, MAXY/2 + 20); 
+  glVertex2i(MAXX, MAXY/2 - 20);
+  glVertex2i(0, MAXY/2 -20); 
+  glEnd(); 
+
+  glColor4f(1.0, 1.0, 1.0, 1.0); 
+  glString_.drawWinText(0, MAXY/2, "PAUSED", 30); 
+
+
+}
