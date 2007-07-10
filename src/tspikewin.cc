@@ -27,7 +27,7 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
   spikeWaveViewB_(CHANB),
 
   currentTime_(0.0),
-  liveButton_("Live\n1:00:0")
+  liveButton_("Live")
     
 {
   //
@@ -40,7 +40,7 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
   spVectpList_.insert(currentTime_, new GLSPVect_t);
 
   add(mainHBox_); 
-
+  
   int clusterWidth = 165; 
   clusterViewXY_.set_size_request(clusterWidth, clusterWidth);
   clusterViewXA_.set_size_request(clusterWidth, clusterWidth);
@@ -125,10 +125,12 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
   spikeWaveViewY_.setViewingWindow(0, -100e-6, 31, 280e-6); 
   spikeWaveViewA_.setViewingWindow(0, -100e-6, 31, 280e-6); 
   spikeWaveViewB_.setViewingWindow(0, -100e-6, 31, 280e-6); 
+  liveButton_.set_active(true); 
 
   show_all();
 
   Glib::signal_idle().connect( sigc::mem_fun(*this, &TSpikeWin::on_idle) );
+
   Glib::signal_io().connect(sigc::mem_fun(*this, &TSpikeWin::dataRXCallback), 
 			    pNetwork_->getDataFifoPipe(), Glib::IO_IN); 
   Glib::signal_io().connect(sigc::mem_fun(*this, &TSpikeWin::eventRXCallback), 
@@ -136,8 +138,10 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
   
   rateTimeline_.viewSignal().connect(sigc::mem_fun(*this, 
 						   &TSpikeWin::updateClusterView)); 
-
   
+  liveButton_.signal_toggled().connect(sigc::mem_fun(*this,
+						     &TSpikeWin::liveToggle)); 
+
 }
 
 TSpikeWin::~TSpikeWin()
@@ -305,7 +309,6 @@ void TSpikeWin::setTime(rtime_t t)
 		<< std::endl; 
 
       currentTime_ = t; 
-
     }
 
 
@@ -461,3 +464,18 @@ bool TSpikeWin::eventRXCallback(Glib::IOCondition io_condition)
   return true; 
 }
 
+
+
+void TSpikeWin::liveToggle()
+{
+  std::cout << "Setting live to " << liveButton_.get_active() 
+	    << std::endl; 
+
+  rateTimeline_.setLive(liveButton_.get_active()); 
+  spikeWaveViewX_.setLive(liveButton_.get_active()); 
+  spikeWaveViewY_.setLive(liveButton_.get_active()); 
+  spikeWaveViewA_.setLive(liveButton_.get_active()); 
+  spikeWaveViewB_.setLive(liveButton_.get_active()); 
+  
+
+}

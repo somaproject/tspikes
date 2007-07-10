@@ -67,6 +67,6 @@ class ClusterRenderer
   float gridSpacing_; 
   void renderGrid(); 
   
-
+  std::string Xlabel_, Ylabel_; 
 };
 #endif

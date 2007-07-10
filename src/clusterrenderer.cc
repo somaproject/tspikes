@@ -10,14 +10,52 @@ ClusterRenderer::ClusterRenderer(GLSPVectpList_t * pspvl, CViewMode cvm)
     viewX1_(0), viewX2_(10), viewY1_(0), viewY2_(10), 
     pCurSPVect_(pspvl->begin()), 
     isSetup_(false),
-    gridSpacing_(50e-6)
-
+    gridSpacing_(50e-6),
+    Xlabel_(""),
+    Ylabel_("")
+  
 {
 
   // configure view pointers
   viewStartIter_ = pspvl_->begin(); 
   viewEndIter_ = pspvl_->end(); 
+  
+  switch(viewMode_) {
+  case VIEW12:
+    Xlabel_ = "X"; 
+    Ylabel_ = "Y"; 
+    break; 
 
+  case VIEW13:
+    Xlabel_ = "X"; 
+    Ylabel_ = "A"; 
+    break; 
+
+  case VIEW14:
+    Xlabel_ = "X"; 
+    Ylabel_ = "B"; 
+    break; 
+
+  case VIEW23:
+    Xlabel_ = "Y"; 
+    Ylabel_ = "A"; 
+    break; 
+
+  case VIEW24:
+    Xlabel_ = "Y"; 
+    Ylabel_ = "B"; 
+    break; 
+
+  case VIEW34:
+    Xlabel_ = "A"; 
+    Ylabel_ = "B"; 
+    break; 
+
+  default:
+    Xlabel_ = "OTHERX";
+    Ylabel_ = "OTHERY";
+  }
+    
 }
 
 ClusterRenderer::~ClusterRenderer()
@@ -37,8 +75,8 @@ void ClusterRenderer::setup()
   glEnable (GL_BLEND); 
   glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
 
-  GLuint vshdr = loadGPUShader("test.vert", GL_VERTEX_SHADER); 
-  GLuint fshdr = loadGPUShader("test.frag", GL_FRAGMENT_SHADER); 
+  GLuint vshdr = loadGPUShader("cluster.vert", GL_VERTEX_SHADER); 
+  GLuint fshdr = loadGPUShader("cluster.frag", GL_FRAGMENT_SHADER); 
   std::list<GLuint> shaders; 
   shaders.push_back(vshdr); 
   shaders.push_back(fshdr); 
@@ -134,10 +172,10 @@ void ClusterRenderer::render()
     }
   
   glColor4f(1.0, 1.0, 1.0, 0.4); 
-
-  // render text for axes
-  glString_.drawWinText(160, 11, "X", 20); 
-  glString_.drawWinText(4, 150, "Y", 20); 
+  
+    // render text for axes
+  glString_.drawWinText(160, 11, Xlabel_, 20); 
+  glString_.drawWinText(4, 150, Ylabel_, 20); 
   
   GLenum g = glGetError(); 
   while (g != GL_NO_ERROR) {

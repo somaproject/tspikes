@@ -72,8 +72,6 @@ bool FakeTTData::appendToFakeNetwork(FakeNetwork* fn)
   seconds = timer_.elapsed(useconds); // number of secs since last call
   int numtotx = int (rate_* seconds); 
 
-  numtotx = 5; 
-
   if (numtotx > 0 )
     {
       for (int i = 0; i < numtotx; i++) {

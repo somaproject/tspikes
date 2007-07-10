@@ -123,7 +123,7 @@ bool ClusterView::on_expose_event(GdkEventExpose* event)
   // *** OpenGL BEGIN ***
   if (!gldrawable->gl_begin(get_gl_context())) {
 
-      assert(0 == 1);
+    //assert(0 == 1);
       return false;
     }
   clusterRenderer_.render(); 

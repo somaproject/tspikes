@@ -43,7 +43,7 @@ public:
   void newSpikeWave(const GLSpikeWave_t & sw); 
   void setListLen(int len);
 
-  void setLiveState(bool); 
+  void setLive(bool); 
 
   // Update window synchronously (fast).
   void update()

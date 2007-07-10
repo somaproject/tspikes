@@ -148,7 +148,6 @@ void RateTimeline::appendRate(RatePoint_t rp)
 
   rates_.push_back(rp); 
 
-  //viewT2_ = rates_.size(); 
   if (isLive_) {
     activePos_ = rp.time; 
     if (rp.time > viewT2_ ) {
@@ -157,7 +156,7 @@ void RateTimeline::appendRate(RatePoint_t rp)
       viewT1_ = viewT2_ - width; 
     }
   }
-  //updateViewingWindow(); 
+
   invalidate(); 
 
   
@@ -255,14 +254,6 @@ bool RateTimeline::on_expose_event(GdkEventExpose* event)
 
   glEnd(); 
 
-//   //active Line
-//   glLineWidth(4.0); 
-//   glColor4f(0.0, 1.0, 0.0, 1.0); 
-//   glBegin(GL_LINE_STRIP); 
-//   glVertex2f(float(N-1), viewX1_); 
-//   glVertex2f(float(N-1), viewX2_); 
-//   glEnd(); 
-  
   std::cout << "rendered between T1 =" << viewT1_ 
 	    << " and T2 = " << viewT2_ << std::endl; 
 

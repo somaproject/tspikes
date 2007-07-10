@@ -456,3 +456,12 @@ void SpikeWaveView::renderPaused()
 
 
 }
+
+void SpikeWaveView::setLive(bool l)
+{
+  isLive_ = l; 
+  viewChanged_ = true; 
+  inv(); 
+
+
+}

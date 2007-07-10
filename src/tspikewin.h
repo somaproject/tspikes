@@ -81,7 +81,7 @@ protected:
   // update clusters
   void updateClusterView(bool, float, float); 
 
-
+  void liveToggle(); 
 
   // timeline manipulation
   rtime_t currentTime_; 
