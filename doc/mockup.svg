@@ -494,5 +494,109 @@
          id="tspan3448"
          x="-170"
          y="70">Filter</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="-370"
+       y="334.28571"
+       id="text2223"><tspan
+         sodipodi:role="line"
+         id="tspan2225"
+         x="-370"
+         y="334.28571">Remote state: </tspan><tspan
+         sodipodi:role="line"
+         x="-370"
+         y="349.28571"
+         id="tspan2229">Gain</tspan><tspan
+         sodipodi:role="line"
+         x="-370"
+         y="364.28571"
+         id="tspan2239">HP filter on</tspan><tspan
+         sodipodi:role="line"
+         x="-370"
+         y="379.28571"
+         id="tspan2251">Filter link name (GUID, query)</tspan><tspan
+         sodipodi:role="line"
+         x="-370"
+         y="394.28571"
+         id="tspan2255">Threshold</tspan><tspan
+         sodipodi:role="line"
+         x="-370"
+         y="409.28571"
+         id="tspan2257">pre=trigger/post-trigger </tspan><tspan
+         sodipodi:role="line"
+         x="-370"
+         y="424.28571"
+         id="tspan2235" /></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="-450"
+       y="640"
+       id="text2259"><tspan
+         sodipodi:role="line"
+         id="tspan2261"
+         x="-450"
+         y="640">Channel:</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="-360"
+       y="640"
+       id="text2263"><tspan
+         sodipodi:role="line"
+         id="tspan2265"
+         x="-360"
+         y="640">Gain:</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="-280"
+       y="640"
+       id="text2267"><tspan
+         sodipodi:role="line"
+         id="tspan2269"
+         x="-280"
+         y="640">HPF</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="-210"
+       y="640"
+       id="text2271"><tspan
+         sodipodi:role="line"
+         id="tspan2273"
+         x="-210"
+         y="640">Filter</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="-150"
+       y="640"
+       id="text2275"><tspan
+         sodipodi:role="line"
+         id="tspan2277"
+         x="-150"
+         y="640">Threshold</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="305"
+       y="461.42856"
+       id="text2279"><tspan
+         sodipodi:role="line"
+         id="tspan2281"
+         x="305"
+         y="461.42856">It's really not clear what constitutes proper semantics for the ratetimeline</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="300"
+       y="490"
+       id="text2283"><tspan
+         sodipodi:role="line"
+         id="tspan2285"
+         x="300"
+         y="490">only discrete </tspan></text>
   </g>
 </svg>

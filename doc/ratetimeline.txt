@@ -1,21 +1,29 @@
 
 
-RateTimeline is our interaction with our historical cluster view. It shows the aggregate spike rate per unit time, which is generally in seconds. A point on the ratetimeline, a RateVal_t, consists of a firing rate and a time. We can scroll back through these, follow, etc. Viewing of the ratetimeline does not impact the cluster view; however moving the activePos and changing the decay rate does. 
+aRateTimeline is our interaction with our historical cluster view. It
+shows the aggregate spike rate per unit time, which is generally in
+seconds. A point on the ratetimeline, a RateVal_t, consists of a
+firing rate and a time. We can scroll back through these, follow,
+etc. Viewing of the ratetimeline does not impact the cluster view;
+however moving the activePos and changing the decay rate does.
 
 There are essentially three external parameters for the RateTimeline
 
-isLive_ : when true, activePos_ follows the end of the array; this gives stripchart-like
-behavior. isLive in no way impacts our active viewing window, defined
-by [t1, t2, x1, x2]
+isLive_ : when true, activePos_ follows the end of the array; this
+gives stripchart-like behavior. isLive results in us following the
+newest data points at whatever our current scale is. 
 
 activePos_ : the position (t) value that is the most-recent that we
 are selecting/enabling or passing up to higher levels. Not really
-happy with the name. activePos_ follows the end of the data when isLive is true
+happy with the name. activePos_ follows the end of the data when
+isLive is true
 
-decayRate_: luminance/alpha drops per unit time; for example, a decayRate
-of 0 means that we never decay. 
+decayRate_: luminance/alpha drops per unit time; for example, a
+decayRate of 0 means that we never decay.
 
-note that we can externally set these, and also there's an exposed event, viewsignal, that will fire when any of these parameters has changed. It's type signature is isLive, activePos, decayRate_. 
+note that we can externally set these, and also there's an exposed
+event, viewsignal, that will fire when any of these parameters has
+changed. It's type signature is isLive, activePos, decayRate_.
 
 
 --------------------------------------------------------------------
@@ -26,7 +34,5 @@ over time, "squishing" old data. This fails on two counts:
    a. it looks ugly
    b. it provides no information wrt the timeline of what you're looking at. 
 
-So it seems the smarter thing to do is have several possible zoom
-settings, and optionally let people scroll through things. Yes, it's
-more complex, but it's also a better UI. 
+-------------------------------------------------------------------------------
 
