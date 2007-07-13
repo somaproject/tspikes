@@ -130,9 +130,6 @@ bool SpikeWaveView::setViewingWindow(float x1, float y1,
 void SpikeWaveView::updateViewingWindow()
 
 {
-  std::cout << "updating viewing window " << std::endl; 
-  std::cout << viewX1_ << ' ' << viewX2_  << ' '
-	    << viewY1_ << ' ' << viewY2_ << std::endl;
   
   glMatrixMode(GL_MODELVIEW); 
   glLoadIdentity(); 
@@ -147,8 +144,6 @@ void SpikeWaveView::updateViewingWindow()
   winY = get_height(); 
   glViewport(0, 0, winX, winY); 
 
-
-  std::cout << "viewport to " << winX << ' ' << winY << std::endl; 
 
   viewChanged_ = false; 
   
@@ -263,7 +258,7 @@ bool SpikeWaveView::on_expose_event(GdkEventExpose* event)
     }
   
   if (isLive_) { 
-    glClearColor(0.1, 0.0, 0.0, 1.0); 
+    glClearColor(0.0, 0.0, 0.0, 1.0); 
     glClear(GL_COLOR_BUFFER_BIT | GL_ACCUM_BUFFER_BIT ); 
     
     renderGrid(); 
@@ -442,7 +437,7 @@ void SpikeWaveView::renderPaused()
   float alpha = sin(intens/1e6 / 5); 
 
   
-  glColor4f(1.0, 0.0, 0.0, alpha); 
+  glColor4f(0.7, 0.0, 0.0, 0.3); 
   
   glBegin(GL_POLYGON);
   glVertex2i(0, MAXY/2 + 20); 
