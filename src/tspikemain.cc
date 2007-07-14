@@ -2,6 +2,8 @@
 
 #include "tspikewin.h"
 #include <somanetwork/fakenetwork.h>
+#include <somanetwork/network.h>
+
 #include "ttreader.h"
 #include <sigc++/sigc++.h>
 
@@ -139,6 +141,7 @@ int main(int argc, char** argv)
   po::options_description desc("Allowed options");
   desc.add_options()
     ("help", "produce help message")
+    ("networksrc", po::value<int>(), "Network source")
     ("ttfile", po::value<std::string>(), "ttfile to read in data from")
     ("ttprenum", po::value<int>(), "number of spikes to read from ttfile")
     ("ttrate", po::value<int>(), "rough rate of spike arrival")
@@ -153,45 +156,60 @@ int main(int argc, char** argv)
     return 1;
   }
   
-
-  FakeNetwork net; 
-
-  TSpikeWin tspikewin(&net);
-
-  int ttrate = 0; 
-  if (vm.count("ttfile")) {
+  if (vm.count("networksrc")) {
     
+    Network net("127.0.0.1"); 
+    net.enableDataRX( vm["networksrc"].as<int>(), TSPIKE); 
+    
+    TSpikeWin tspikewin(&net);
+    
+    net.run(); 
+    kit.run(tspikewin);
+    
+    return 0; 
 
-    if (vm.count("ttrate") )
-      {
-	ttrate = vm["ttrate"].as<int>(); 
-	
-      }
-  }    
-  FakeTTData fttd(vm["ttfile"].as<std::string>(), ttrate); 
-  if (vm.count("ttprenum") )
-    {
+  } else {
+    // ZOMG these abstractions are all wrong; should clean up
+
+    FakeNetwork net; 
+    
+    TSpikeWin tspikewin(&net);
+    
+    int ttrate = 0; 
+    if (vm.count("ttfile")) {
       
+      
+      if (vm.count("ttrate") )
+	{
+	  ttrate = vm["ttrate"].as<int>(); 
+	  
+	}
+    }    
+    FakeTTData fttd(vm["ttfile"].as<std::string>(), ttrate); 
+    if (vm.count("ttprenum") )
+      {
+	
       
 	std::vector<TSpike_t> spikes 
 	  = fttd.getManySpikes(vm["ttprenum"].as<int>()); 
 	
 	tspikewin.loadExistingSpikes(spikes); 
-    }
-  if (vm.count("ttrate") )
+      }
+    if (vm.count("ttrate") )
+      
+      {
+	// actually run from network
+	Glib::signal_timeout().connect(sigc::bind(sigc::mem_fun(fttd, 
+								&FakeTTData::appendToFakeNetwork), &net), 50);
+	
+	
+      }
+    net.run(); 
     
-    {
-      // actually run from network
-      Glib::signal_timeout().connect(sigc::bind(sigc::mem_fun(fttd, 
-							      &FakeTTData::appendToFakeNetwork), &net), 50);
-      
-      
-    }
+    
+    kit.run(tspikewin);
+  }
 
-  net.run(); 
-  
-
-  kit.run(tspikewin);
 
   return 0;
 }

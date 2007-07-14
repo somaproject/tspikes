@@ -187,7 +187,7 @@ bool TSpikeWin::dataRXCallback(Glib::IOCondition io_condition)
 
 	  // convert to a real spike packet
 	  TSpike_t ts = rawToTSpike(rdp); 
-
+	  
 	  // now what do we do with it? 
 	  appendTSpikeToSpikewaves(ts); 
 	  appendTSpikeToSPL(ts); 
