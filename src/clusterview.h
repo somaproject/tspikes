@@ -62,6 +62,9 @@ protected:
   virtual bool on_unmap_event(GdkEventAny* event);
   virtual bool on_visibility_notify_event(GdkEventVisibility* event);
 
+  bool on_motion_notify_event(GdkEventMotion* event); 
+  bool on_button_press_event(GdkEventButton* event); 
+
   void updateView(); 
   void updateViewingWindow(); 
   int frameCount_; 
@@ -73,6 +76,7 @@ protected:
   CViewMode viewMode_;   
   GLSPVectpList_t*  pspvl_; 
   ClusterRenderer clusterRenderer_; 
-  
+  float lastX_; 
+  float lastY_; 
 };
 #endif

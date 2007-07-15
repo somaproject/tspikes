@@ -44,8 +44,17 @@ ClusterView::ClusterView(GLSPVectpList_t * pspvl, CViewMode cvm)
   set_gl_capability(glconfig);
 
   // Add events.
-  add_events(Gdk::VISIBILITY_NOTIFY_MASK);
+  add_events(Gdk::VISIBILITY_NOTIFY_MASK | 
+	     Gdk::BUTTON1_MOTION_MASK    | 
+	     Gdk::BUTTON2_MOTION_MASK    | 
+	     Gdk::BUTTON_PRESS_MASK );
 
+  signal_motion_notify_event().connect(sigc::mem_fun(*this, 
+						     &ClusterView::on_motion_notify_event)); 
+
+  signal_button_press_event().connect(sigc::mem_fun(*this, 
+						    &ClusterView::on_button_press_event)); 
+  
 
 }
 
@@ -212,4 +221,48 @@ void ClusterView::setGrid(float g)
 {
   clusterRenderer_.setGrid(g); 
 
+}
+
+bool ClusterView::on_motion_notify_event(GdkEventMotion* event)
+{
+
+  float x = event->x;
+  float y = event->y;
+
+
+  if (event->state & GDK_BUTTON1_MASK) 
+    {
+      float pixXdelta = lastX_ - x; 
+      float zoomXfact = pixXdelta/float(get_width()); 
+
+
+
+      float pixYdelta = -(lastY_ - y); 
+      float zoomYfact = pixYdelta/float(get_width()); 
+
+      zoomX(1.0 + zoomXfact); 
+      zoomY(1.0 + zoomYfact); 
+
+    } 
+  else if (event->state & GDK_BUTTON3_MASK)
+    {
+
+    }
+
+  lastX_ = x; 
+  lastY_ = y; 
+
+  return true;
+}
+
+bool ClusterView::on_button_press_event(GdkEventButton* event)
+{
+
+  float x = event->x;
+  float y = event->y;
+
+  lastX_ = event->x; 
+  lastY_ = event->y; 
+ 
+  return false;
 }
