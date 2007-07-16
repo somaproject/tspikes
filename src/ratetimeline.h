@@ -60,6 +60,9 @@ public:
   viewsignal_t viewSignal(); 
 
   void setLive(bool);
+  void setCursorTime(float time); 
+  void setCursorVisible(bool visible); 
+
 
 protected:
 
@@ -75,7 +78,10 @@ protected:
   bool on_button_press_event(GdkEventButton* event);
   bool on_motion_notify_event(GdkEventMotion* event);
   bool on_scroll_event(GdkEventScroll* event);
-  
+
+  bool on_enter_notify_event(GdkEventCrossing * event); 
+  bool on_leave_notify_event(GdkEventCrossing * event); 
+
   void updateViewingWindow();
   
   // primary data source
@@ -99,6 +105,10 @@ protected:
 
   void drawTicks(); 
 
+  // time cursor
+  float cursorTime_; 
+  bool cursorVisible_; 
+  void renderCursor(); 
 
 };
 

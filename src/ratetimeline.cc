@@ -12,7 +12,9 @@ RateTimeline::RateTimeline() :
   viewX2_(100.0),
   isLive_(true), 
   decayRate_(0.01), 
-  activePos_(100.0)
+  activePos_(100.0),
+  cursorTime_(viewT1_), 
+  cursorVisible_(false)
 {
 
   rates_.reserve(10000); 
@@ -39,9 +41,12 @@ RateTimeline::RateTimeline() :
   add_events(Gdk::BUTTON1_MOTION_MASK    |
 	     Gdk::BUTTON2_MOTION_MASK    |
 	     Gdk::BUTTON3_MOTION_MASK | 
+	     Gdk::POINTER_MOTION_MASK | 
 	     Gdk::SCROLL_MASK |
 	     Gdk::BUTTON_PRESS_MASK      |
-	     Gdk::VISIBILITY_NOTIFY_MASK);
+	     Gdk::VISIBILITY_NOTIFY_MASK | 
+	     Gdk::ENTER_NOTIFY_MASK | 
+	     Gdk::LEAVE_NOTIFY_MASK );
   
   // View transformation signals.
   signal_button_press_event().connect(sigc::mem_fun(*this, 
@@ -52,7 +57,13 @@ RateTimeline::RateTimeline() :
 
   signal_scroll_event().connect(sigc::mem_fun(*this, 
 					      &RateTimeline::on_scroll_event)); 
-
+  signal_enter_notify_event().connect(sigc::mem_fun(*this,
+						    &RateTimeline::on_enter_notify_event)); 
+  
+  signal_leave_notify_event().connect(sigc::mem_fun(*this,
+						    &RateTimeline::on_leave_notify_event)); 
+  
+  
 }
 
 RateTimeline::~RateTimeline()
@@ -257,6 +268,8 @@ bool RateTimeline::on_expose_event(GdkEventExpose* event)
   std::cout << "rendered between T1 =" << viewT1_ 
 	    << " and T2 = " << viewT2_ << std::endl; 
 
+  renderCursor(); 
+
   // Swap buffers.
   gldrawable->swap_buffers();
   gldrawable->gl_end();
@@ -372,8 +385,21 @@ bool RateTimeline::on_motion_notify_event(GdkEventMotion* event)
 
       viewSignal_.emit(isLive_, activePos_, decayRate_); 
       update();
+    } 
+  else 
+    {
+      float windowPos = float(x) / get_width() * (viewT2_ - viewT1_) + viewT1_; 
+      std::cout << "setting cursor time to " << windowPos << std::endl; 
+
+      setCursorTime(windowPos); 
     }
+
+
+
+
   lastX_ = x; 
+
+  
   // don't block
   return true;
 }
@@ -439,3 +465,47 @@ void RateTimeline::setLive(bool v)
   invalidate(); 
 
 }
+
+void RateTimeline::renderCursor()
+{
+  if (cursorVisible_) {
+    glLineWidth(4.0); 
+    glColor4f(1.0, 1.0, 1.0, 1.0); 
+    glBegin(GL_LINES);
+    
+    glVertex2f(cursorTime_, viewX1_); 
+    glVertex2f(cursorTime_, viewX2_); 
+    glEnd(); 
+
+  }
+
+
+}
+
+void RateTimeline::setCursorTime(float time)
+{
+  cursorTime_ = time; 
+  invalidate(); 
+
+
+}
+
+void RateTimeline::setCursorVisible(bool visible)				    
+{
+  cursorVisible_ = visible; 
+  invalidate(); 
+
+}
+
+bool RateTimeline::on_enter_notify_event(GdkEventCrossing* event)
+{
+  setCursorVisible(true); 
+  return true; 
+}
+
+bool RateTimeline::on_leave_notify_event(GdkEventCrossing* event)
+{
+  setCursorVisible(false); 
+  return true; 
+}
+
