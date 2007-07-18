@@ -22,6 +22,7 @@ SpikeWaveView::SpikeWaveView(GLChan_t chan) :
   spikeWaveListFull_(false), 
   spikeWaveListTgtLen_(25), 
   m_Frames(0),
+  glString_("Sans", false, LEFT),
   isLive_(true)
 {
 
@@ -286,7 +287,7 @@ bool SpikeWaveView::on_expose_event(GdkEventExpose* event)
     }
     
     int y = get_height(); 
-    
+    glColor4f(1.0, 1.0, 1.0, 1.0); 
     glString_.drawWinText(4, y-15, "Gain : 100", 10); 
     glString_.drawWinText(4, y-25, "HW HPF: On ", 10); 
     glString_.drawWinText(4, y-35, "Filter : 6 kHz ", 10); 

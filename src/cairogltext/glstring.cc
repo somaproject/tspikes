@@ -2,9 +2,14 @@
 #include <iostream>
 #include <assert.h>
 
-GLString::GLString()
+GLString::GLString(std::string family, 
+		   bool isBold, 
+		   StringHPos hpos):
+  family_(family), 
+  isBold_(isBold), 
+  hpos_(hpos)
 {
-
+  
 }
 
 GLString::~GLString()
@@ -65,8 +70,15 @@ cacheItem_t GLString::generateTexture(textprop_t tp)
     Cairo::Context::create(surface); 
 
   pContext->set_source_rgba(1.0, 1.0, 1.0, 1.0);  
-  pContext->select_font_face("Sans", Cairo::FONT_SLANT_NORMAL,
- 			     Cairo::FONT_WEIGHT_BOLD); 
+
+  if (isBold_) {
+    pContext->select_font_face(family_.c_str(), Cairo::FONT_SLANT_NORMAL,
+			       Cairo::FONT_WEIGHT_BOLD); 
+  } else {
+    pContext->select_font_face(family_.c_str(), Cairo::FONT_SLANT_NORMAL,
+			       Cairo::FONT_WEIGHT_NORMAL); 
+  }    
+  
   pContext->set_font_size(tp.size); 
 
   Cairo::TextExtents te; 
@@ -86,8 +98,16 @@ cacheItem_t GLString::generateTexture(textprop_t tp)
   pContext = Cairo::Context::create(surface); 
 
   pContext->set_source_rgba(1.0, 1.0, 1.0, 1.0);  
-  pContext->select_font_face("Sans Mono", Cairo::FONT_SLANT_NORMAL,
- 			     Cairo::FONT_WEIGHT_BOLD); 
+  
+  if (isBold_) {
+    pContext->select_font_face(family_.c_str(), Cairo::FONT_SLANT_NORMAL,
+			       Cairo::FONT_WEIGHT_BOLD); 
+  } else {
+    pContext->select_font_face(family_.c_str(), Cairo::FONT_SLANT_NORMAL,
+			       Cairo::FONT_WEIGHT_NORMAL); 
+  }    
+  
+
   pContext->set_font_size(tp.size); 
 
   pContext->move_to(0, te.height);
@@ -119,7 +139,7 @@ void GLString::renderWorldLoc(float x, float y, cacheItem_t tp)
   
   glBindTexture(GL_TEXTURE_2D, tp.textureID); 
 
-  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
+  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
   
   
   GLdouble model[16] ;
@@ -133,8 +153,8 @@ void GLString::renderWorldLoc(float x, float y, cacheItem_t tp)
   GLdouble winX, winY, winZ ;
 
   gluProject(objX, objY, objZ,
-	     model, proj, vp,
-	     &winX, &winY, &winZ ) ;
+ 	     model, proj, vp,
+ 	     &winX, &winY, &winZ ) ;
   
   
   glPushMatrix(); 

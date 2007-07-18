@@ -38,16 +38,22 @@ struct cacheItem_t
 typedef std::list<cacheItem_t> cacheList_t; 
 typedef std::map<textprop_t, cacheList_t::iterator, textPropCompare> cacheQueryMap_t; 
 
+enum StringHPos { LEFT, CENTER, RIGHT}; 
+
+		 
 class GLString
 {
  public: 
-  GLString(); 
+  GLString(std::string family, bool isBold, StringHPos hpos); 
   ~GLString(); 
   void drawWinText(int x, int y, std::string text, int size); 
   void drawWorldText(float x, float y, std::string text, int size); 
   
  private:
-  
+  std::string family_; 
+  bool isBold_;
+  StringHPos hpos_; 
+
   cacheItem_t generateTexture(textprop_t); 
   void setupTexture(); 
   GLuint textureName_; 

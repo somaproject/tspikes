@@ -158,7 +158,7 @@ int main(int argc, char** argv)
   
   if (vm.count("networksrc")) {
     
-    Network net("127.0.0.1"); 
+    Network net("192.168.1.100"); 
     net.enableDataRX( vm["networksrc"].as<int>(), TSPIKE); 
     
     TSpikeWin tspikewin(&net);

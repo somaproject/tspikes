@@ -11,8 +11,9 @@ ClusterRenderer::ClusterRenderer(GLSPVectpList_t * pspvl, CViewMode cvm)
     pCurSPVect_(pspvl->begin()), 
     isSetup_(false),
     gridSpacing_(50e-6),
-    Xlabel_(""),
-    Ylabel_("")
+    Xlabel_(""), 
+    Ylabel_(""), 
+    glString_("Bitstream Vera Sans", true, LEFT)
   
 {
 
@@ -360,6 +361,7 @@ void ClusterRenderer::renderGrid()
     }
   glEnd(); 
 
+  
   glBegin(GL_LINES); 
 
   for (int i = 0; (i*gridSpacing_) < viewY2_; i++)
@@ -367,8 +369,22 @@ void ClusterRenderer::renderGrid()
       float y = float(i) * gridSpacing_; 
       glVertex2f(viewX1_, y); 
       glVertex2f(viewX2_, y); 
+      
+
+      
     }
+
+
   glEnd(); 
+
+  glColor4f(1.0, 1.0, 1.0, 1.0); 
+
+  for (int i = 1; (i*gridSpacing_) < viewX2_; i++) {
+    float x = float(i) * gridSpacing_; 
+    
+    std::string s("100 uV"); 
+    glString_.drawWorldText(x, 10e-6, s, 8); 
+  }
 
 }
 
