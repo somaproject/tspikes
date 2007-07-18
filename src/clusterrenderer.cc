@@ -383,7 +383,7 @@ void ClusterRenderer::renderGrid()
     float x = float(i) * gridSpacing_; 
     
     std::string s("100 uV"); 
-    glString_.drawWorldText(x, 10e-6, s, 8); 
+    glString_.drawWorldText(x, gridSpacing_, s, 8); 
   }
 
 }

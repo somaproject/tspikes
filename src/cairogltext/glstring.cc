@@ -52,10 +52,8 @@ cacheItem_t GLString::generateTexture(textprop_t tp)
   glEnable(GL_TEXTURE_2D);
   glGenTextures(1, &textureName); 
   glBindTexture(GL_TEXTURE_2D, textureName); 
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); 
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); 
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); 
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); 
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); 
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); 
   
   glDisable(GL_TEXTURE_2D); 
 
@@ -117,9 +115,12 @@ cacheItem_t GLString::generateTexture(textprop_t tp)
   glEnable(GL_TEXTURE_2D);
   
   glBindTexture(GL_TEXTURE_2D, textureName); 
+
+  
+  // test process; 
+  
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texn, texn, 0, 
 	       GL_BGRA, GL_UNSIGNED_BYTE, surface->get_data()); 
-  glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 
   glDisable(GL_TEXTURE_2D); 
 
@@ -202,7 +203,7 @@ void GLString::renderPixLoc(int x, int y, cacheItem_t tp)
   
   glBindTexture(GL_TEXTURE_2D, tp.textureID); 
 
-  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
   // convert to pixel coords
   

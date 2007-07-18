@@ -73,6 +73,7 @@ protected:
 
   // append data functions
   bool dataRXCallback(Glib::IOCondition io_condition); 
+
   bool eventRXCallback(Glib::IOCondition io_condition);
 
   void appendTSpikeToSpikewaves(const TSpike_t & tspike); 
