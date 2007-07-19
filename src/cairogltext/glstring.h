@@ -31,7 +31,7 @@ struct cacheItem_t
 {
   textprop_t textprop; 
   textureID_t textureID;
-  int textureSize; 
+  int texWidth, texHeight; 
   int extentsX, extentsY; 
 }; 
 

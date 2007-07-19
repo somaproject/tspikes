@@ -49,15 +49,11 @@ cacheItem_t GLString::generateTexture(textprop_t tp)
 
   textureID_t textureName; 
   // generate the GL texture
-  glEnable(GL_TEXTURE_2D);
+  glEnable(GL_TEXTURE_RECTANGLE_ARB); 
   glGenTextures(1, &textureName); 
-  glBindTexture(GL_TEXTURE_2D, textureName); 
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); 
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); 
-  
-  glDisable(GL_TEXTURE_2D); 
-
-
+  glBindTexture(GL_TEXTURE_RECTANGLE_ARB, textureName); 
+  glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_NEAREST); 
+  glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_NEAREST); 
   
   // Create a tiny surface to begin with simply so we can get the extents
   int texn = 32; 
@@ -84,15 +80,15 @@ cacheItem_t GLString::generateTexture(textprop_t tp)
   pContext->move_to(0, te.height);
 
   // compute the new texn;
-  texn = 32; 
-  while (texn < te.height or texn < te.width) 
-    {
-      texn = texn * 2;  // powers of two 
-    }
-  
+  int texWidth, texHeight; 
+  texWidth = te.width; 
+  texHeight = te.height; 
+
   // then we do it all over again
 
-  surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, texn, texn); 
+  surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, texWidth,
+					texHeight); 
+
   pContext = Cairo::Context::create(surface); 
 
   pContext->set_source_rgba(1.0, 1.0, 1.0, 1.0);  
@@ -112,22 +108,21 @@ cacheItem_t GLString::generateTexture(textprop_t tp)
   
   pContext->show_text(tp.text); 
   
-  glEnable(GL_TEXTURE_2D);
-  
-  glBindTexture(GL_TEXTURE_2D, textureName); 
+  glBindTexture(GL_TEXTURE_RECTANGLE_ARB, textureName); 
 
   
   // test process; 
   
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texn, texn, 0, 
+  glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA, texWidth, texHeight, 0, 
 	       GL_BGRA, GL_UNSIGNED_BYTE, surface->get_data()); 
 
-  glDisable(GL_TEXTURE_2D); 
+  glDisable(GL_TEXTURE_RECTANGLE_ARB); 
 
   cacheItem_t ret; 
   ret.textprop = tp; 
   ret.textureID = textureName; 
-  ret.textureSize = texn;
+  ret.texWidth = texWidth;
+  ret.texHeight = texHeight; 
   ret.extentsX = te.width; 
   ret.extentsY = te.height; 
   return ret; 
@@ -136,9 +131,9 @@ cacheItem_t GLString::generateTexture(textprop_t tp)
 
 void GLString::renderWorldLoc(float x, float y, cacheItem_t tp)
 {
-  glEnable(GL_TEXTURE_2D);
+  glEnable(GL_TEXTURE_RECTANGLE_ARB);
   
-  glBindTexture(GL_TEXTURE_2D, tp.textureID); 
+  glBindTexture(GL_TEXTURE_RECTANGLE_ARB, tp.textureID); 
 
   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
   
@@ -165,23 +160,23 @@ void GLString::renderWorldLoc(float x, float y, cacheItem_t tp)
   glOrtho(float(vp[0]), float(vp[2]), float(vp[1]), float(vp[3]), -3.0, 3.0); 
 
   glTranslatef(float(winX), 
-	       float(winY) - float(tp.textureSize) + float(tp.extentsY)/2.0, 0.); 
+	       float(winY) - float(tp.texHeight) + float(tp.extentsY)/2.0, 0.); 
   glBegin(GL_QUADS);
 
-  glTexCoord2f(0.0, 0.0); 
-  glVertex2f(0.0, float(tp.textureSize));
+  glTexCoord2i(0, 0); 
+  glVertex2f(0.0, float(tp.texHeight));
   
-  glTexCoord2f(1.0, 0.0); 
-  glVertex2f(float(tp.textureSize), float(tp.textureSize));
+  glTexCoord2i(tp.texWidth, 0); 
+  glVertex2f(float(tp.texWidth), float(tp.texHeight));
   
-  glTexCoord2f(1.0, 1.0); 
-  glVertex2f(float(tp.textureSize), 0.0);
+  glTexCoord2i(tp.texWidth, tp.texHeight); 
+  glVertex2f(float(tp.texWidth), 0.0);
   
-  glTexCoord2f(0.0, 1.0);  
+  glTexCoord2i(0, tp.texHeight);  
   glVertex2f(0.0, 0.0);
   
   glEnd();
-  glDisable(GL_TEXTURE_2D); 
+  glDisable(GL_TEXTURE_RECTANGLE_ARB); 
   
   glPopMatrix();
   
@@ -199,9 +194,9 @@ void GLString::renderPixLoc(int x, int y, cacheItem_t tp)
   glPushMatrix(); 
   glLoadIdentity(); 
 
-  glEnable(GL_TEXTURE_2D);
+  glEnable(GL_TEXTURE_RECTANGLE_ARB);
   
-  glBindTexture(GL_TEXTURE_2D, tp.textureID); 
+  glBindTexture(GL_TEXTURE_RECTANGLE_ARB, tp.textureID); 
 
   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
@@ -210,7 +205,7 @@ void GLString::renderPixLoc(int x, int y, cacheItem_t tp)
   gluOrtho2D(vp[0], vp[2], vp[1], vp[3]); 
   
   glTranslatef(float(x), 
-	       float(y) - float(tp.textureSize) + float(tp.extentsY)/2.0, 0.); 
+	       float(y) - float(tp.texHeight) + float(tp.extentsY)/2.0, 0.); 
   
   glMatrixMode (GL_MODELVIEW); 
   glPushMatrix(); 
@@ -219,24 +214,24 @@ void GLString::renderPixLoc(int x, int y, cacheItem_t tp)
   //glColor4f(1.0, 0.0, 0.0, 1.0); 
   glBegin(GL_QUADS);
   
+
+  glTexCoord2i(0, 0); 
+  glVertex2f(0.0, float(tp.texHeight));
   
-  glTexCoord2f(0.0, 0.0); 
-  glVertex2i(0, tp.textureSize);
- 
-  glTexCoord2f(1.0, 0.0); 
-  glVertex2i(tp.textureSize, tp.textureSize);
+  glTexCoord2i(tp.texWidth, 0); 
+  glVertex2f(float(tp.texWidth), float(tp.texHeight));
   
-  glTexCoord2f(1.0, 1.0); 
-  glVertex2i(tp.textureSize, 0);
+  glTexCoord2i(tp.texWidth, tp.texHeight); 
+  glVertex2f(float(tp.texWidth), 0.0);
   
-  glTexCoord2f(0.0, 1.0);  
-  glVertex2i(0, 0);
+  glTexCoord2i(0, tp.texHeight);  
+  glVertex2f(0.0, 0.0);
   
   glEnd();
   glPopMatrix(); 
  
   
-  glDisable(GL_TEXTURE_2D); 
+  glDisable(GL_TEXTURE_RECTANGLE_ARB); 
   
   
   glMatrixMode(GL_PROJECTION); 
@@ -273,7 +268,7 @@ void GLString::cacheDelLRU()
   cacheList_t::iterator tppdel = cacheQueryMap_[tpdel.textprop]; 
   GLuint tdel[1]; 
   tdel[0]  = tppdel->textureID; 
-  glDeleteTextures( tppdel->textureSize, tdel); 
+  glDeleteTextures(1, tdel); 
   cacheQueryMap_.erase(tppdel->textprop); 
   cacheList_.erase(tppdel); 
   
