@@ -13,7 +13,10 @@ ClusterRenderer::ClusterRenderer(GLSPVectpList_t * pspvl, CViewMode cvm)
     gridSpacing_(50e-6),
     Xlabel_(""), 
     Ylabel_(""), 
-    glString_("Bitstream Vera Sans", true, LEFT)
+    glString_("Bitstream Vera Sans", true, CENTER), 
+    rangeBoxVisible_(true), 
+    rangeX_(1e-3), 
+    rangeY_(1e-3)
   
 {
 
@@ -94,6 +97,7 @@ bool ClusterRenderer::setViewingWindow(float x1, float y1,
   viewX2_ = x2; 
   viewY1_ = y1; 
   viewY2_ = y2; 
+
   viewChanged_ = true; 
 }
 
@@ -177,6 +181,11 @@ void ClusterRenderer::render()
     // render text for axes
   glString_.drawWinText(160, 11, Xlabel_, 20); 
   glString_.drawWinText(4, 150, Ylabel_, 20); 
+
+  if (rangeBoxVisible_) {
+    drawRangeBox(); 
+  }
+
   
   GLenum g = glGetError(); 
   while (g != GL_NO_ERROR) {
@@ -347,44 +356,10 @@ void ClusterRenderer::reset()
 
 void ClusterRenderer::renderGrid()
 {
-  // render horizontal and vertical grid
-  
-  glColor4f(1.0, 1.0, 1.0, 0.2); 
 
-  glBegin(GL_LINES); 
+  renderHGrid(); 
+  renderVGrid(); 
 
-  for (int i = 0; (i*gridSpacing_) < viewX2_; i++)
-    {
-      float x = float(i) * gridSpacing_; 
-      glVertex2f(x, viewY1_); 
-      glVertex2f(x, viewY2_); 
-    }
-  glEnd(); 
-
-  
-  glBegin(GL_LINES); 
-
-  for (int i = 0; (i*gridSpacing_) < viewY2_; i++)
-    {
-      float y = float(i) * gridSpacing_; 
-      glVertex2f(viewX1_, y); 
-      glVertex2f(viewX2_, y); 
-      
-
-      
-    }
-
-
-  glEnd(); 
-
-  glColor4f(1.0, 1.0, 1.0, 1.0); 
-
-  for (int i = 1; (i*gridSpacing_) < viewX2_; i++) {
-    float x = float(i) * gridSpacing_; 
-    
-    std::string s("100 uV"); 
-    glString_.drawWorldText(x, gridSpacing_, s, 8); 
-  }
 
 }
 
@@ -392,4 +367,161 @@ void ClusterRenderer::setGrid(float g)
 {
   gridSpacing_ = g; 
 
+}
+
+void ClusterRenderer::renderHGrid()
+{
+  // render the horizontal grid; we need a "text schedule" that
+  // will fade out the relevant bits. 
+  // in some sense this is just going to have to be "policy" that
+  // we hard-code and live with. 
+  
+  glColor4f(1.0, 1.0, 1.0, 0.2); 
+
+  int N = int(round((viewX2_ - 0.0)/gridSpacing_)); 
+
+  // scale 1
+  if (N < 15) {
+    glColor4f(1.0, 1.0, 1.0, 0.2); 
+  } else {
+    glColor4f(1.0, 1.0, 1.0, 0.2 * 15.0/N); 
+  }
+  if (N < 30) {
+
+    for (int i = 1; (i*gridSpacing_) < viewX2_; i++) {
+	
+	float x = float(i) * gridSpacing_; 
+	
+	
+	glBegin(GL_LINES); 
+	glVertex2f(x, viewY1_); 
+	glVertex2f(x, viewY2_); 
+	glEnd(); 
+    }
+    
+    
+  } 
+  
+  // scale 2
+  glColor4f(1.0, 1.0, 1.0, 0.8); 
+
+  glBegin(GL_LINES); 
+  for (int i = 0; (i*gridSpacing_*10.0) < viewX2_; i++)
+    {
+      float x = float(i) * gridSpacing_*10.0; 
+      glVertex2f(x, viewY1_); 
+      glVertex2f(x, viewY2_); 
+    }
+  glEnd(); 
+
+  // the text rendering is considerably more tricky
+  // because we don't want to render more than a few strings at a given time
+  
+  /* 
+     the goal is, for a given N, identify 
+
+     Let's assume we only ever render two text strings on the screen
+     at a time. Which ones should they be?
+
+  */ 
+
+
+}
+
+void ClusterRenderer::renderVGrid()
+{
+
+  glColor4f(1.0, 1.0, 1.0, 0.2); 
+
+  int N = int(round((viewY2_ - 0.0)/gridSpacing_)); 
+
+  // scale 1
+  if (N < 15) {
+    glColor4f(1.0, 1.0, 1.0, 0.2); 
+  } else {
+    glColor4f(1.0, 1.0, 1.0, 0.2 * 15.0/N); 
+  }
+  if (N < 30) {
+
+    for (int i = 1; (i*gridSpacing_) < viewY2_; i++) {
+	
+	float y = float(i) * gridSpacing_; 
+	
+	
+	glBegin(GL_LINES); 
+	glVertex2f(viewX1_, y); 
+	glVertex2f(viewX2_, y); 
+	glEnd(); 
+    }
+    
+    
+  } 
+  
+  // scale 2
+  glColor4f(0.8, 0.8, 1.0, 0.7); 
+
+  glBegin(GL_LINES); 
+  for (int i = 0; (i*gridSpacing_*10.0) < viewY2_; i++)
+    {
+      float y = float(i) * gridSpacing_*10.0; 
+      glVertex2f(viewX1_, y); 
+      glVertex2f(viewX2_, y); 
+    }
+  glEnd(); 
+  
+}
+
+void ClusterRenderer::setRangeBoxVisible(bool vis)
+{
+  rangeBoxVisible_ = vis; 
+
+}
+
+void ClusterRenderer::drawRangeBox()
+{
+  // draw the box that shows the max and min range and our
+  // current position
+  
+  glColor4f(0.0, 0.0, 0.0, 1.0); 
+
+  float frac = 0.25; 
+  float xwidth = viewX2_ - viewX1_; 
+  float ywidth = viewY2_ - viewY1_; 
+
+
+  glBegin(GL_QUADS); 
+  glVertex2f(viewX2_ -  xwidth*frac, viewY2_); 
+  glVertex2f(viewX2_, viewY2_); 
+  glVertex2f(viewX2_, viewY2_ - ywidth*frac); 
+  glVertex2f(viewX2_ - xwidth*frac, viewY2_ - ywidth*frac); 
+  glEnd(); 
+  
+  // draw the border
+  glColor4f(1.0, 1.0, 1.0, 1.0); 
+  glBegin(GL_LINE_LOOP); 
+  glVertex2f(viewX2_ -  xwidth*frac, viewY2_); 
+  glVertex2f(viewX2_, viewY2_); 
+  glVertex2f(viewX2_, viewY2_ - ywidth*frac); 
+  glVertex2f(viewX2_ - xwidth*frac, viewY2_ - ywidth*frac); 
+  glEnd(); 
+
+  // now, draw the active region
+  glColor4f(1.0, 0.0, 0.0, 1.0); 
+  glBegin(GL_LINE_LOOP); 
+  // lower-left coordinate
+  glVertex2f(viewX2_ - xwidth*frac, viewY2_ - ywidth*frac); 
+
+  glVertex2f(viewX2_ - xwidth*frac, 
+	     viewY2_ - ywidth*frac + viewY2_/rangeY_*frac*ywidth); 
+
+  glVertex2f(viewX2_ - xwidth*frac + viewX2_/rangeX_*xwidth*frac, 
+ 	     viewY2_ - ywidth*frac + viewY2_/rangeY_*frac*ywidth); 
+
+  glVertex2f(viewX2_ - xwidth*frac + viewX2_/rangeX_*frac*xwidth, 
+	     viewY2_ - ywidth*frac ); 
+
+  glEnd(); 
+
+  
+  
 }

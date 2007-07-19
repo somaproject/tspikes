@@ -14,7 +14,9 @@ ClusterView::ClusterView(GLSPVectpList_t * pspvl, CViewMode cvm)
   : 
   clusterRenderer_(pspvl, cvm), 
   frameCount_(0),
-  viewMode_(cvm)
+  viewMode_(cvm), 
+  rangeX_(400e-6), 
+  rangeY_(400e-6)
 
 {
   //assert (!pspvl->empty()); 
@@ -55,6 +57,7 @@ ClusterView::ClusterView(GLSPVectpList_t * pspvl, CViewMode cvm)
   signal_button_press_event().connect(sigc::mem_fun(*this, 
 						    &ClusterView::on_button_press_event)); 
   
+  clusterRenderer_.setRange(rangeX_, rangeY_); 
 
 }
 
@@ -84,6 +87,8 @@ void ClusterView::on_realize()
 bool ClusterView::setViewingWindow(float x1, float y1, 
 				   float x2, float y2)
 {
+
+
   x1_ = x1; 
   x2_ = x2; 
   y1_ = y1; 
@@ -206,15 +211,26 @@ void ClusterView::setView(GLSPVectpList_t::iterator sstart,
 
 void ClusterView::zoomX(float factor)
 {
+ 
   x2_ = x2_ * factor; 
+
+  if (x2_ > rangeX_)
+    x2_ = rangeX_; 
   setViewingWindow(x1_, y1_, x2_, y2_); 
+
+  xViewChangeSignal_.emit(x2_); 
+
 }
 
 void ClusterView::zoomY(float factor)
 {
   y2_ = y2_ * factor; 
+  if (y2_ > rangeY_)
+    y2_ = rangeY_; 
+  
+  
   setViewingWindow(x1_, y1_, x2_, y2_); 
-
+  yViewChangeSignal_.emit(y2_); 
 }
 
 void ClusterView::setGrid(float g)
@@ -265,4 +281,17 @@ bool ClusterView::on_button_press_event(GdkEventButton* event)
   lastY_ = event->y; 
  
   return false;
+}
+
+void ClusterView::setXView(float x)
+{
+  x2_ = x; 
+  zoomX(1.0); 
+}
+
+void ClusterView::setYView(float y)
+{
+  y2_ = y; 
+  zoomY(1.0); 
+
 }

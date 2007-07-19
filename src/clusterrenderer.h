@@ -7,6 +7,7 @@
 #include <assert.h>
 
 #include <stdlib.h>
+#include <boost/format.hpp>
 
 #define GL_GLEXT_PROTOTYPES
 
@@ -46,7 +47,14 @@ class ClusterRenderer
 			 bool live = false); 
   void updateView(); 
   void updateViewingWindow(); 
-  
+
+  void setRangeBoxVisible(bool); 
+
+  void setRange(float x, float y) {
+    rangeX_ = x; 
+    rangeY_ = y; 
+  }
+
  protected:
   
   bool isSetup_; 
@@ -66,7 +74,45 @@ class ClusterRenderer
 
   float gridSpacing_; 
   void renderGrid(); 
-  
+  void renderHGrid(); 
+  void renderVGrid(); 
   std::string Xlabel_, Ylabel_; 
+
+  bool rangeBoxVisible_; 
+  float rangeX_, rangeY_; 
+  void drawRangeBox(); 
+  
+
 };
+
+
+inline std::string voltsToString(float x)
+{
+  float absx = fabs(x); 
+  if ( absx < 1e-6) {
+    // nanovolts
+    std::string st = boost::str(boost::format("%1% nV") % (x/1e-9)); 
+    return st;
+
+  } else if (absx < 1e-3) {
+    // microvolts
+    std::string st = boost::str(boost::format("%1% uV") % (x/1e-6)); 
+    return st;
+
+  } else if ( absx  < 1.0) {
+    // millivolts 
+    std::string st = boost::str(boost::format("%1% mV") % (x/1e-3)); 
+    return st;
+
+  } else {
+    // volts
+    std::string st = boost::str(boost::format("%1% V") % (x)); 
+    return st;
+    
+  }
+    
+  
+}
+
+
 #endif

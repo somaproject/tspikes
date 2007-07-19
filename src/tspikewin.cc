@@ -121,6 +121,23 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
   clusterViewAB_.setViewingWindow(0, 0, float(150e-6), float(150e-6));
 
 
+  // now we wire up all of the views together so zooms are sync'd
+  clusterViewXY_.xViewChangeSignal().connect(
+					      sigc::mem_fun(clusterViewXA_, 
+							    &ClusterView::setXView)); 
+  clusterViewXY_.xViewChangeSignal().connect(
+					      sigc::mem_fun(clusterViewXB_, 
+							    &ClusterView::setXView)); 
+
+  clusterViewXY_.yViewChangeSignal().connect(
+					      sigc::mem_fun(clusterViewYA_, 
+							    &ClusterView::setXView)); 
+
+  clusterViewXY_.yViewChangeSignal().connect(
+					      sigc::mem_fun(clusterViewYB_, 
+							    &ClusterView::setXView)); 
+
+  
   spikeWaveViewX_.setViewingWindow(0, -100e-6, 31, 280e-6); 
   spikeWaveViewY_.setViewingWindow(0, -100e-6, 31, 280e-6); 
   spikeWaveViewA_.setViewingWindow(0, -100e-6, 31, 280e-6); 

@@ -113,6 +113,7 @@ cacheItem_t GLString::generateTexture(textprop_t tp)
   
   // test process; 
   
+  
   glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA, texWidth, texHeight, 0, 
 	       GL_BGRA, GL_UNSIGNED_BYTE, surface->get_data()); 
 
@@ -158,7 +159,14 @@ void GLString::renderWorldLoc(float x, float y, cacheItem_t tp)
   // convert to pixel coords 
 
   glOrtho(float(vp[0]), float(vp[2]), float(vp[1]), float(vp[3]), -3.0, 3.0); 
+  
+  
 
+  if (hpos_ == LEFT) {
+    // nothing
+  } else if (hpos_ == CENTER ) {
+    winX -= tp.texWidth/2; 
+  }
   glTranslatef(float(winX), 
 	       float(winY) - float(tp.texHeight) + float(tp.extentsY)/2.0, 0.); 
   glBegin(GL_QUADS);

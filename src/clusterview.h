@@ -51,6 +51,18 @@ public:
   void setGrid(float val); 
   void zoomX(float factor); 
   void zoomY(float factor); 
+  
+  float rangeX_;
+  float rangeY_; 
+
+  sigc::signal <void, float> & xViewChangeSignal() 
+    { return xViewChangeSignal_; }
+
+  sigc::signal <void, float> & yViewChangeSignal()
+    {return yViewChangeSignal_; }
+
+  void setXView(float); 
+  void setYView(float); 
 
 protected:
 
@@ -78,5 +90,9 @@ protected:
   ClusterRenderer clusterRenderer_; 
   float lastX_; 
   float lastY_; 
+
+  sigc::signal<void, float> xViewChangeSignal_; 
+  sigc::signal<void, float> yViewChangeSignal_; 
+  
 };
 #endif
