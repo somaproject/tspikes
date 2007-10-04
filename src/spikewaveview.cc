@@ -18,7 +18,7 @@ int SpikeWaveView::getFrames()
 SpikeWaveView::SpikeWaveView(GLChan_t chan) : 
   chan_(chan), 
   viewChanged_(false),
-  decayVal_(0.0), 
+  decayVal_(0.02), 
   spikeWaveListFull_(false), 
   spikeWaveListTgtLen_(25), 
   m_Frames(0),

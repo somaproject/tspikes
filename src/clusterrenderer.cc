@@ -3,7 +3,7 @@
 
 ClusterRenderer::ClusterRenderer(GLSPVectpList_t * pspvl, CViewMode cvm)
   : pspvl_(pspvl), 
-    decayRate_(0.001), 
+    decayRate_(0.09), 
     decayMode_(LOG), 
     viewChanged_(false), 
     viewMode_( cvm), 
