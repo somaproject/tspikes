@@ -45,6 +45,9 @@ class ClusterRenderer
 			GLSPVectpList_t::iterator send); 
   void renderSpikeVector(const GLSPVect_t & spvect, 
 			 bool live = false); 
+  void renderSpikeVector(GLSPVectpList_t::iterator i, 
+			 bool live = false); 
+
   void updateView(); 
   void updateViewingWindow(); 
 

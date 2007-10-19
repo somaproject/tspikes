@@ -63,9 +63,13 @@ AC_PROG_CXX
 AC_PROG_LIBTOOL
 
 # glib for benchmark
-PKG_CHECK_MODULES(GTKDEPS, gtkmm-2.4 >= 2.10 glibmm-2.4 >= 2.13.0 gtkglext-1.0 >= 1.2.0 gtkglextmm-1.2 >= 1.2.0  )
+PKG_CHECK_MODULES(GTKDEPS, gtkmm-2.4 >= 2.10 glibmm-2.4 >= 2.13.0 gtkglext-1.0 >= 1.2.0 gtkglextmm-1.2 >= 1.2.0)
 AC_SUBST(GTKDEPS_CFLAGS)
 AC_SUBST(GTKDEPS_LIBS)
+
+PKG_CHECK_MODULES(SOMADEPS,   somanetwork-1.0 >= 1.0 )
+AC_SUBST(SOMADEPS_CFLAGS)
+AC_SUBST(SOMADEPS_LIBS)
 
 # Boost!!! 
 AX_BOOST_BASE([1.34.1])

@@ -305,7 +305,7 @@ void TSpikeWin::appendTSpikeToSPL(const TSpike_t & tspike)
     }
   
 
-  (--spVectpList_.end())->push_back(sp); 
+  (--spVectpList_.end())->second->push_back(sp); 
  
 }
 
@@ -314,7 +314,7 @@ void TSpikeWin::setTime(rtime_t t)
   
   if (t - currentTime_  > spVectDuration_ )
     {
-      rateval_t rv =( (--spVectpList_.end())->size() ) / spVectDuration_; 
+      rateval_t rv = (getLastIter(spVectpList_)->second->size() ) / spVectDuration_; 
       
       RatePoint_t rp; 
       rp.rate = rv; 
@@ -348,7 +348,7 @@ void TSpikeWin::updateClusterView(bool isLive, float activePos, float decayRate)
     float winsize = 1 / decayRate; 
     t1 = t2 - winsize; 
   } else {
-    t1 = spVectpList_.begin().key(); 
+    t1 = spVectpList_.begin()->first; 
   }
   
   // now find iterators
@@ -395,8 +395,8 @@ void TSpikeWin::updateClusterView(bool isLive, float activePos, float decayRate)
     }
 
   // tada, now we extract out the relevant times
-  std::cout << "t1 = " << t1i.key() 
-	    << " t2 = " << t2i.key () << std::endl;  
+  std::cout << "t1 = " << t1i->first
+	    << " t2 = " << t2i->first << std::endl;  
   
   
   // now update internal iterators

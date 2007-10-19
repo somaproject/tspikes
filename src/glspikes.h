@@ -22,7 +22,18 @@ struct GLSpikePoint_t {
 }; 
 
 typedef std::vector<GLSpikePoint_t> GLSPVect_t; 
+
+// we use a map to give us sorted O(lg n ) access to the data 
+
 typedef boost::ptr_map<rtime_t, GLSPVect_t> GLSPVectpList_t; 
+inline GLSPVectpList_t::iterator getLastIter( GLSPVectpList_t & sp) {
+  GLSPVectpList_t::iterator i; 
+  i = sp.end(); 
+  assert(sp.empty() == false); 
+  
+  --i; 
+  return i; 
+}
 
 struct CRGBA_t 
 {

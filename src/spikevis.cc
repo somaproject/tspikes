@@ -274,9 +274,10 @@ bool Vis::on_idle()
 
       if (spvlp != spvlsrc.end())
 	{
-	  rtime_t rt = spvlp.key(); 
+	  rtime_t rt = spvlp->first; 
 	  spvl.insert(rt, new GLSPVect_t); 
-	  *(--spvl.end()) = *spvlp; 
+	  
+	  (*getLastIter(spvl)->second) = (*spvlp->second);
 	  spvlp++; 
 
 	} else {
@@ -322,7 +323,7 @@ void spikesquares(void)
 		  sp1.p4 = float( y + i * SPACEY) * scale/2.0; 
 		  sp1.ts = 1000; 
 		  sp1.tchan = j % 4; 
-		  (--spvlsrc.end())->push_back(sp1); 
+		  (getLastIter(spvlsrc))->second->push_back(sp1); 
 		}
 	    }
 
@@ -352,7 +353,7 @@ int main(int argc, char** argv)
     case 0:
       // empty pointers
       spvl.insert(t, new GLSPVect_t); 
-      *(--spvl.end()) = *spvlp; 
+      //*(--spvl.end()) = *spvlp; 
       spvlp++; 
       break; 
     case 1:

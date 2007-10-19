@@ -149,7 +149,7 @@ void ClusterRenderer::render()
 	      glClear(GL_COLOR_BUFFER_BIT); 
 	  
 	      // this is new data, render the old and go
-	      renderSpikeVector(*pCurSPVect_); 
+	      renderSpikeVector(pCurSPVect_); 
 	      
 	      switch(decayMode_) {
 	      case LINEAR:
@@ -172,7 +172,7 @@ void ClusterRenderer::render()
 	  
 	} 
       renderGrid();   
-      renderSpikeVector(*pCurSPVect_, true); 
+      renderSpikeVector(pCurSPVect_, true); 
       
     }
   
@@ -193,6 +193,14 @@ void ClusterRenderer::render()
       viewMode_ << std::endl; 
     g = glGetError(); 
   }
+}
+
+void ClusterRenderer::renderSpikeVector(GLSPVectpList_t::iterator i, bool live)
+{
+  // This is just syntactic sugar to make it easy for us to render
+  // an iterator as well
+  renderSpikeVector(*i->second); 
+  
 }
 
 void ClusterRenderer::renderSpikeVector(const GLSPVect_t & spvect, bool live)
@@ -292,7 +300,7 @@ void ClusterRenderer::resetAccumBuffer(GLSPVectpList_t::iterator sstart,
   for (i = sstart; i != send; i++)
     {
       pos++; 
-      renderSpikeVector(*i); 
+      renderSpikeVector(i); 
       glAccum(GL_ACCUM, 1.0); 
       
       switch(decayMode_) {
@@ -333,7 +341,7 @@ void ClusterRenderer::updateView()
 
   if (viewEndIter_ == pspvl_->end() )
     {
-      pCurSPVect_ = --pspvl_->end(); 
+      pCurSPVect_ = getLastIter(*pspvl_); 
     } else {
       pCurSPVect_ = viewEndIter_; 
     }
