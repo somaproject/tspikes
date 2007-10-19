@@ -81,8 +81,8 @@ cacheItem_t GLString::generateTexture(textprop_t tp)
 
   // compute the new texn;
   int texWidth, texHeight; 
-  texWidth = te.width; 
-  texHeight = te.height; 
+  texWidth = te.width + 4; 
+  texHeight = te.height + 4; 
 
   // then we do it all over again
 

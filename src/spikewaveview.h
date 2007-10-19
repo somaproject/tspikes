@@ -37,7 +37,11 @@ public:
 
   // Invalidate whole window.
   void inv(); 
+
+  void setAmplitudeView(float min, float max); 
+  void setAmplitudeRange(float min,  float max); 
   bool setViewingWindow(float x1, float y1,  float x2, float y2); 
+
   int getFrames(); 
   void setTime(uint64_t time); 
   void newSpikeWave(const GLSpikeWave_t & sw); 
@@ -71,6 +75,8 @@ protected:
   int spikeWaveListTgtLen_; 
   uint64_t currentTime_; 
   GLfloat viewX1_, viewX2_, viewY1_, viewY2_; 
+  GLfloat ampMin_, ampMax_; 
+  GLfloat trigger_; 
 
   bool renderSpikeWave(const GLSpikeWave_t & sw, 
 		       float alpha, bool plotPoints);
@@ -82,10 +88,17 @@ protected:
   GLuint texName1; 
   void setupTexture(); 
   void renderTexture(); 
-
+  void renderRange(); 
   bool isLive_; 
   void renderPaused(); 
-  
+  void renderTrigger(); 
+
+  bool on_button_press_event(GdkEventButton* event); 
+  bool on_motion_notify_event(GdkEventMotion* event); 
+
+
+  float lastX_, lastY_; 
+  float zeroPos_; 
 
 };
 

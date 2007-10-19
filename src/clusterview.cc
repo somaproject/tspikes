@@ -273,7 +273,7 @@ bool ClusterView::on_motion_notify_event(GdkEventMotion* event)
 
 bool ClusterView::on_button_press_event(GdkEventButton* event)
 {
-
+  
   float x = event->x;
   float y = event->y;
 

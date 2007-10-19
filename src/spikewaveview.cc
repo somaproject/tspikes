@@ -22,7 +22,10 @@ SpikeWaveView::SpikeWaveView(GLChan_t chan) :
   spikeWaveListFull_(false), 
   spikeWaveListTgtLen_(25), 
   m_Frames(0),
-  glString_("Sans", false, LEFT),
+  glString_("Mono", false, LEFT),
+  ampMin_(-1e-3),
+  ampMax_(1e-3), 
+  trigger_(50e-6), 
   isLive_(true)
 {
 
@@ -47,7 +50,18 @@ SpikeWaveView::SpikeWaveView(GLChan_t chan) :
   set_gl_capability(glconfig);
 
   // Add events.
-  add_events(Gdk::VISIBILITY_NOTIFY_MASK);
+  add_events(Gdk::VISIBILITY_NOTIFY_MASK | 
+	     Gdk::BUTTON1_MOTION_MASK    | 
+	     Gdk::BUTTON2_MOTION_MASK    | 
+	     Gdk::BUTTON_PRESS_MASK );
+
+  signal_motion_notify_event().connect(sigc::mem_fun(*this, 
+						     &SpikeWaveView::on_motion_notify_event)); 
+
+  signal_button_press_event().connect(sigc::mem_fun(*this, 
+						    &SpikeWaveView::on_button_press_event)); 
+  
+
 
 
 }
@@ -58,7 +72,7 @@ SpikeWaveView::~SpikeWaveView()
 
 void SpikeWaveView::newSpikeWave(const GLSpikeWave_t & sw)
 {
-  //std::cout << sw.wave[0] << std::endl; 
+
   if (spikeWaveListFull_)
     {
       swl_.push_back(sw); 
@@ -147,7 +161,7 @@ void SpikeWaveView::updateViewingWindow()
 
 
   viewChanged_ = false; 
-  
+
 }
 
 bool SpikeWaveView::on_configure_event(GdkEventConfigure* event)
@@ -208,7 +222,7 @@ bool SpikeWaveView::renderSpikeWave(const GLSpikeWave_t & sw,
     default:
       break;
     }
-
+  
 
   if (plotPoints)
     {
@@ -220,7 +234,7 @@ bool SpikeWaveView::renderSpikeWave(const GLSpikeWave_t & sw,
     }
   
   glBegin(GL_LINE_STRIP); 
-  for (unsigned int i = 0; i < sw.wave.size(); i++)
+    for (unsigned int i = 0; i < sw.wave.size(); i++)
     {
       glVertex2f(i, sw.wave[i]); 
     }
@@ -261,9 +275,9 @@ bool SpikeWaveView::on_expose_event(GdkEventExpose* event)
   if (isLive_) { 
     glClearColor(0.0, 0.0, 0.0, 1.0); 
     glClear(GL_COLOR_BUFFER_BIT | GL_ACCUM_BUFFER_BIT ); 
-    
+    renderTrigger(); 
     renderGrid(); 
-    
+    renderRange(); 
     // real work 
     SpikeWaveList_t::iterator csIter; 
     // always show the last N spikes, and only the last N. 
@@ -289,9 +303,9 @@ bool SpikeWaveView::on_expose_event(GdkEventExpose* event)
     int y = get_height(); 
     glColor4f(1.0, 1.0, 1.0, 1.0); 
     glString_.drawWinText(4, y-15, "Gain : 100", 10); 
-    glString_.drawWinText(4, y-25, "HW HPF: On ", 10); 
-    glString_.drawWinText(4, y-35, "Filter : 6 kHz ", 10); 
-    glString_.drawWinText(4, y-45, "Thold : 320 uV ", 10); 
+    glString_.drawWinText(4, y-25, "HW HPF: On", 10); 
+    glString_.drawWinText(4, y-35, "Filter : 6 kHz", 10); 
+    glString_.drawWinText(4, y-45, "Thold : 320 uV", 10); 
     
   } else { 
     // we are in a "pasued state" 
@@ -313,7 +327,7 @@ bool SpikeWaveView::on_expose_event(GdkEventExpose* event)
 bool SpikeWaveView::on_map_event(GdkEventAny* event)
 {
 
-  std::cout << "SPikeWaveView::on_map_event" << std::endl;
+  std::cout << "SpikeWaveView::on_map_event" << std::endl;
   
   Glib::RefPtr<Gdk::GL::Drawable> gldrawable = get_gl_drawable();
 
@@ -409,6 +423,18 @@ void SpikeWaveView::renderGrid()
       glEnd(); 
     }
   
+  float test = viewY1_ / GRIDINC; 
+  lnumpos = int(abs(test)); 
+
+  
+  for (int i = 0; i < lnumpos; i++)
+    {
+      glBegin(GL_LINES); 
+      glVertex2f(viewX1_, -GRIDINC*(i+1)); 
+      glVertex2f(viewX2_, -GRIDINC*(i+1)); 
+      glEnd(); 
+    }
+  
 }
 
 
@@ -453,11 +479,145 @@ void SpikeWaveView::renderPaused()
 
 }
 
+void SpikeWaveView::renderRange()
+{
+ 
+  // Render the dynamic range Scale -- this is way too complex. 
+  
+  glDisable(GL_LINE_SMOOTH); 
+  
+  glPushMatrix(); 
+  
+  float HEIGHT = 0.3; 
+  float Yscale = (ampMax_ - ampMin_) / (viewY2_ - viewY1_) / HEIGHT;  
+
+  float WIDTH = 0.5/10.0; 
+  glTranslatef((viewX2_-viewX1_)*(1-WIDTH), viewY2_ - HEIGHT*(viewY2_-viewY1_)/2, 0.0); 
+  glScalef(WIDTH, 1.0/Yscale, 1.0); 
+
+  // the full range 
+  glLineWidth(1.0); 
+  glColor4f(1.0, 1.0, 1.0, 1.0); 
+  glBegin(GL_LINE_LOOP);
+  glVertex2f(viewX1_, ampMin_); 
+  glVertex2f(viewX1_, ampMax_); 
+  glVertex2f(viewX2_, ampMax_); 
+  glVertex2f(viewX2_, ampMin_); 
+  glEnd(); 
+
+  glLineWidth(1.0); 
+  glColor4f(1.0, 0.0, 0.0, 1.0); 
+  glBegin(GL_LINE_LOOP);
+  glVertex2f(viewX1_, viewY1_); 
+  glVertex2f(viewX1_, viewY2_); 
+  glVertex2f(viewX2_, viewY2_); 
+  glVertex2f(viewX2_, viewY1_); 
+  glEnd(); 
+
+
+  glPopMatrix(); 
+  glEnable(GL_LINE_SMOOTH); 
+  
+}
 void SpikeWaveView::setLive(bool l)
 {
   isLive_ = l; 
   viewChanged_ = true; 
   inv(); 
 
+
+}
+
+void SpikeWaveView::setAmplitudeRange(float min, float max)
+{
+  ampMin_ = min; 
+  ampMax_ = max; 
+
+}
+
+bool SpikeWaveView::on_motion_notify_event(GdkEventMotion* event)
+{
+
+  float x = event->x;
+  float y = event->y;
+
+
+  if (event->state & GDK_BUTTON1_MASK) 
+    {
+      
+      float pixYdelta = -(lastY_ - y); 
+      float zoomYfact = pixYdelta/float(get_width()) + 1.0; 
+      viewY1_ = viewY1_ * zoomYfact; 
+      viewY2_ = viewY2_ * zoomYfact;  
+      viewChanged_ = true; 
+    }
+
+      
+  else if (event->state & GDK_BUTTON3_MASK)
+    {
+
+    }
+
+  lastX_ = x; 
+  lastY_ = y; 
+
+  return true;
+}
+
+
+bool SpikeWaveView::on_button_press_event(GdkEventButton* event)
+{
+
+  float x = event->x;
+  float y = event->y;
+
+  lastX_ = event->x; 
+  lastY_ = event->y; 
+ 
+  return false;
+}
+
+
+void SpikeWaveView::setAmplitudeView(float min, float max)
+{
+  // we'd like our scale to look at ~ volts. 
+
+  viewY1_ = min; 
+  viewY2_ = max; 
+  
+}
+void SpikeWaveView::renderTrigger()
+{
+  glLineWidth(3.0);
+  float alpha = 0.5; 
+  switch (chan_) 
+    {
+    case CHANX:
+      glColor4f(1.0, 0.0, 0.0, alpha); 
+      break;
+
+    case CHANY:
+      glColor4f(0.0, 1.0, 0.0, alpha); 
+      break;
+
+    case CHANA:
+      glColor4f(0.0, 0.0, 1.0, alpha); 
+      break;
+
+    case CHANB:
+      glColor4f(1.0, 1.0, 0.0, alpha); 
+      break;
+
+    default:
+      break;
+    }
+  glEnable(GL_LINE_STIPPLE); 
+  glLineStipple(1, 0xFF); 
+  
+  glBegin(GL_LINE_LOOP);
+  glVertex2f(viewX1_, trigger_); 
+  glVertex2f(viewX2_, trigger_); 
+  glEnd(); 
+  glDisable(GL_LINE_STIPPLE); 
 
 }

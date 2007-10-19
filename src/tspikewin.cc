@@ -138,10 +138,10 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
 							    &ClusterView::setXView)); 
 
   
-  spikeWaveViewX_.setViewingWindow(0, -100e-6, 31, 280e-6); 
-  spikeWaveViewY_.setViewingWindow(0, -100e-6, 31, 280e-6); 
-  spikeWaveViewA_.setViewingWindow(0, -100e-6, 31, 280e-6); 
-  spikeWaveViewB_.setViewingWindow(0, -100e-6, 31, 280e-6); 
+  spikeWaveViewX_.setViewingWindow(0, -100e-6, 31, 300e-6); 
+  spikeWaveViewY_.setViewingWindow(0, -100e-6, 31, 300e-6); 
+  spikeWaveViewA_.setViewingWindow(0, -100e-6, 31, 300e-6); 
+  spikeWaveViewB_.setViewingWindow(0, -100e-6, 31, 300e-6); 
   liveButton_.set_active(true); 
 
   show_all();
@@ -158,7 +158,7 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
   
   liveButton_.signal_toggled().connect(sigc::mem_fun(*this,
 						     &TSpikeWin::liveToggle)); 
-
+  set_decorated(false);
 }
 
 TSpikeWin::~TSpikeWin()
