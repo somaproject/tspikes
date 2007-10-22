@@ -22,11 +22,7 @@
 #include "glspikes.h"
 
 #include "cairogltext/glstring.h"
-
-
-const int SPIKEWAVE_LEN = 32; 
-
-typedef std::list<GLSpikeWave_t> SpikeWaveList_t; 
+#include "spikewaverenderer.h" 
 
 class SpikeWaveView : public Gtk::GL::DrawingArea
 {
@@ -35,27 +31,23 @@ public:
 
   virtual ~SpikeWaveView();
 
-  // Invalidate whole window.
-  void inv(); 
-
   void setAmplitudeView(float min, float max); 
-  void setAmplitudeRange(float min,  float max); 
-  bool setViewingWindow(float x1, float y1,  float x2, float y2); 
+  
+  int getFrameCount(); 
 
-  int getFrames(); 
   void setTime(uint64_t time); 
   void newSpikeWave(const GLSpikeWave_t & sw); 
-  void setListLen(int len);
 
+  void setListLen(int len);
   void setLive(bool); 
 
-  // Update window synchronously (fast).
-  void update()
-  { get_window()->process_updates(false); }
-
-  void setPaused(bool state); 
+  // Invalidate whole window.
+  void invalidate(); 
 
 protected:
+
+  SpikeWaveRenderer spikeWaveRenderer_; 
+
 
   // signal handlers:
   virtual void on_realize();
@@ -67,38 +59,22 @@ protected:
   virtual bool on_idle();
 
   void updateViewingWindow(); 
-  bool viewChanged_; 
-  float decayVal_;  // how many ts are we at zero opacity with ? 
-  GLChan_t chan_; 
-  SpikeWaveList_t swl_; 
-  bool spikeWaveListFull_; 
-  int spikeWaveListTgtLen_; 
+
   uint64_t currentTime_; 
-  GLfloat viewX1_, viewX2_, viewY1_, viewY2_; 
-  GLfloat ampMin_, ampMax_; 
-  GLfloat trigger_; 
 
-  bool renderSpikeWave(const GLSpikeWave_t & sw, 
-		       float alpha, bool plotPoints);
-  void renderGrid(); 
-  void renderText(); 
-
-  int m_Frames;
-  GLString glString_; 
-  GLuint texName1; 
-  void setupTexture(); 
-  void renderTexture(); 
-  void renderRange(); 
-  bool isLive_; 
-  void renderPaused(); 
-  void renderTrigger(); 
-
+  int frameCount_;
   bool on_button_press_event(GdkEventButton* event); 
   bool on_motion_notify_event(GdkEventMotion* event); 
-
-
+  
   float lastX_, lastY_; 
   float zeroPos_; 
+
+  // Update window synchronously (fast).
+  void update()
+  { get_window()->process_updates(false); }
+  
+  bool live_; 
+
 
 };
 

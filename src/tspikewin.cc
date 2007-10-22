@@ -138,10 +138,10 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
 							    &ClusterView::setXView)); 
 
   
-  spikeWaveViewX_.setViewingWindow(0, -100e-6, 31, 300e-6); 
-  spikeWaveViewY_.setViewingWindow(0, -100e-6, 31, 300e-6); 
-  spikeWaveViewA_.setViewingWindow(0, -100e-6, 31, 300e-6); 
-  spikeWaveViewB_.setViewingWindow(0, -100e-6, 31, 300e-6); 
+  spikeWaveViewX_.setAmplitudeView(-100e-6, 300e-6); 
+  spikeWaveViewY_.setAmplitudeView(-100e-6, 300e-6); 
+  spikeWaveViewA_.setAmplitudeView(-100e-6, 300e-6); 
+  spikeWaveViewB_.setAmplitudeView(-100e-6, 300e-6); 
   liveButton_.set_active(true); 
 
   show_all();
@@ -177,10 +177,10 @@ bool TSpikeWin::on_idle()
   clusterViewYB_.invalidate(); 
   clusterViewAB_.invalidate(); 
 
-  spikeWaveViewX_.inv(); 
-  spikeWaveViewY_.inv(); 
-  spikeWaveViewA_.inv(); 
-  spikeWaveViewB_.inv(); 
+  spikeWaveViewX_.invalidate(); 
+  spikeWaveViewY_.invalidate(); 
+  spikeWaveViewA_.invalidate(); 
+  spikeWaveViewB_.invalidate(); 
 
   return true;
 }

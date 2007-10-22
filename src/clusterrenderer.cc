@@ -497,7 +497,7 @@ void ClusterRenderer::drawRangeBox()
   float ywidth = viewY2_ - viewY1_; 
 
 
-  glBegin(GL_QUADS); 
+  glBegin(GL_LINE_LOOP); 
   glVertex2f(viewX2_ -  xwidth*frac, viewY2_); 
   glVertex2f(viewX2_, viewY2_); 
   glVertex2f(viewX2_, viewY2_ - ywidth*frac); 
