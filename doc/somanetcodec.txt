@@ -1,0 +1,21 @@
+what do we want to do ? How do we want to abstract away the notion of
+a remote data source and a remote data control point?
+
+Data input: 
+   Spikes from a source
+
+Event control associated with data source: 
+   set settings  
+   settingsChanged()
+
+Generic Event Control:
+   time()
+
+Let's just write the damn thing and worry about the most parsimonious
+design later.
+
+
+
+Now, somehow this has to get called from the primary glib loop when
+either events or data arrive.
+

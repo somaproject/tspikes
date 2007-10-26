@@ -1,0 +1,23 @@
+A SpikeWaveView lets you look at the spike waveforms for a particular
+channel. 
+
+ * it is passed and renders tspikes waveforms for its particular channel
+    newSpikeWave(A new GLSpikeWave_t)    
+    
+ * it plots the current settings/state for a given channel :
+    setTime(uint_t ) :
+    updateChannelState(ChanState_t ) :
+
+ * it has internal view state, such as amplitude
+    setAmplitudeView(min, max): set's the amplitude range you can currently see
+
+    amplitudeViewSignal(min, max) signal emitted when amp view changes
+    
+ * and support methods: 
+
+    setListLen() : internal buffer size
+
+    setLive() : whether or not we're actively rendering
+
+    invalidate() : invalidate and rerender whole window; generally
+    should not be used, as other state changes will dirty the window.

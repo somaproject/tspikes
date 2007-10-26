@@ -1,0 +1,22 @@
+The SpikeWaveRenderer handles all opengl rendering of the waveforms,
+and actually posessses the relevant view state and spike list.
+
+void openGLSetup() : initial setup 
+
+setAmplitudeView(min, max) : The range of amplitudes we're looking at
+right now.
+getAmplitudeView(min*, max*) ; 
+
+setAmplitudeRange(min, max) : set the total possible range for the
+amplitude
+
+setTime(uint64_t time)
+newSpikeWave(GlSpikeWave_t & sw)
+setListLen()
+
+setLive(bool)
+
+render() : the primary actionable item. 
+
+
+setViewPort(x, y) : set the viewport properties; 
