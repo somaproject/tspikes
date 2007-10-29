@@ -47,6 +47,8 @@ public:
 
   void setLive(bool); 
 
+  void setTriggerThreshold(float thold); 
+
   // Update window synchronously (fast).
   void setPaused(bool state); 
   

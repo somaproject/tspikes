@@ -274,3 +274,13 @@ void SpikeWaveView::setLive(bool live)
   spikeWaveRenderer_.setLive(live); 
 
 }
+
+void SpikeWaveView::updateState(const TSpikeChannelState & state)
+{
+  float min, max; 
+  min = state.rangeMin / 1e9; 
+  max = state.rangeMax / 1e9; 
+  setAmplitudeView(min, max); 
+
+}
+

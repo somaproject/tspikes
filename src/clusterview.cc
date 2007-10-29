@@ -295,3 +295,16 @@ void ClusterView::setYView(float y)
   zoomY(1.0); 
 
 }
+
+void ClusterView::updateState(bool X, const TSpikeChannelState & state)
+{
+  // X is true when the update is for the X (vertical) axis
+  float max = 0.0;
+  max = state.rangeMax / 1e9; 
+  if (X) {
+    rangeX_ = max; 
+  } else {
+    rangeY_ = max; 
+  }
+  
+}

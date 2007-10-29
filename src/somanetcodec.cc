@@ -1,8 +1,14 @@
 #include "somanetcodec.h"
 
-SomaNetworkCodec::SomaNetworkCodec(Network * pNetwork) :
+SomaNetworkCodec::SomaNetworkCodec(NetworkInterface * pNetwork) :
   pNetwork_(pNetwork)
 {
+
+  Glib::signal_io().connect(sigc::mem_fun(*this, &SomaNetworkCodec::dataRXCallback), 
+			    pNetwork_->getDataFifoPipe(), Glib::IO_IN); 
+  Glib::signal_io().connect(sigc::mem_fun(*this, &SomaNetworkCodec::eventRXCallback), 
+			    pNetwork_->getEventFifoPipe(), Glib::IO_IN); 
+  
 
 }
 
@@ -34,7 +40,6 @@ void SomaNetworkCodec::processNewData(DataPacket_t * dp)
     // somehow we received a datapacket that wasn't for us
   }
 
-  delete dp; 
 
 }
 
@@ -55,9 +60,52 @@ void SomaNetworkCodec::parseEvent(const Event_t & evt)
 {
   // if event is time event, extract out, update time
   // 
-
+  
+  
   // if event is a state update; we do the state-update-dance
   
-  
+  // emit relevant signals
+
 
 }
+
+bool SomaNetworkCodec::dataRXCallback(Glib::IOCondition io_condition)
+{
+  
+  if ((io_condition & Glib::IO_IN) == 0) {
+    std::cerr << "Invalid fifo response" << std::endl;
+    return false; 
+  }
+  else 
+    {
+      char x; 
+      read(pNetwork_->getDataFifoPipe(), &x, 1); 
+      DataPacket_t * rdp = pNetwork_->getNewData(); 
+
+      processNewData(rdp); 
+
+      delete rdp; 
+    
+    }
+  return true; 
+}
+
+
+bool SomaNetworkCodec::eventRXCallback(Glib::IOCondition io_condition)
+{
+  
+  if ((io_condition & Glib::IO_IN) == 0) {
+    std::cerr << "Invalid fifo response" << std::endl;
+    return false; 
+  }
+  else 
+    {
+      char x; 
+      read(pNetwork_->getEventFifoPipe(), &x, 1); 
+      EventList_t * pel = pNetwork_->getNewEvents(); 
+      processNewEvents(pel); 
+      delete pel; 
+    }
+  return true; 
+}
+

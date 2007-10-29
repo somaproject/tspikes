@@ -163,7 +163,7 @@ int main(int argc, char** argv)
     
     TSpikeWin tspikewin(&net);
     
-    net.run(); 
+    //net.run(); 
     kit.run(tspikewin);
     
     return 0; 
@@ -188,8 +188,6 @@ int main(int argc, char** argv)
     FakeTTData fttd(vm["ttfile"].as<std::string>(), ttrate); 
     if (vm.count("ttprenum") )
       {
-	
-      
 	std::vector<TSpike_t> spikes 
 	  = fttd.getManySpikes(vm["ttprenum"].as<int>()); 
 	

@@ -23,6 +23,7 @@
 
 #include "cairogltext/glstring.h"
 #include "spikewaverenderer.h" 
+#include "somanetcodec.h"
 
 class SpikeWaveView : public Gtk::GL::DrawingArea
 {
@@ -37,7 +38,8 @@ public:
 
   void setTime(uint64_t time); 
   void newSpikeWave(const GLSpikeWave_t & sw); 
-
+  void updateState(const TSpikeChannelState & state); 
+  
   void setListLen(int len);
   void setLive(bool); 
 

@@ -25,6 +25,7 @@
 #include "clusterview.h"
 #include "spikewaveview.h"
 #include "ratetimeline.h"
+#include "somanetcodec.h"
 
 class TSpikeWin : public Gtk::Window
 {
@@ -57,27 +58,24 @@ protected:
   Gtk::HBox mainHBox_; 
   Gtk::HBox timeLineHBox_; 
 
-  ClusterView clusterViewXY_; 
-  ClusterView clusterViewXA_; 
-  ClusterView clusterViewXB_; 
-  ClusterView clusterViewYA_; 
-  ClusterView clusterViewYB_; 
-  ClusterView clusterViewAB_; 
+  ClusterView clusterViewXY_;
+  ClusterView clusterViewXA_;
+  ClusterView clusterViewXB_;
+  ClusterView clusterViewYA_;
+  ClusterView clusterViewYB_;
+  ClusterView clusterViewAB_;
 
-  SpikeWaveView spikeWaveViewX_; 
-  SpikeWaveView spikeWaveViewY_; 
-  SpikeWaveView spikeWaveViewA_; 
-  SpikeWaveView spikeWaveViewB_; 
+  SpikeWaveView spikeWaveViewX_;
+  SpikeWaveView spikeWaveViewY_;
+  SpikeWaveView spikeWaveViewA_;
+  SpikeWaveView spikeWaveViewB_;
   
   RateTimeline rateTimeline_; 
 
   // append data functions
-  bool dataRXCallback(Glib::IOCondition io_condition); 
 
-  bool eventRXCallback(Glib::IOCondition io_condition);
-
-  void appendTSpikeToSpikewaves(const TSpike_t & tspike); 
-  void appendTSpikeToSPL(const TSpike_t & tspike);
+  //
+  
 
   // update clusters
   void updateClusterView(bool, float, float); 
@@ -87,7 +85,13 @@ protected:
   // timeline manipulation
   rtime_t currentTime_; 
   Gtk::ToggleButton liveButton_; 
-
+  SomaNetworkCodec somaNetworkCodec_; 
+  
+  // callbacks
+  void timeUpdateCallback(somatime_t); 
+  void sourceStateChangeCalback(int, TSpikeChannelState); 
+  void newTSpikeCallback(const TSpike_t &); 
+  
 };
 
 #endif // TSPIKEWIN_H

@@ -4,6 +4,7 @@
 #include <GL/gl.h>
 #include <vector>
 #include <list>
+#include <somanetwork/tspike.h>
 
 #include <boost/ptr_container/ptr_map.hpp>
 
@@ -48,6 +49,10 @@ struct GLSpikeWave_t
   uint64_t ts; 
   std::vector<GLfloat> wave; 
 }; 
+
+std::vector<GLSpikeWave_t> splitSpikeToGLSpikeWaves(const TSpike_t & tspike); 
+void appendTSpikeToSPL(const TSpike_t & tspike, GLSPVectpList_t * pspVectpList); 
+
 
 
 #endif //GLSPIKES_H

@@ -393,6 +393,7 @@ void SpikeWaveRenderer::renderTrigger()
     default:
       break;
     }
+
   glEnable(GL_LINE_STIPPLE); 
   glLineStipple(1, 0xFF); 
   
@@ -404,3 +405,8 @@ void SpikeWaveRenderer::renderTrigger()
 
 }
 
+void SpikeWaveRenderer::setTriggerThreshold(float thold)
+{
+  trigger_ = thold; 
+  
+}

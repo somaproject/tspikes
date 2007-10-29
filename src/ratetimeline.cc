@@ -63,7 +63,7 @@ RateTimeline::RateTimeline() :
   signal_leave_notify_event().connect(sigc::mem_fun(*this,
 						    &RateTimeline::on_leave_notify_event)); 
   
-  
+  std::cout << "RateTimeLine constructor done" << std::endl; 
 }
 
 RateTimeline::~RateTimeline()
@@ -104,7 +104,7 @@ void RateTimeline::on_realize()
 
   gldrawable->gl_end();
   // *** OpenGL END ***
-
+  std::cout << "RateTimeline::on_realize done " << std::endl; 
 }
 
 void RateTimeline::updateViewingWindow()
@@ -147,6 +147,8 @@ bool RateTimeline::on_configure_event(GdkEventConfigure* event)
 
   //invalidate(); 
   return true;
+  std::cout << "RateTimeline::on_configure done " << std::endl; 
+
 }
 
 void RateTimeline::appendRate(RatePoint_t rp)
@@ -299,7 +301,7 @@ bool RateTimeline::on_map_event(GdkEventAny* event)
   gldrawable->gl_end();
   // *** OpenGL END ***
 
-
+  std::cout << "RateTimeline::on_map_event done" << std::endl;
   return true;
 }
 

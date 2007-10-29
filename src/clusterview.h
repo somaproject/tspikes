@@ -20,6 +20,7 @@
 #include "glconfig.h"
 #include "glspikes.h"
 #include "clusterrenderer.h"
+#include "somanetcodec.h"
 
 
 class ClusterView : public Gtk::GL::DrawingArea
@@ -51,6 +52,8 @@ public:
   void setGrid(float val); 
   void zoomX(float factor); 
   void zoomY(float factor); 
+
+  void updateState(bool X, const TSpikeChannelState & state); 
   
   float rangeX_;
   float rangeY_; 

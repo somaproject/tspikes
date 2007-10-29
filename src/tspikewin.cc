@@ -27,7 +27,8 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
   spikeWaveViewB_(CHANB),
 
   currentTime_(0.0),
-  liveButton_("Live")
+  liveButton_("Live"), 
+  somaNetworkCodec_(pNetwork_)
     
 {
   //
@@ -146,19 +147,27 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
 
   show_all();
 
-  Glib::signal_idle().connect( sigc::mem_fun(*this, &TSpikeWin::on_idle) );
-
-  Glib::signal_io().connect(sigc::mem_fun(*this, &TSpikeWin::dataRXCallback), 
-			    pNetwork_->getDataFifoPipe(), Glib::IO_IN); 
-  Glib::signal_io().connect(sigc::mem_fun(*this, &TSpikeWin::eventRXCallback), 
-			    pNetwork_->getEventFifoPipe(), Glib::IO_IN); 
-  
   rateTimeline_.viewSignal().connect(sigc::mem_fun(*this, 
 						   &TSpikeWin::updateClusterView)); 
   
   liveButton_.signal_toggled().connect(sigc::mem_fun(*this,
 						     &TSpikeWin::liveToggle)); 
+
+
+  /// data recovery callback hookup
+  somaNetworkCodec_.signalSourceStateChange().connect(sigc::mem_fun(*this, 
+								    &TSpikeWin::sourceStateChangeCalback)); 
+  
+  somaNetworkCodec_.signalTimeUpdate().connect(sigc::mem_fun(*this, 
+							     &TSpikeWin::timeUpdateCallback)); 
+
+  somaNetworkCodec_.signalNewTSpike().connect(sigc::mem_fun(*this, 
+							    &TSpikeWin::newTSpikeCallback)); 
+
+
   set_decorated(false);
+  std::cout << "constructor done" << std::endl; 
+
 }
 
 TSpikeWin::~TSpikeWin()
@@ -169,145 +178,22 @@ TSpikeWin::~TSpikeWin()
 bool TSpikeWin::on_idle()
 
 {
+  std::cout << "beginning idle " << std::endl; 
+//   clusterViewXY_.invalidate(); 
+//   clusterViewXA_.invalidate(); 
+//   clusterViewXB_.invalidate(); 
+//   clusterViewYA_.invalidate(); 
+//   clusterViewYB_.invalidate(); 
+//   clusterViewAB_.invalidate(); 
 
-  clusterViewXY_.invalidate(); 
-  clusterViewXA_.invalidate(); 
-  clusterViewXB_.invalidate(); 
-  clusterViewYA_.invalidate(); 
-  clusterViewYB_.invalidate(); 
-  clusterViewAB_.invalidate(); 
-
-  spikeWaveViewX_.invalidate(); 
-  spikeWaveViewY_.invalidate(); 
-  spikeWaveViewA_.invalidate(); 
-  spikeWaveViewB_.invalidate(); 
+//   spikeWaveViewX_.invalidate(); 
+//   spikeWaveViewY_.invalidate(); 
+//   spikeWaveViewA_.invalidate(); 
+//   spikeWaveViewB_.invalidate(); 
 
   return true;
 }
 
-
-bool TSpikeWin::dataRXCallback(Glib::IOCondition io_condition)
-{
-  
-  if ((io_condition & Glib::IO_IN) == 0) {
-    std::cerr << "Invalid fifo response" << std::endl;
-    return false; 
-  }
-  else 
-    {
-      char x; 
-      read(pNetwork_->getDataFifoPipe(), &x, 1); 
-      DataPacket_t * rdp = pNetwork_->getNewData(); 
-      // is this a spike? 
-      if (rdp->typ == TSPIKE)
-	{
-
-	  // convert to a real spike packet
-	  TSpike_t ts = rawToTSpike(rdp); 
-	  
-	  // now what do we do with it? 
-	  appendTSpikeToSpikewaves(ts); 
-	  appendTSpikeToSPL(ts); 
-	}
-      else 
-	{
-	  std::cout << "Not a spike?"  << std::endl; 
-	}
-
-    
-    }
-  return true; 
-}
-
-
-void TSpikeWin::appendTSpikeToSpikewaves(const TSpike_t & tspike)
-{
-  GLSpikeWave_t x, y, a, b; 
-  x.ts = tspike.time; 
-  y.ts = tspike.time; 
-  a.ts = tspike.time; 
-  b.ts = tspike.time; 
-  float SCALE = 1e9; 
-  
-  for (int i = 0; i < TSPIKEWAVE_LEN; i++)
-    {
-      x.wave.push_back(float(tspike.x.wave[i]) / SCALE); 
-      y.wave.push_back(float(tspike.y.wave[i]) / SCALE); 
-      a.wave.push_back(float(tspike.a.wave[i]) / SCALE); 
-      b.wave.push_back(float(tspike.b.wave[i]) / SCALE); 
-
-    }
-
-  spikeWaveViewX_.newSpikeWave(x); 
-  spikeWaveViewY_.newSpikeWave(y); 
-  spikeWaveViewA_.newSpikeWave(a); 
-  spikeWaveViewB_.newSpikeWave(b); 
-
-}
-
-void TSpikeWin::appendTSpikeToSPL(const TSpike_t & tspike)
-{
-  GLSpikePoint_t sp; 
-  sp.ts = tspike.time; 
-  sp.p1 = -100e6; 
-  sp.p2 = -100e6; 
-  sp.p3 = -100e6; 
-  sp.p4 = -100e6; 
-  sp.tchan = - 1 ;
-  
-  // remember tspike is in nv
-  float SCALE = 1e9; 
-
-  for (int i = 0; i < TSPIKEWAVE_LEN; i++)
-    {
-      GLfloat xval = float(tspike.x.wave[i]) / SCALE; 
-      GLfloat yval = float(tspike.y.wave[i]) / SCALE; 
-      GLfloat aval = float(tspike.a.wave[i]) / SCALE; 
-      GLfloat bval = float(tspike.b.wave[i]) / SCALE; 
-
-      GLfloat xthresh = float(tspike.x.threshold) / SCALE; 
-      GLfloat ythresh = float(tspike.y.threshold) / SCALE; 
-      GLfloat athresh = float(tspike.a.threshold) / SCALE; 
-      GLfloat bthresh = float(tspike.b.threshold) / SCALE; 
-
-      if (sp.p1 < xval)
-	sp.p1 = xval; 
-      
-      if (sp.tchan < 0 & xval > xthresh)
-	{
-	  sp.tchan = 0; 
-	}
-
-      if (sp.p2 < yval)
-	sp.p2 = yval; 
-      
-      if (sp.tchan < 0 & yval > ythresh)
-	{
-	  sp.tchan = 1; 
-	}
-
-      if (sp.p3 < aval)
-	sp.p3 = aval; 
-      
-      if (sp.tchan < 0 & aval > athresh)
-	{
-	  sp.tchan = 2; 
-	}
-
-      if (sp.p4 < bval)
-	sp.p4 = bval; 
-      
-      if (sp.tchan < 0 & bval > bthresh)
-	{
-	  sp.tchan = 3; 
-	}
-      
-    }
-  
-
-  (--spVectpList_.end())->second->push_back(sp); 
- 
-}
 
 void TSpikeWin::setTime(rtime_t t)
 {
@@ -434,51 +320,13 @@ void TSpikeWin::loadExistingSpikes(const std::vector<TSpike_t> & spikes)
   for (pts = spikes.begin(); pts != spikes.end(); pts++)
     {
       
-      appendTSpikeToSpikewaves(*pts); 
-      appendTSpikeToSPL(*pts); 
+      //appendTSpikeToSpikewaves(*pts); 
+      //appendTSpikeToSPL(*pts); 
       
       rtime_t t = float(pts->time) / 10e3; 
       setTime(t);
 
     }
-}
-
-
-bool TSpikeWin::eventRXCallback(Glib::IOCondition io_condition)
-{
-  
-  if ((io_condition & Glib::IO_IN) == 0) {
-    std::cerr << "Invalid fifo response" << std::endl;
-    return false; 
-  }
-  else 
-    {
-      char x; 
-      read(pNetwork_->getEventFifoPipe(), &x, 1); 
-      EventList_t * pel = pNetwork_->getNewEvents(); 
-      
-      EventList_t::iterator i; 
-      for (i = pel->begin(); i != pel->end(); i++)
-	{
-	  // we really need to figure out how to FACTOR THIS OUT
-	  
-	  if (i->src == 0x00 && i->cmd == 0x10 )
-	    {
-	      // this is the time
-	      uint64_t time = 0; 
-	      time = i->data[0]; 
-	      time = time << 16; 
-	      time |= i->data[1]; 
-	      time = time << 16; 
-	      time |= i->data[2]; 
-	      float ftime = float(time) / 50e3; 
-
-	      setTime(ftime); 
-	    }
-
-	}
-    }
-  return true; 
 }
 
 
@@ -489,10 +337,70 @@ void TSpikeWin::liveToggle()
 	    << std::endl; 
 
   rateTimeline_.setLive(liveButton_.get_active()); 
-  spikeWaveViewX_.setLive(liveButton_.get_active()); 
-  spikeWaveViewY_.setLive(liveButton_.get_active()); 
-  spikeWaveViewA_.setLive(liveButton_.get_active()); 
-  spikeWaveViewB_.setLive(liveButton_.get_active()); 
+//   spikeWaveViewX_.setLive(liveButton_.get_active()); 
+//   spikeWaveViewY_.setLive(liveButton_.get_active()); 
+//   spikeWaveViewA_.setLive(liveButton_.get_active()); 
+//   spikeWaveViewB_.setLive(liveButton_.get_active()); 
   
 
+}
+
+void TSpikeWin::timeUpdateCallback(somatime_t time)
+{
+  
+}
+
+void TSpikeWin::sourceStateChangeCalback(int chan, TSpikeChannelState state)
+{
+
+  switch(chan) {
+  case 0:
+    spikeWaveViewX_.updateState(state); 
+
+    clusterViewXY_.updateState(true, state); 
+    clusterViewXA_.updateState(true, state); 
+    clusterViewXB_.updateState(true, state); 
+    break; 
+
+  case 1:
+    spikeWaveViewY_.updateState(state); 
+
+    clusterViewXY_.updateState(false, state);
+    clusterViewYA_.updateState(true, state); 
+    clusterViewYB_.updateState(true, state); 
+    break;
+
+  case 2:
+    spikeWaveViewA_.updateState(state); 
+
+    clusterViewXA_.updateState(false, state);
+    clusterViewYA_.updateState(false, state); 
+    clusterViewAB_.updateState(true, state); 
+    break;
+
+  case 3:
+    spikeWaveViewB_.updateState(state); 
+
+    clusterViewXB_.updateState(false, state);
+    clusterViewYB_.updateState(false, state); 
+    clusterViewAB_.updateState(false, state); 
+    break;
+
+  }
+  
+}
+
+void TSpikeWin::newTSpikeCallback(const TSpike_t & ts)
+{
+  std::cout << "newTSpikeCallback" << std::endl;
+  std::vector<GLSpikeWave_t> gls = splitSpikeToGLSpikeWaves(ts); 
+  
+  
+  spikeWaveViewX_.newSpikeWave(gls[0]); 
+  spikeWaveViewY_.newSpikeWave(gls[1]); 
+  spikeWaveViewA_.newSpikeWave(gls[2]); 
+  spikeWaveViewB_.newSpikeWave(gls[3]); 
+  
+  appendTSpikeToSPL(ts, &spVectpList_); 
+  
 }

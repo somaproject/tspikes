@@ -2,9 +2,10 @@
 #define SOMANETCODEC_H
 
 #include <vector>
-#include <somanetwork/network.h>
+#include <somanetwork/networkinterface.h>
 #include <somanetwork/tspike.h>
 #include <sigc++/sigc++.h>
+#include <gtkmm.h>
 
 typedef uint64_t somatime_t; 
 
@@ -13,6 +14,9 @@ struct TSpikeChannelState
   int gain; 
   int32_t threshold; 
   // other stuff
+  int32_t rangeMin; 
+  int32_t rangeMax; 
+
 }; 
 
 class SomaNetworkCodec 
@@ -22,12 +26,8 @@ class SomaNetworkCodec
   // data
 
  public: 
-  SomaNetworkCodec(Network * pNetwork); 
+  SomaNetworkCodec(NetworkInterface * pNetwork); 
   
-  // remember, we're just a fitler
-  void processNewData(DataPacket_t* ); 
-  void processNewEvents(EventList_t * ); 
-
   // state change interface
   void setChannelState(int channel, TSpikeChannelState); 
   TSpikeChannelState getChannelState(int channel); 
@@ -40,7 +40,7 @@ class SomaNetworkCodec
   sigc::signal<void, const TSpike_t &> & signalNewTSpike(); 
   
  private:
-  Network * pNetwork_; 
+  NetworkInterface * pNetwork_; 
   
   // private signal objects that we return
   sigc::signal<void, somatime_t> signalTimeUpdate_;
@@ -56,7 +56,16 @@ class SomaNetworkCodec
   void refreshStateCache(); 
 
   void parseEvent(const Event_t & ); 
-  
+
+  // callbacks
+  bool eventRXCallback(Glib::IOCondition io_condition); 
+  bool dataRXCallback(Glib::IOCondition io_condition); 
+
+  // remember, we're just a fitler
+  void processNewData(DataPacket_t* ); 
+  void processNewEvents(EventList_t * ); 
+
+
 }; 
 
 
