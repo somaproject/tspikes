@@ -1,7 +1,7 @@
 #include "tspikewin.h"
 #include "glspikes.h"
 
-TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) : 
+TSpikeWin::TSpikeWin(NetworkInterface * pNetwork, datasource_t src) : 
 
   pNetwork_(pNetwork), 
   
@@ -28,7 +28,11 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
 
   currentTime_(0.0),
   liveButton_("Live"), 
-  somaNetworkCodec_(pNetwork_)
+  somaNetworkCodec_(pNetwork_, src), 
+  sourceSettingsWin_(&somaNetworkCodec_), 
+  pMenuPopup_(0), 
+  dsrc_(src)
+  
     
 {
   //
@@ -153,7 +157,7 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
   liveButton_.signal_toggled().connect(sigc::mem_fun(*this,
 						     &TSpikeWin::liveToggle)); 
 
-
+  
   /// data recovery callback hookup
   somaNetworkCodec_.signalSourceStateChange().connect(sigc::mem_fun(*this, 
 								    &TSpikeWin::sourceStateChangeCalback)); 
@@ -166,7 +170,65 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork) :
 
 
   set_decorated(false);
+
+  
+  setupMenus(); 
+
+
   std::cout << "constructor done" << std::endl; 
+  // now query state
+  somaNetworkCodec_.refreshStateCache(); 
+
+
+}
+
+void TSpikeWin::setupMenus()
+{
+
+  // First we create "Actions", these are things that we want to "do" from our
+  // menu 
+  refActionGroup_ = Gtk::ActionGroup::create();
+
+  refActionGroup_->add(Gtk::Action::create("Quit", "Quit"), 
+		       sigc::mem_fun(*this, &TSpikeWin::on_action_quit)); 
+  refActionGroup_->add(Gtk::Action::create("ResetViews", "Reset All Views")); 
+  refActionGroup_->add(Gtk::Action::create("ResetData", "Reset All Data History"));
+  refActionGroup_->add(Gtk::Action::create("SourceSettings", "Change Source Settings"), 
+		       sigc::mem_fun(*this, &TSpikeWin::on_action_source_settings)); 
+  
+  refActionGroup_->add(Gtk::Action::create("About", "About TSpikes")); 
+  
+  
+
+
+
+
+  refUIManager_ = Gtk::UIManager::create();
+
+  Glib::ustring ui_info =
+    "<ui>"
+    "  <popup name='PopupMenu'>"
+    "    <menuitem action='SourceSettings'/>"
+    "    <menuitem action='ResetViews'/>"
+    "    <menuitem action='ResetData'/>"
+    "    <menuitem action='About'/>"
+    "    <menuitem action='Quit'/>"
+    "  </popup>"
+    "</ui>";
+
+  refUIManager_->insert_action_group(refActionGroup_);
+  add_accel_group(refUIManager_->get_accel_group());
+  refUIManager_->add_ui_from_string(ui_info); 
+  
+
+
+  pMenuPopup_ = dynamic_cast<Gtk::Menu*>(refUIManager_->get_widget("/PopupMenu")); 
+
+  add_events(Gdk::VISIBILITY_NOTIFY_MASK | 
+	     Gdk::BUTTON_PRESS_MASK );
+  signal_button_press_event().connect(sigc::mem_fun(*this, 
+						    &TSpikeWin::on_button_press_event)); 
+
 
 }
 
@@ -178,18 +240,18 @@ TSpikeWin::~TSpikeWin()
 bool TSpikeWin::on_idle()
 
 {
-  std::cout << "beginning idle " << std::endl; 
-//   clusterViewXY_.invalidate(); 
-//   clusterViewXA_.invalidate(); 
-//   clusterViewXB_.invalidate(); 
-//   clusterViewYA_.invalidate(); 
-//   clusterViewYB_.invalidate(); 
-//   clusterViewAB_.invalidate(); 
 
-//   spikeWaveViewX_.invalidate(); 
-//   spikeWaveViewY_.invalidate(); 
-//   spikeWaveViewA_.invalidate(); 
-//   spikeWaveViewB_.invalidate(); 
+  clusterViewXY_.invalidate(); 
+  clusterViewXA_.invalidate(); 
+  clusterViewXB_.invalidate(); 
+  clusterViewYA_.invalidate(); 
+  clusterViewYB_.invalidate(); 
+  clusterViewAB_.invalidate(); 
+
+  spikeWaveViewX_.invalidate(); 
+  spikeWaveViewY_.invalidate(); 
+  spikeWaveViewA_.invalidate(); 
+  spikeWaveViewB_.invalidate(); 
 
   return true;
 }
@@ -320,9 +382,6 @@ void TSpikeWin::loadExistingSpikes(const std::vector<TSpike_t> & spikes)
   for (pts = spikes.begin(); pts != spikes.end(); pts++)
     {
       
-      //appendTSpikeToSpikewaves(*pts); 
-      //appendTSpikeToSPL(*pts); 
-      
       rtime_t t = float(pts->time) / 10e3; 
       setTime(t);
 
@@ -337,21 +396,22 @@ void TSpikeWin::liveToggle()
 	    << std::endl; 
 
   rateTimeline_.setLive(liveButton_.get_active()); 
-//   spikeWaveViewX_.setLive(liveButton_.get_active()); 
-//   spikeWaveViewY_.setLive(liveButton_.get_active()); 
-//   spikeWaveViewA_.setLive(liveButton_.get_active()); 
-//   spikeWaveViewB_.setLive(liveButton_.get_active()); 
+  spikeWaveViewX_.setLive(liveButton_.get_active()); 
+  spikeWaveViewY_.setLive(liveButton_.get_active()); 
+  spikeWaveViewA_.setLive(liveButton_.get_active()); 
+  spikeWaveViewB_.setLive(liveButton_.get_active()); 
   
 
 }
 
 void TSpikeWin::timeUpdateCallback(somatime_t time)
 {
-  
+  setTime(time); 
 }
 
 void TSpikeWin::sourceStateChangeCalback(int chan, TSpikeChannelState state)
 {
+  std::cout << "sourceStateChangeCallback" << std::endl; 
 
   switch(chan) {
   case 0:
@@ -392,7 +452,6 @@ void TSpikeWin::sourceStateChangeCalback(int chan, TSpikeChannelState state)
 
 void TSpikeWin::newTSpikeCallback(const TSpike_t & ts)
 {
-  std::cout << "newTSpikeCallback" << std::endl;
   std::vector<GLSpikeWave_t> gls = splitSpikeToGLSpikeWaves(ts); 
   
   
@@ -402,5 +461,39 @@ void TSpikeWin::newTSpikeCallback(const TSpike_t & ts)
   spikeWaveViewB_.newSpikeWave(gls[3]); 
   
   appendTSpikeToSPL(ts, &spVectpList_); 
+
+  clusterViewXY_.invalidate(); 
+  clusterViewXA_.invalidate(); 
+  clusterViewXB_.invalidate(); 
+  clusterViewYA_.invalidate(); 
+  clusterViewYB_.invalidate(); 
+  clusterViewAB_.invalidate(); 
+
+
+}
+
+bool TSpikeWin::on_button_press_event(GdkEventButton* event)
+{
+  if( (event->type == GDK_BUTTON_PRESS) &&
+      (event->button == 3) )
+  {
+    pMenuPopup_->popup(event->button, event->time);
+    std::cout << "The button was pressed" << std::endl; 
+    return true; //It has been handled.
+  }
+  else
+    return false;
+}
+
+void TSpikeWin::on_action_quit(void)
+{
+  std::cout << "Quitting..." << std::endl; 
+  hide(); 
+
+}
+
+void TSpikeWin::on_action_source_settings(void)
+{
+  sourceSettingsWin_.show(); 
   
 }

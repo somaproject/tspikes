@@ -12,7 +12,8 @@
 class FakeTTData
 {
  public:
-  FakeTTData(std::string filename, int rate); 
+  FakeTTData(std::string filename, int rate, 
+	     FakeNetwork* pni); 
   DataPacket_t *  getSpikeDataPacket(); 
   bool appendToFakeNetwork(FakeNetwork* fn);
   std::vector<TSpike_t>  getManySpikes(int n); 
@@ -23,19 +24,86 @@ class FakeTTData
   int rate_; 
   Glib::Timer timer_; 
   int spikeNum_;
+  FakeNetwork * pni_; 
+  void eventTXCallback(const EventTXList_t & el); 
+  std::vector<TSpikeChannelState> fakestate_; 
+
 };
 
-FakeTTData::FakeTTData(std::string filename, int rate):
+FakeTTData::FakeTTData(std::string filename, int rate, 
+		       FakeNetwork* pni):
   ttreader_(filename.c_str()), 
   rate_(rate),
   spikeNum_(0), 
-  timer_()
+  timer_(), 
+  pni_(pni), 
+  fakestate_(4)
 {
 
   timer_.start(); 
+  // glib interaction to get fake events and make
+  // fake responses
+  //   Glib::signal_io().connect(sigc::mem_fun(*this, &FakeTTData::eventRXCallback), 
+  // 			    pni_->getEventFifoPipe(), Glib::IO_IN); 
+  pni_->signalEventTX().connect(sigc::mem_fun(*this, &FakeTTData::eventTXCallback)); 
+  				
   
+  // set up the fake state
+  for (int i = 0; i < 4; i ++) {
+    fakestate_[i].gain = 100; 
+    fakestate_[i].threshold = 70000; 
+    fakestate_[i].hpf = true; 
+    fakestate_[i].filt = 0x01; 
+    fakestate_[i].rangeMin = -500000; 
+    fakestate_[i].rangeMax = 500000; 
+  }
+
 }
 
+void FakeTTData::eventTXCallback(const EventTXList_t & el)
+{
+  // extract out events and create responses
+  EventList_t * pelist = new EventList_t(); 
+  pelist->reserve(el.size()); 
+
+  EventTXList_t::const_iterator e; 
+  for ( e = el.begin(); e != el.end(); e++) {
+    Event_t evt = e->event; 
+    if (evt.cmd = 0x91) {
+      // Query Source State
+      int chan = evt.data[0]; 
+      
+      Event_t response; 
+      response.src = dsrc_to_esrc(0); // DEBUGGING; WE NEED TO FIGURE OUT WHO THE HELL WE ARE
+      response.cmd = 0x92; 
+      
+      // right now we just support gain; 
+      switch(evt.data[1]) {
+      case GAIN:
+	response.data[0] = (GAIN << 8) |  chan ;
+	response.data[1] = fakestate_[chan].gain; 
+	pelist->push_back(response); 
+	break; 
+      case RANGE:
+	response.data[0] = (RANGE << 8) |  chan ;
+	response.data[1] = (fakestate_[chan].rangeMin >> 16); 
+	response.data[2] = (fakestate_[chan].rangeMin && 0xFFFF); 
+	response.data[3] = (fakestate_[chan].rangeMax >> 16); 
+	response.data[4] = (fakestate_[chan].rangeMax && 0xFFFF); 
+
+	pelist->push_back(response); 
+	break; 
+
+      default:
+	break; 
+      }
+      
+    }
+    
+  }
+  pni_->appendEventOut(pelist); 
+  
+}
 
 std::vector<TSpike_t> FakeTTData::getManySpikes(int n)
 {
@@ -103,15 +171,11 @@ void FakeTTData::setTime(FakeNetwork * fn, uint64_t usec)
   event.data[0] = (usec >> 32) & 0xFFFF;
   event.data[1] = (usec >> 16 ) & 0xFFFF; 
   event.data[2] = usec & 0xFFFF; 
-//   std::cout << "Sending time = " << usec << " event" << std::endl; 
-//   std::cout << "0 = " << event.data[0] 
-// 	    << " 1 = " << event.data[1] 
-// 	    << " 2 = " << event.data[2] << std::endl; 
 
   EventList_t * pelt = new EventList_t; 
   pelt->push_back(event); 
   fn->appendEventOut(pelt); 
-
+  
 }
 
 
@@ -161,7 +225,7 @@ int main(int argc, char** argv)
     Network net("192.168.1.100"); 
     net.enableDataRX( vm["networksrc"].as<int>(), TSPIKE); 
     
-    TSpikeWin tspikewin(&net);
+    TSpikeWin tspikewin(&net, vm["networksrc"].as<int>());
     
     //net.run(); 
     kit.run(tspikewin);
@@ -172,9 +236,7 @@ int main(int argc, char** argv)
     // ZOMG these abstractions are all wrong; should clean up
 
     FakeNetwork net; 
-    
-    TSpikeWin tspikewin(&net);
-    
+
     int ttrate = 0; 
     if (vm.count("ttfile")) {
       
@@ -185,7 +247,11 @@ int main(int argc, char** argv)
 	  
 	}
     }    
-    FakeTTData fttd(vm["ttfile"].as<std::string>(), ttrate); 
+
+    FakeTTData fttd(vm["ttfile"].as<std::string>(), ttrate, &net); 
+    
+    TSpikeWin tspikewin(&net, 0); 
+
     if (vm.count("ttprenum") )
       {
 	std::vector<TSpike_t> spikes 
@@ -196,7 +262,7 @@ int main(int argc, char** argv)
     if (vm.count("ttrate") )
       
       {
-	// actually run from network
+	// actually run from fake network
 	Glib::signal_timeout().connect(sigc::bind(sigc::mem_fun(fttd, 
 								&FakeTTData::appendToFakeNetwork), &net), 50);
 	

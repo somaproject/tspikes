@@ -115,6 +115,7 @@ void ClusterRenderer::updateViewingWindow()
 
 void ClusterRenderer::render() 
 {
+
   // this is the primary render event
   assert (isSetup_ == true); 
   
@@ -266,7 +267,7 @@ void ClusterRenderer::renderSpikeVector(const GLSPVect_t & spvect, bool live)
   glUniform1i(vp, viewMode_); 
 
   glDrawArrays(GL_POINTS, 0, spvect.size()); 
-  if(live and ! spvect.empty()) {
+  if(live  &&   spvect.empty()) {
     glColor4ubv((GLubyte*)&colors.back()); 
     glPointSize(4.0); 
     glBegin(GL_POINTS); 

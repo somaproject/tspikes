@@ -84,6 +84,15 @@ void ClusterView::on_realize()
 
 }
 
+void ClusterView::invalidate()
+{
+  Glib::RefPtr<Gdk::Window> win = get_window();
+  Gdk::Rectangle r(0, 0, get_allocation().get_width(),
+		   get_allocation().get_height());
+  win->invalidate_rect(r, false);
+  
+}
+
 bool ClusterView::setViewingWindow(float x1, float y1, 
 				   float x2, float y2)
 {

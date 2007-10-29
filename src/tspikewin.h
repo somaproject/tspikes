@@ -17,6 +17,7 @@
 #endif
 
 #include <boost/ptr_container/ptr_map.hpp>
+#include <boost/ptr_container/ptr_vector.hpp>
 
 #include <somanetwork/networkinterface.h>
 #include <somanetwork/tspike.h>
@@ -26,11 +27,18 @@
 #include "spikewaveview.h"
 #include "ratetimeline.h"
 #include "somanetcodec.h"
+#include "sourcesettingswin.h" 
+
+// widget list types
+typedef boost::ptr_vector<SpikeWaveView> pSpikeWaveViewVect_t; 
+typedef boost::ptr_vector<SpikeWaveView> pClusterViewVect_t; 
+
 
 class TSpikeWin : public Gtk::Window
 {
 public:
-  explicit TSpikeWin(NetworkInterface * network);
+  explicit TSpikeWin(NetworkInterface * network, datasource_t src);
+
   virtual ~TSpikeWin();
 
   void setTime(rtime_t t);
@@ -43,6 +51,7 @@ protected:
   
   
   NetworkInterface * pNetwork_; 
+  datasource_t dsrc_; 
 
   GLSPVect_t *  spvect_; 
 
@@ -58,6 +67,8 @@ protected:
   Gtk::HBox mainHBox_; 
   Gtk::HBox timeLineHBox_; 
 
+  // 
+  
   ClusterView clusterViewXY_;
   ClusterView clusterViewXA_;
   ClusterView clusterViewXB_;
@@ -72,9 +83,16 @@ protected:
   
   RateTimeline rateTimeline_; 
 
-  // append data functions
+  // action menu item 
+  Glib::RefPtr<Gtk::ActionGroup> refActionGroup_; 
+  Glib::RefPtr<Gtk::UIManager> refUIManager_; 
+  
+  Gtk::Menu * pMenuPopup_; 
 
-  //
+  // properties
+
+
+  // append data functions
   
 
   // update clusters
@@ -86,12 +104,23 @@ protected:
   rtime_t currentTime_; 
   Gtk::ToggleButton liveButton_; 
   SomaNetworkCodec somaNetworkCodec_; 
-  
+
+  // property editor
+
+  SourceSettingsWin sourceSettingsWin_;   
   // callbacks
   void timeUpdateCallback(somatime_t); 
   void sourceStateChangeCalback(int, TSpikeChannelState); 
   void newTSpikeCallback(const TSpike_t &); 
-  
+  void setupMenus(); 
+
+  bool on_button_press_event(GdkEventButton* event); 
+
+  // functions
+  void on_action_quit(); 
+  void on_action_source_settings(void);
+
+
 };
 
 #endif // TSPIKEWIN_H

@@ -13,11 +13,42 @@ struct TSpikeChannelState
 {
   int gain; 
   int32_t threshold; 
+  bool hpf; 
+  uint16_t filt; 
   // other stuff
   int32_t rangeMin; 
   int32_t rangeMax; 
 
 }; 
+
+struct chanprop_t
+{
+  int chan; 
+  std::string name; 
+}; 
+
+enum STATEPARM {GAIN = 1, 
+		THOLD = 2, 
+		HPF = 4, 
+		FILT = 8,
+		RANGE = 16}; 
+
+inline STATEPARM  toStateParm(int x) {
+  switch(x) {
+  case 1 : return GAIN; 
+  case 2 : return THOLD; 
+  case  4 : return HPF; 
+  case  8 : return FILT; 
+  case  16: return RANGE; 
+  }
+}
+
+
+typedef std::vector<chanprop_t> chanproplist_t; 
+
+inline eventsource_t dsrc_to_esrc(datasource_t x ) {
+  return x + 8; 
+}
 
 class SomaNetworkCodec 
 {
@@ -26,7 +57,10 @@ class SomaNetworkCodec
   // data
 
  public: 
-  SomaNetworkCodec(NetworkInterface * pNetwork); 
+  SomaNetworkCodec(NetworkInterface * pNetwork, int src, 
+		   chanproplist_t channels); 
+  
+  SomaNetworkCodec(NetworkInterface * pNetwork, int src); 
   
   // state change interface
   void setChannelState(int channel, TSpikeChannelState); 
@@ -39,9 +73,16 @@ class SomaNetworkCodec
   // get data
   sigc::signal<void, const TSpike_t &> & signalNewTSpike(); 
   
+  // query state
+  void refreshStateCache(); 
+  chanproplist_t getChans() { return chanprops_; } ; 
  private:
   NetworkInterface * pNetwork_; 
+  int dsrc_;  /// data source # 
+  chanproplist_t chanprops_; 
   
+  std::vector<TSpikeChannelState> channelStateCache_; 
+
   // private signal objects that we return
   sigc::signal<void, somatime_t> signalTimeUpdate_;
   sigc::signal<void, int, TSpikeChannelState> signalSourceStateChange_; 
@@ -51,9 +92,8 @@ class SomaNetworkCodec
   // internal implementation
 
   // internal source state cache
-  std::vector<TSpikeChannelState> channelStateCache_; 
   
-  void refreshStateCache(); 
+
 
   void parseEvent(const Event_t & ); 
 
@@ -65,6 +105,8 @@ class SomaNetworkCodec
   void processNewData(DataPacket_t* ); 
   void processNewEvents(EventList_t * ); 
 
+  void querySourceState(int chan); // request a source state update
+  
 
 }; 
 
