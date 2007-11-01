@@ -61,7 +61,8 @@ am__objects_1 = clusterrenderer.$(OBJEXT) glspikes.$(OBJEXT) \
 	clusterview.$(OBJEXT) shaders.$(OBJEXT) glconfig.$(OBJEXT) \
 	ratetimeline.$(OBJEXT) tspikemain.$(OBJEXT) \
 	tspikewin.$(OBJEXT) spikewaverenderer.$(OBJEXT) \
-	somanetcodec.$(OBJEXT) sourcesettingswin.$(OBJEXT)
+	somanetcodec.$(OBJEXT) sourcesettingswin.$(OBJEXT) \
+	gaincombosetting.$(OBJEXT)
 am_tspike_OBJECTS = $(am__objects_1)
 tspike_OBJECTS = $(am_tspike_OBJECTS)
 tspike_LDADD = $(LDADD)
@@ -212,8 +213,8 @@ top_builddir = ..
 top_srcdir = ..
 AM_CXXFLAGS = $(GTKDEPS_CFLAGS)  $(BOOST_CPPFLAGS) $(SOMADEPS_CFLAGS)  -pthread 
 AM_LDFLAGS = $(GTKDEPS_LIBS) $(BOOST_LDFLAGS) $(SOMADEPS_LIBS) $(BOOST_THREAD_LIB)  $(BOOST_PROGRAM_OPTIONS_LIB)
-h_sources = clusterrenderer.h  glconfig.h  ratetimeline.h  spikewaveview.h  ttreader.h clusterview.h  glspikes.h  shaders.h tspikewin.h cairogltext/glstring.h spikewaverenderer.h somanetcodec.h sourcesettingswin.h
-cc_sources = clusterrenderer.cc glspikes.c  spikewaveview.cc  cairogltext/glstring.cc ttreader.cc clusterview.cc  shaders.cc  glconfig.cc  ratetimeline.cc tspikemain.cc tspikewin.cc spikewaverenderer.cc somanetcodec.cc sourcesettingswin.cc
+h_sources = clusterrenderer.h  glconfig.h  ratetimeline.h  spikewaveview.h  ttreader.h clusterview.h  glspikes.h  shaders.h tspikewin.h cairogltext/glstring.h spikewaverenderer.h somanetcodec.h sourcesettingswin.h gaincombosetting.h
+cc_sources = clusterrenderer.cc glspikes.c  spikewaveview.cc  cairogltext/glstring.cc ttreader.cc clusterview.cc  shaders.cc  glconfig.cc  ratetimeline.cc tspikemain.cc tspikewin.cc spikewaverenderer.cc somanetcodec.cc sourcesettingswin.cc gaincombosetting.cc
 spikevis_SOURCES = clusterrenderer.cc  clusterview.cc  shaders.cc  glconfig.cc  cairogltext/glstring.cc  spikevis.cc
 tspike_SOURCES = $(cc_sources)
 all: all-am
@@ -292,6 +293,7 @@ distclean-compile:
 
 include ./$(DEPDIR)/clusterrenderer.Po
 include ./$(DEPDIR)/clusterview.Po
+include ./$(DEPDIR)/gaincombosetting.Po
 include ./$(DEPDIR)/glconfig.Po
 include ./$(DEPDIR)/glspikes.Po
 include ./$(DEPDIR)/glstring.Po

@@ -1,5 +1,15 @@
 #include "somanetcodec.h"
 
+void printEvent2(Event_t event)
+{
+  printf("Event cmd = %2.2X src = %2.2X\n", event.cmd, event.src); 
+  for (int i = 0; i < 5; i++) {
+    printf("Data word %d: %4.4X\n", i, event.data[i]); 
+  }
+
+}
+
+
 SomaNetworkCodec::SomaNetworkCodec(NetworkInterface * pNetwork, int src, 
 				   chanproplist_t channels) :
   pNetwork_(pNetwork), 
@@ -91,6 +101,8 @@ void SomaNetworkCodec::processNewEvents(EventList_t * pEventList)
 void SomaNetworkCodec::parseEvent(const Event_t & evt)
 {
   
+
+
   if (evt.src == 0x00 && evt.cmd == 0x10 )
     {
       // this is the time
@@ -107,12 +119,16 @@ void SomaNetworkCodec::parseEvent(const Event_t & evt)
 
   bool stateCacheUpdate = false; 
   if (evt.src == dsrc_to_esrc(dsrc_) && evt.cmd  == 0x92) {
+
     // state update
     int tgtchan = evt.data[0] & 0xFF; 
     STATEPARM param = toStateParm((evt.data[0] >> 8) & 0xFF); 
-    
+
     int pos = -1;
     int i = 0; 
+    
+    // Find the channel
+
     for (chanproplist_t::iterator c = chanprops_.begin(); 
 	 c != chanprops_.end(); c++) 
       {
@@ -121,19 +137,27 @@ void SomaNetworkCodec::parseEvent(const Event_t & evt)
 	} 
 	i++; 
       }
+
+    // if the channel was found, set the value. 
     if (pos > -1 ) {
 
       // find the appropriate state cache value: 
       
       switch(param) {
       case GAIN: 
+	std::cout << "parseEvent: GAIN " << std::endl; 
 	channelStateCache_[pos].gain = evt.data[1]; 
 	break; 
       case RANGE: 
-	std::cout << "Received update for RANGE" << std::endl; 
+
 	int32_t min, max; 
-	min = (evt.data[1] << 16) | (evt.data[2] & 0xFFFF); 
-	max = (evt.data[3] << 16) | (evt.data[4] & 0xFFFF); 
+	min = evt.data[1];
+	min = (min << 16) | (evt.data[2]); 
+	max = evt.data[3]; 
+	max = (max << 16) | (evt.data[4]); 
+	std::cout << "parseEvent: RANGE " 
+		  << min << ' ' << max << std::endl; 
+
 	channelStateCache_[pos].rangeMin =  min; 
 	channelStateCache_[pos].rangeMax = max; 
 	break; 
@@ -146,6 +170,7 @@ void SomaNetworkCodec::parseEvent(const Event_t & evt)
       std::cerr << "This channel update was not for us" 
 		<< pos << ' ' << i << std::endl; 
     }
+
     signalSourceStateChange_.emit(tgtchan, channelStateCache_[pos]); 
     
   }
@@ -229,3 +254,37 @@ void SomaNetworkCodec::refreshStateCache() {
   }
 
 }
+
+TSpikeChannelState SomaNetworkCodec::getChannelState(int channel)
+{
+  return channelStateCache_[channel]; 
+}
+
+void SomaNetworkCodec::setChannelState(int chan, const TSpikeChannelState & newstate )
+{
+  // FIXME Add other settings
+  
+  EventTXList_t etxlist; 
+  etxlist.reserve(4); 
+  //eventtxlist_t 
+  if (newstate.gain != channelStateCache_[chan].gain) {
+
+    // create the actual event 
+    EventTX_t eventTX; 
+    eventTX.destaddr[dsrc_to_esrc(dsrc_)] = 1; // THIS SOURCE DEVICE
+    eventTX.event.src = 4; 
+    eventTX.event.cmd = 0x90; 
+    eventTX.event.data[0] = (GAIN << 8) | chan ; 
+    eventTX.event.data[1] = newstate.gain; 
+
+    etxlist.push_back(eventTX); 
+
+  } else {
+    // query so that we at least get an update of some sort? 
+
+  }
+
+  pNetwork_->sendEvents(etxlist); 
+  
+}
+

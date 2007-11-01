@@ -10,8 +10,18 @@
 #include <gtkmm.h>
 #include <libglademm.h>
 
+#include <map>
+#include <list>
+#include <set>
+
 #include "somanetcodec.h" 
 
+// widget data types for mapping between channel and widget, and vice
+// versa
+
+typedef Glib::RefPtr<Gtk::Widget> pwidget_t; 
+typedef int channel_t; 
+typedef std::set<channel_t> chanset_t; 
 
 class SourceSettingsWin
 // Generic management and configuration for the soma 
@@ -31,8 +41,11 @@ class SourceSettingsWin
   // widgets we grab from the parent
   Gtk::Dialog * pDialog_; 
   Gtk::Table * pTableSourceSettings_; 
+
+  
   void populate(); 
 
+  
 }; 
 
 #endif // SOURCESETTINGSWIN_H

@@ -7,6 +7,7 @@
 #include <sigc++/sigc++.h>
 #include <gtkmm.h>
 
+
 typedef uint64_t somatime_t; 
 
 struct TSpikeChannelState 
@@ -40,6 +41,8 @@ inline STATEPARM  toStateParm(int x) {
   case  4 : return HPF; 
   case  8 : return FILT; 
   case  16: return RANGE; 
+  default: 
+    std::cerr << "Unknown value " << x << "in toStateParm" << std::endl; 
   }
 }
 
@@ -63,7 +66,7 @@ class SomaNetworkCodec
   SomaNetworkCodec(NetworkInterface * pNetwork, int src); 
   
   // state change interface
-  void setChannelState(int channel, TSpikeChannelState); 
+  void setChannelState(int channel, const TSpikeChannelState &) ; 
   TSpikeChannelState getChannelState(int channel); 
   sigc::signal<void, int, TSpikeChannelState> &  signalSourceStateChange(); 
   
@@ -109,6 +112,7 @@ class SomaNetworkCodec
   
 
 }; 
+
 
 
 #endif // SOMANETCODEC_H

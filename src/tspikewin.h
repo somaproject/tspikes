@@ -33,6 +33,8 @@
 typedef boost::ptr_vector<SpikeWaveView> pSpikeWaveViewVect_t; 
 typedef boost::ptr_vector<SpikeWaveView> pClusterViewVect_t; 
 
+// helper
+void printEvent(Event_t event); 
 
 class TSpikeWin : public Gtk::Window
 {

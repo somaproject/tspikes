@@ -44,8 +44,6 @@ SpikeWaveView::SpikeWaveView(GLChan_t chan) :
 
   signal_button_press_event().connect(sigc::mem_fun(*this, 
 						    &SpikeWaveView::on_button_press_event)); 
-  
-
 
 
 }
@@ -278,8 +276,12 @@ void SpikeWaveView::setLive(bool live)
 void SpikeWaveView::updateState(const TSpikeChannelState & state)
 {
   float min, max; 
+
   min = state.rangeMin / 1e9; 
   max = state.rangeMax / 1e9; 
+  std::cout << "SpikeWaveView::updateState to " << min << " " << max
+	    << std::endl; 
+
   setAmplitudeView(min, max); 
 
 }

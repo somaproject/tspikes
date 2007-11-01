@@ -27,7 +27,7 @@ class FakeTTData
   FakeNetwork * pni_; 
   void eventTXCallback(const EventTXList_t & el); 
   std::vector<TSpikeChannelState> fakestate_; 
-
+  Event_t createStateResponse(int chan, STATEPARM param);
 };
 
 FakeTTData::FakeTTData(std::string filename, int rate, 
@@ -60,6 +60,39 @@ FakeTTData::FakeTTData(std::string filename, int rate,
 
 }
 
+Event_t FakeTTData::createStateResponse(int chan, STATEPARM parm)
+{
+
+  Event_t response; 
+  response.src = dsrc_to_esrc(0); // DEBUGGING; WE NEED TO FIGURE OUT WHO THE HELL WE ARE
+  response.cmd = 0x92; 
+  
+  // right now we just support gain; 
+  switch(parm) {
+  case GAIN:
+    response.data[0] = (GAIN << 8) |  chan ;
+    response.data[1] = fakestate_[chan].gain; 
+    break; 
+
+  case RANGE:
+    {
+      
+    response.data[0] = (RANGE << 8) |  chan ;
+    unsigned short x1 = (fakestate_[chan].rangeMin >> 16) & 0xFFFF; 
+    unsigned short x2  = (fakestate_[chan].rangeMin & 0xFFFF); 
+    response.data[1] = x1; 
+    response.data[2] = x2; 
+    response.data[3] = (fakestate_[chan].rangeMax >> 16) & 0xFFFF;  
+    response.data[4] = (fakestate_[chan].rangeMax & 0xFFFF); 
+
+    break; 
+    }
+  default:
+    break; 
+  }
+  return response; 
+}
+
 void FakeTTData::eventTXCallback(const EventTXList_t & el)
 {
   // extract out events and create responses
@@ -69,37 +102,48 @@ void FakeTTData::eventTXCallback(const EventTXList_t & el)
   EventTXList_t::const_iterator e; 
   for ( e = el.begin(); e != el.end(); e++) {
     Event_t evt = e->event; 
-    if (evt.cmd = 0x91) {
-      // Query Source State
-      int chan = evt.data[0]; 
+    
+    switch(evt.cmd) {
       
-      Event_t response; 
-      response.src = dsrc_to_esrc(0); // DEBUGGING; WE NEED TO FIGURE OUT WHO THE HELL WE ARE
-      response.cmd = 0x92; 
+    case 0x90:  { // SET VALUE
       
-      // right now we just support gain; 
-      switch(evt.data[1]) {
-      case GAIN:
-	response.data[0] = (GAIN << 8) |  chan ;
-	response.data[1] = fakestate_[chan].gain; 
-	pelist->push_back(response); 
-	break; 
-      case RANGE:
-	response.data[0] = (RANGE << 8) |  chan ;
-	response.data[1] = (fakestate_[chan].rangeMin >> 16); 
-	response.data[2] = (fakestate_[chan].rangeMin && 0xFFFF); 
-	response.data[3] = (fakestate_[chan].rangeMax >> 16); 
-	response.data[4] = (fakestate_[chan].rangeMax && 0xFFFF); 
+      int chan = evt.data[0] & 0xFF; 
+      STATEPARM cmd = toStateParm((evt.data[0] >> 8) & 0xFF); 
+      
+      switch (cmd) {
+      case GAIN : { 
+	fakestate_[chan].gain = evt.data[1]; 
+	fakestate_[chan].rangeMin = -2048000 / fakestate_[chan].gain; 
+	fakestate_[chan].rangeMax = 2048000 / fakestate_[chan].gain; 
+	std::cout << "we have just set the ranges to" 
+		  << fakestate_[chan].rangeMin << " " 
+		  << fakestate_[chan].rangeMax << std::endl; 
 
-	pelist->push_back(response); 
-	break; 
+	Event_t e1 = createStateResponse(chan, GAIN); 
+	Event_t e2 = createStateResponse(chan, RANGE); 
 
+	pelist->push_back(e1); 
+	pelist->push_back(e2); 
+	break; 
+      }
       default:
 	break; 
       }
       
+
+      break; 
     }
-    
+    case 0x91: { // QUERY
+      // Query Source State
+      int chan = evt.data[0]; 
+      STATEPARM cmd = toStateParm(evt.data[1]); 
+      Event_t e = createStateResponse(chan, cmd); 
+      pelist->push_back(e); 
+      
+      break; 
+      
+    }
+    }
   }
   pni_->appendEventOut(pelist); 
   

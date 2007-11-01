@@ -1,4 +1,5 @@
 #include "sourcesettingswin.h"
+#include "gaincombosetting.h"
 
 SourceSettingsWin::SourceSettingsWin(SomaNetworkCodec * pSomaNetCodec) :
   pSomaNetCodec_(pSomaNetCodec), 
@@ -32,10 +33,17 @@ void SourceSettingsWin::populate()
     Gtk::Label * l = new Gtk::Label(c->name); 
     pTableSourceSettings_->attach(*l, 0, 1, rowpos, rowpos+1); 	
     
-			  
+    // add gain settings
+    chanset_t chans; 
+    chans.insert(c->chan); 
+    GainComboSetting * gcs = new GainComboSetting(pSomaNetCodec_, chans); 
+    pTableSourceSettings_->attach(*gcs, 1, 2, rowpos, rowpos +1); 
+
     rowpos++; 
   }
     pTableSourceSettings_->show_all(); 
 
 
 }
+
+

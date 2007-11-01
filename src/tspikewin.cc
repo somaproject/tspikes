@@ -1,6 +1,15 @@
 #include "tspikewin.h"
 #include "glspikes.h"
 
+void printEvent(Event_t event)
+{
+  printf("Event cmd = %2.2X src = %2.2X\n", event.cmd, event.src); 
+  for (int i = 0; i < 5; i++) {
+    printf("Data word %d: %4.4X\n", i, event.data[i]); 
+  }
+
+}
+
 TSpikeWin::TSpikeWin(NetworkInterface * pNetwork, datasource_t src) : 
 
   pNetwork_(pNetwork), 
@@ -411,7 +420,8 @@ void TSpikeWin::timeUpdateCallback(somatime_t time)
 
 void TSpikeWin::sourceStateChangeCalback(int chan, TSpikeChannelState state)
 {
-  std::cout << "sourceStateChangeCallback" << std::endl; 
+  std::cout << "sourceStateChangeCallback" 
+	    << state.rangeMin << " " << state.rangeMax << std::endl; 
 
   switch(chan) {
   case 0:
