@@ -446,7 +446,7 @@ void SpikeWaveRenderer::setTriggerThreshold(float thold)
   
 }
 
-void SpikeWaveRenderer::setState(TSpikeChannelState ts)
+void SpikeWaveRenderer::updateState(TSpikeChannelState ts)
 {
   channelState_ = ts; 
 

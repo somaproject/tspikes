@@ -282,6 +282,6 @@ void SpikeWaveView::updateState(const TSpikeChannelState & state)
   max = state.rangeMax / 1e9; 
 
   spikeWaveRenderer_.setAmplitudeRange(min, max); 
-
+  spikeWaveRenderer_.updateState(state); 
 }
 

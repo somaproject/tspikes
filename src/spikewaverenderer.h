@@ -47,7 +47,7 @@ public:
 
   void setLive(bool); 
   
-  void setState(TSpikeChannelState ts); 
+  void updateState(TSpikeChannelState ts); 
   void setTriggerThreshold(float thold); 
 
   // Update window synchronously (fast).
