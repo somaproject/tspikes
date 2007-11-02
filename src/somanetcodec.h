@@ -10,16 +10,20 @@
 
 typedef uint64_t somatime_t; 
 
-struct TSpikeChannelState 
+class TSpikeChannelState 
 {
+ public:
   int gain; 
   int32_t threshold; 
   bool hpf; 
-  uint16_t filt; 
+  uint16_t filtid; 
+  std::string filtstr; 
+
   // other stuff
   int32_t rangeMin; 
   int32_t rangeMax; 
 
+  TSpikeChannelState(); 
 }; 
 
 struct chanprop_t

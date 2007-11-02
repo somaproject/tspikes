@@ -67,7 +67,7 @@ ClusterView::~ClusterView()
 
 void ClusterView::on_realize()
 {
-  std::cout << "ClusterView::on_realize " << viewMode_  << std::endl; 
+  //std::cout << "ClusterView::on_realize " << viewMode_  << std::endl; 
   // We need to call the base on_realize()
   Gtk::DrawingArea::on_realize();
 
@@ -116,7 +116,7 @@ void ClusterView::updateViewingWindow()
 
 bool ClusterView::on_configure_event(GdkEventConfigure* event)
 {
-  std::cout << "ClusterView::on_configure_event " << viewMode_  << std::endl; 
+  //  std::cout << "ClusterView::on_configure_event " << viewMode_  << std::endl; 
 
   Glib::RefPtr<Gdk::GL::Drawable> gldrawable = get_gl_drawable();
 
@@ -163,7 +163,7 @@ bool ClusterView::on_expose_event(GdkEventExpose* event)
 bool ClusterView::on_map_event(GdkEventAny* event)
 {
 
-  std::cout << "ClusterView::on_map_event " << viewMode_ << std::endl; 
+  //  std::cout << "ClusterView::on_map_event " << viewMode_ << std::endl; 
 
   Glib::RefPtr<Gdk::GL::Drawable> gldrawable = get_gl_drawable();
 
@@ -188,7 +188,7 @@ bool ClusterView::on_unmap_event(GdkEventAny* event)
 
 bool ClusterView::on_visibility_notify_event(GdkEventVisibility* event)
 {
-  std::cout << "ClusterView::on_visibility_notify_event" << viewMode_ << std::endl; 
+  //  std::cout << "ClusterView::on_visibility_notify_event" << viewMode_ << std::endl; 
 
   Glib::RefPtr<Gdk::GL::Drawable> gldrawable = get_gl_drawable();
 

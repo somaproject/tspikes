@@ -63,7 +63,7 @@ RateTimeline::RateTimeline() :
   signal_leave_notify_event().connect(sigc::mem_fun(*this,
 						    &RateTimeline::on_leave_notify_event)); 
   
-  std::cout << "RateTimeLine constructor done" << std::endl; 
+  //std::cout << "RateTimeLine constructor done" << std::endl; 
 }
 
 RateTimeline::~RateTimeline()
@@ -104,7 +104,7 @@ void RateTimeline::on_realize()
 
   gldrawable->gl_end();
   // *** OpenGL END ***
-  std::cout << "RateTimeline::on_realize done " << std::endl; 
+  //std::cout << "RateTimeline::on_realize done " << std::endl; 
 }
 
 void RateTimeline::updateViewingWindow()
@@ -147,7 +147,7 @@ bool RateTimeline::on_configure_event(GdkEventConfigure* event)
 
   //invalidate(); 
   return true;
-  std::cout << "RateTimeline::on_configure done " << std::endl; 
+  //std::cout << "RateTimeline::on_configure done " << std::endl; 
 
 }
 
@@ -267,8 +267,8 @@ bool RateTimeline::on_expose_event(GdkEventExpose* event)
 
   glEnd(); 
 
-  std::cout << "rendered between T1 =" << viewT1_ 
-	    << " and T2 = " << viewT2_ << std::endl; 
+//   std::cout << "rendered between T1 =" << viewT1_ 
+// 	    << " and T2 = " << viewT2_ << std::endl; 
 
   renderCursor(); 
 
@@ -391,7 +391,7 @@ bool RateTimeline::on_motion_notify_event(GdkEventMotion* event)
   else 
     {
       float windowPos = float(x) / get_width() * (viewT2_ - viewT1_) + viewT1_; 
-      std::cout << "setting cursor time to " << windowPos << std::endl; 
+      //      std::cout << "setting cursor time to " << windowPos << std::endl; 
 
       setCursorTime(windowPos); 
     }

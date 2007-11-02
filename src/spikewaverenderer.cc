@@ -5,6 +5,7 @@
 #include <cairomm/surface.h>
 #include <sys/time.h>
 #include <time.h>
+#include <boost/format.hpp>
 
 
 SpikeWaveRenderer::SpikeWaveRenderer(GLChan_t chan) : 
@@ -197,7 +198,8 @@ void SpikeWaveRenderer::render()
     
     int y = viewportWinY_; 
     glColor4f(1.0, 1.0, 1.0, 1.0); 
-    glString_.drawWinText(4, y-15, "Gain : 100", 10); 
+    glString_.drawWinText(4, y-15, 
+			  boost::str(boost::format("Gain : %1%") % channelState_.gain), 10); 
     glString_.drawWinText(4, y-25, "HW HPF: On", 10); 
     glString_.drawWinText(4, y-35, "Filter : 6 kHz", 10); 
     glString_.drawWinText(4, y-45, "Thold : 320 uV", 10); 
@@ -352,6 +354,10 @@ void SpikeWaveRenderer::setAmplitudeRange(float min, float max)
 {
   ampMin_ = min; 
   ampMax_ = max; 
+  std::cout << "chan = " << (int)chan_ << "SpikeWaveRenderer::setAmplitudeRange(" 
+	    << min << " , " << max << ")" << std::endl; 
+ 
+  sanityCheckViewParameters(); 
 
 }
 
@@ -360,6 +366,35 @@ void SpikeWaveRenderer::setAmplitudeView(float min, float max)
   // we'd like our scale to look at ~ volts. 
   viewY1_ = min; 
   viewY2_ = max; 
+
+  std::cout << "chan = " << (int)chan_ << " SpikeWaveRenderer::setAmplitudeView(" 
+	    << min << " , " << max << ")" << std::endl; 
+ 
+  sanityCheckViewParameters(); 
+
+
+}
+
+void SpikeWaveRenderer::sanityCheckViewParameters()
+{
+
+  // first, make sure our view is a subset of our range
+  if (ampMin_ > viewY1_) {
+    viewY1_ = ampMin_; 
+  }
+
+  if (ampMax_ < viewY2_) {
+    viewY2_ = ampMax_; 
+  }
+  
+  // if we have a non-zero amplitude and we've somehow gotten
+  // ourselves looking at a zero range, reset to sensible defaults
+
+  if (ampMax_ > 0 and viewY1_ == viewY2_) {
+    viewY1_ = ampMin_; 
+    viewY2_ = ampMax_; 
+  }
+  
 }
 
 void SpikeWaveRenderer::getAmplitudeView(float * min, float * max)
@@ -409,4 +444,10 @@ void SpikeWaveRenderer::setTriggerThreshold(float thold)
 {
   trigger_ = thold; 
   
+}
+
+void SpikeWaveRenderer::setState(TSpikeChannelState ts)
+{
+  channelState_ = ts; 
+
 }

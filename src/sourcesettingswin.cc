@@ -27,9 +27,23 @@ void SourceSettingsWin::populate()
 {
   // populate the settings -- ugly and a lot of work, but oh well. 
   chanproplist_t::iterator c; 
-  int rowpos = 1; 
+
+  // Add "all channel" setting: 
+  Gtk::Label * l = new Gtk::Label("All"); 
+  pTableSourceSettings_->attach(*l, 0, 1, 1, 2); 	
+
+  chanset_t chansall; 
   for (c = chanPropList_.begin(); c != chanPropList_.end(); c++) {
-    std::cout << "adding " << c->name << std::endl; 
+    chansall.insert(c->chan); 
+  }
+
+  GainComboSetting * gcsall = new GainComboSetting(pSomaNetCodec_, chansall); 
+  pTableSourceSettings_->attach(*gcsall, 1, 2, 1, 2); 
+
+
+  
+  int rowpos = 2; 
+  for (c = chanPropList_.begin(); c != chanPropList_.end(); c++) {
     Gtk::Label * l = new Gtk::Label(c->name); 
     pTableSourceSettings_->attach(*l, 0, 1, rowpos, rowpos+1); 	
     
@@ -41,7 +55,7 @@ void SourceSettingsWin::populate()
 
     rowpos++; 
   }
-    pTableSourceSettings_->show_all(); 
+  pTableSourceSettings_->show_all(); 
 
 
 }

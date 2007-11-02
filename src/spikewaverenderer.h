@@ -22,7 +22,7 @@
 #include "glspikes.h"
 
 #include "cairogltext/glstring.h"
-
+#include "somanetcodec.h" 
 
 const int SPIKEWAVE_LEN = 32; 
 
@@ -46,7 +46,8 @@ public:
   void setListLen(int len);
 
   void setLive(bool); 
-
+  
+  void setState(TSpikeChannelState ts); 
   void setTriggerThreshold(float thold); 
 
   // Update window synchronously (fast).
@@ -59,6 +60,7 @@ public:
 protected:
 
   void updateViewingWindow(); 
+  void sanityCheckViewParameters(); 
   bool viewChanged_; 
   float decayVal_;  // how many ts are we at zero opacity with ? 
   GLChan_t chan_; 
@@ -71,7 +73,8 @@ protected:
 
   GLfloat ampMin_, ampMax_; 
   GLfloat trigger_; 
-
+  
+  TSpikeChannelState channelState_; 
   bool renderSpikeWave(const GLSpikeWave_t & sw, 
 		       float alpha, bool plotPoints);
   bool setViewingWindow(float x1, float y1,  float x2, float y2); 

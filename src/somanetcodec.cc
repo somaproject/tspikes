@@ -10,6 +10,16 @@ void printEvent2(Event_t event)
 }
 
 
+TSpikeChannelState::TSpikeChannelState()
+{
+  gain = 0; 
+  threshold = 0; 
+  hpf = false; 
+  filtid = 0; 
+  rangeMin = 0; 
+  rangeMax = 0; 
+}
+
 SomaNetworkCodec::SomaNetworkCodec(NetworkInterface * pNetwork, int src, 
 				   chanproplist_t channels) :
   pNetwork_(pNetwork), 
@@ -145,22 +155,33 @@ void SomaNetworkCodec::parseEvent(const Event_t & evt)
       
       switch(param) {
       case GAIN: 
-	std::cout << "parseEvent: GAIN " << std::endl; 
-	channelStateCache_[pos].gain = evt.data[1]; 
-	break; 
+	{
+	  channelStateCache_[pos].gain = evt.data[1]; 
+	  break; 
+	}
       case RANGE: 
-
-	int32_t min, max; 
-	min = evt.data[1];
-	min = (min << 16) | (evt.data[2]); 
-	max = evt.data[3]; 
-	max = (max << 16) | (evt.data[4]); 
-	std::cout << "parseEvent: RANGE " 
-		  << min << ' ' << max << std::endl; 
-
-	channelStateCache_[pos].rangeMin =  min; 
-	channelStateCache_[pos].rangeMax = max; 
-	break; 
+	{
+	  int32_t min, max; 
+	  min = evt.data[1];
+	  min = (min << 16) | (evt.data[2]); 
+	  max = evt.data[3]; 
+	  max = (max << 16) | (evt.data[4]); 
+	  channelStateCache_[pos].rangeMin =  min; 
+	  channelStateCache_[pos].rangeMax = max; 
+	  break; 
+	}
+      case THOLD:
+	{
+	  break; 
+	}
+      case HPF:
+	{
+	  break; 
+	}
+      case FILT: 
+	{
+	  break; 
+	}
       default: 
 	std::cerr << "Should not get here; unknown property update"
 		  << param << std::endl;
@@ -198,7 +219,7 @@ bool SomaNetworkCodec::dataRXCallback(Glib::IOCondition io_condition)
       processNewData(rdp); 
 
       delete rdp; 
-    
+      
     }
   return true; 
 }
@@ -257,6 +278,7 @@ void SomaNetworkCodec::refreshStateCache() {
 
 TSpikeChannelState SomaNetworkCodec::getChannelState(int channel)
 {
+  // 
   return channelStateCache_[channel]; 
 }
 
@@ -266,7 +288,8 @@ void SomaNetworkCodec::setChannelState(int chan, const TSpikeChannelState & news
   
   EventTXList_t etxlist; 
   etxlist.reserve(4); 
-  //eventtxlist_t 
+
+
   if (newstate.gain != channelStateCache_[chan].gain) {
 
     // create the actual event 

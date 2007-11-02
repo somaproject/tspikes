@@ -184,7 +184,7 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork, datasource_t src) :
   setupMenus(); 
 
 
-  std::cout << "constructor done" << std::endl; 
+  
   // now query state
   somaNetworkCodec_.refreshStateCache(); 
 
@@ -279,8 +279,6 @@ void TSpikeWin::setTime(rtime_t t)
       rateTimeline_.appendRate(rp); 
       
       spVectpList_.insert(t, new GLSPVect_t); 
-      std::cout << "At t=" << rp.time << " the rate is " << rp.rate
-		<< std::endl; 
 
       currentTime_ = t; 
     }
@@ -293,10 +291,6 @@ void TSpikeWin::updateClusterView(bool isLive, float activePos, float decayRate)
 {
   // decayRate is a rate, luminance/alpha drops per unit time
 
-  
-  std::cout << "updateCluterView called, activePos="
-	    << activePos 
-	    << "decayRate = " << decayRate << std::endl; 
   
   // compute time range
   float t2 = activePos; 
@@ -401,8 +395,6 @@ void TSpikeWin::loadExistingSpikes(const std::vector<TSpike_t> & spikes)
 
 void TSpikeWin::liveToggle()
 {
-  std::cout << "Setting live to " << liveButton_.get_active() 
-	    << std::endl; 
 
   rateTimeline_.setLive(liveButton_.get_active()); 
   spikeWaveViewX_.setLive(liveButton_.get_active()); 
@@ -420,8 +412,6 @@ void TSpikeWin::timeUpdateCallback(somatime_t time)
 
 void TSpikeWin::sourceStateChangeCalback(int chan, TSpikeChannelState state)
 {
-  std::cout << "sourceStateChangeCallback" 
-	    << state.rangeMin << " " << state.rangeMax << std::endl; 
 
   switch(chan) {
   case 0:
