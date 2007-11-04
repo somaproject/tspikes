@@ -4,26 +4,19 @@
 #include <gtkmm.h>
 #include "somanetcodec.h" 
 #include "sourcesettingswin.h"
+#include "combosetting.h" 
 
 
-
-typedef std::map<int, std::string> gainmap_t; 
-class GainComboSetting : public Gtk::ComboBoxText
+class GainComboSetting : public ComboSetting;
 {
  public:
-  GainComboSetting(SomaNetworkCodec * nc, chanset_t chanset); 
+  GainComboSetting(SomaNetworkCodec * nc, chanset_t chanset, 
+		   settingsmap_t sm); 
   
  private:
+  int getSettingFromState(const TSpikeChannelState &);
+  TSpikeChannelState  setSettingInState(TSpikeChannelState, int); 
 
-  SomaNetworkCodec * pnc_; 
-  chanset_t chanset_; 
-  gainmap_t gainMap_; 
-  
-  void stateChangeCallback(int, TSpikeChannelState); 
-  void updateSetting(); 
-  void setDirty(bool value); 
-  void on_combo_changed(void); 
-  void on_realize(void); 
 
 }; 
   

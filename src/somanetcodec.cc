@@ -176,6 +176,11 @@ void SomaNetworkCodec::parseEvent(const Event_t & evt)
 	}
       case HPF:
 	{
+	  if (evt.data[1] == 0) {
+	    channelStateCache_[pos].hpf = false; 
+	  } else {
+	    channelStateCache_[pos].hpf = true; 
+	  } 
 	  break; 
 	}
       case FILT: 
@@ -302,6 +307,21 @@ void SomaNetworkCodec::setChannelState(int chan, const TSpikeChannelState & news
 
     etxlist.push_back(eventTX); 
 
+  } else if (newstate.hpf != channelStateCache_[chan].hpf) {
+    // create the actual event 
+    EventTX_t eventTX; 
+    eventTX.destaddr[dsrc_to_esrc(dsrc_)] = 1; // THIS SOURCE DEVICE
+    eventTX.event.src = 4; 
+    eventTX.event.cmd = 0x90; 
+    eventTX.event.data[0] = (HPF << 8) | chan ; 
+    if (newstate.hpf) {
+      eventTX.event.data[1] = 1;
+    } else {
+      eventTX.event.data[1] = 0;
+    }      
+
+    etxlist.push_back(eventTX); 
+    
   } else {
     // query so that we at least get an update of some sort? 
 

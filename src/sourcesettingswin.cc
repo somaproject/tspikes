@@ -1,5 +1,6 @@
 #include "sourcesettingswin.h"
 #include "gaincombosetting.h"
+#include "hpfchecksetting.h"
 
 SourceSettingsWin::SourceSettingsWin(SomaNetworkCodec * pSomaNetCodec) :
   pSomaNetCodec_(pSomaNetCodec), 
@@ -28,6 +29,7 @@ void SourceSettingsWin::populate()
   // populate the settings -- ugly and a lot of work, but oh well. 
   chanproplist_t::iterator c; 
 
+
   // Add "all channel" setting: 
   Gtk::Label * l = new Gtk::Label("All"); 
   pTableSourceSettings_->attach(*l, 0, 1, 1, 2); 	
@@ -39,6 +41,9 @@ void SourceSettingsWin::populate()
 
   GainComboSetting * gcsall = new GainComboSetting(pSomaNetCodec_, chansall); 
   pTableSourceSettings_->attach(*gcsall, 1, 2, 1, 2); 
+  
+  HPFCheckSetting * hcsall = new HPFCheckSetting(pSomaNetCodec_, chansall); 
+  pTableSourceSettings_->attach(*hcsall, 2, 3, 1, 2); 
 
 
   
@@ -50,9 +55,13 @@ void SourceSettingsWin::populate()
     // add gain settings
     chanset_t chans; 
     chans.insert(c->chan); 
+
     GainComboSetting * gcs = new GainComboSetting(pSomaNetCodec_, chans); 
     pTableSourceSettings_->attach(*gcs, 1, 2, rowpos, rowpos +1); 
 
+    HPFCheckSetting * hcs = new HPFCheckSetting(pSomaNetCodec_, chans); 
+    pTableSourceSettings_->attach(*hcs, 2, 3, rowpos, rowpos +1); 
+    
     rowpos++; 
   }
   pTableSourceSettings_->show_all(); 

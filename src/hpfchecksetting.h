@@ -16,7 +16,7 @@ class HPFCheckSetting : public Gtk::CheckButton
 
   SomaNetworkCodec * pnc_; 
   chanset_t chanset_; 
-  
+  bool blockSignal_; 
   
   void stateChangeCallback(int, TSpikeChannelState); 
   void updateSetting(); 

@@ -44,7 +44,7 @@ Event_t FakeTTData::createStateResponse(int chan, STATEPARM parm)
   response.data[3] = 0x00; 
   response.data[4] = 0x00; 
 
-  // right now we just support gain; 
+
   switch(parm) {
   case GAIN: 
     {
@@ -127,7 +127,19 @@ void FakeTTData::eventTXCallback(const EventTXList_t & el)
 	pelist->push_back(e2); 
 
 	break; 
-      }
+      } 
+      case HPF: {
+	
+	if (evt.data[1] == 1) {
+	  fakestate_[chan].hpf = true; 
+	} else {
+	  fakestate_[chan].hpf = false; 
+	}
+
+	Event_t e = createStateResponse(chan, HPF); 
+	pelist->push_back(e); 
+	break; 
+      } 
       default:
 	break; 
       }

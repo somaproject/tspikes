@@ -200,7 +200,11 @@ void SpikeWaveRenderer::render()
     glColor4f(1.0, 1.0, 1.0, 1.0); 
     glString_.drawWinText(4, y-15, 
 			  boost::str(boost::format("Gain : %1%") % channelState_.gain), 10); 
-    glString_.drawWinText(4, y-25, "HW HPF: On", 10); 
+    if (channelState_.hpf) {
+      glString_.drawWinText(4, y-25, "HW HPF: On", 10); 
+    } else {
+      glString_.drawWinText(4, y-25, "HW HPF: Off", 10); 
+    }
     glString_.drawWinText(4, y-35, "Filter : 6 kHz", 10); 
     glString_.drawWinText(4, y-45, "Thold : 320 uV", 10); 
     
@@ -354,8 +358,6 @@ void SpikeWaveRenderer::setAmplitudeRange(float min, float max)
 {
   ampMin_ = min; 
   ampMax_ = max; 
-  std::cout << "chan = " << (int)chan_ << "SpikeWaveRenderer::setAmplitudeRange(" 
-	    << min << " , " << max << ")" << std::endl; 
  
   sanityCheckViewParameters(); 
 
@@ -367,8 +369,6 @@ void SpikeWaveRenderer::setAmplitudeView(float min, float max)
   viewY1_ = min; 
   viewY2_ = max; 
 
-  std::cout << "chan = " << (int)chan_ << " SpikeWaveRenderer::setAmplitudeView(" 
-	    << min << " , " << max << ")" << std::endl; 
  
   sanityCheckViewParameters(); 
 
