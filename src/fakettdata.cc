@@ -141,14 +141,26 @@ void FakeTTData::eventTXCallback(const EventTXList_t & el)
 	break; 
       }
       case FILT: { 
-	std::cout << "setting fakestate channel " << (int)chan << " to " << evt.data[1] << std::endl;
 	fakestate_[chan].filtid = evt.data[1]; 
 	
-	Event_t e = createStateResponse(chan, FILT); 
+	Event_t e = createStateResponse(chan, THOLD); 
 	pelist->push_back(e); 
 	break; 
 	
       } 
+
+      case THOLD: { 
+	int32_t res =0; 
+	res = evt.data[1]; 
+	res = ( res << 16) | evt.data[2]; 
+	fakestate_[chan].threshold = res; 
+	Event_t e = createStateResponse(chan, THOLD); 
+	pelist->push_back(e); 
+	break; 
+	
+      } 
+ 
+ 
       default:
 	break; 
       }

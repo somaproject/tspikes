@@ -1,6 +1,7 @@
 #include "spikewaverenderer.h"
 #include "shaders.h"
 #include "glconfig.h"
+#include "voltage.h"
 #include <cairomm/context.h>
 #include <cairomm/surface.h>
 #include <sys/time.h>
@@ -206,7 +207,10 @@ void SpikeWaveRenderer::render()
       glString_.drawWinText(4, y-25, "HW HPF: Off", 10); 
     }
     glString_.drawWinText(4, y-35, "Filter : 6 kHz", 10); 
-    glString_.drawWinText(4, y-45, "Thold : 320 uV", 10); 
+    
+    glString_.drawWinText(4, y-45, 
+			  boost::str(boost::format("Thold: %s") % Voltage(channelState_.threshold).str()), 10); 
+			  
     
   } else { 
     // we are in a "pasued state" 
@@ -449,5 +453,5 @@ void SpikeWaveRenderer::setTriggerThreshold(float thold)
 void SpikeWaveRenderer::updateState(TSpikeChannelState ts)
 {
   channelState_ = ts; 
-
+  trigger_ = Voltage(channelState_.threshold).to_volts(); 
 }

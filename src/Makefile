@@ -64,7 +64,8 @@ am__objects_1 = clusterrenderer.$(OBJEXT) glspikes.$(OBJEXT) \
 	somanetcodec.$(OBJEXT) sourcesettingswin.$(OBJEXT) \
 	gaincombosetting.$(OBJEXT) fakettdata.$(OBJEXT) \
 	hpfchecksetting.$(OBJEXT) combosetting.$(OBJEXT) \
-	filtercombosetting.$(OBJEXT)
+	filtercombosetting.$(OBJEXT) tholdentrysetting.$(OBJEXT) \
+	voltage.$(OBJEXT)
 am_tspike_OBJECTS = $(am__objects_1)
 tspike_OBJECTS = $(am_tspike_OBJECTS)
 tspike_LDADD = $(LDADD)
@@ -215,8 +216,13 @@ top_builddir = ..
 top_srcdir = ..
 AM_CXXFLAGS = $(GTKDEPS_CFLAGS)  $(BOOST_CPPFLAGS) $(SOMADEPS_CFLAGS)  -pthread 
 AM_LDFLAGS = $(GTKDEPS_LIBS) $(BOOST_LDFLAGS) $(SOMADEPS_LIBS) $(BOOST_THREAD_LIB)  $(BOOST_PROGRAM_OPTIONS_LIB)
-h_sources = clusterrenderer.h  glconfig.h  ratetimeline.h  spikewaveview.h  ttreader.h clusterview.h  glspikes.h  shaders.h tspikewin.h cairogltext/glstring.h spikewaverenderer.h somanetcodec.h sourcesettingswin.h gaincombosetting.h fakettdata.h hpfchecksetting.h combosetting.h filtercombosetting.h
-cc_sources = clusterrenderer.cc glspikes.c  spikewaveview.cc  cairogltext/glstring.cc ttreader.cc clusterview.cc  shaders.cc  glconfig.cc  ratetimeline.cc tspikemain.cc tspikewin.cc spikewaverenderer.cc somanetcodec.cc sourcesettingswin.cc gaincombosetting.cc fakettdata.cc hpfchecksetting.cc combosetting.cc filtercombosetting.cc
+h_sources = clusterrenderer.h  glconfig.h  ratetimeline.h  spikewaveview.h \
+	 ttreader.h clusterview.h  glspikes.h  shaders.h tspikewin.h \
+	 cairogltext/glstring.h spikewaverenderer.h somanetcodec.h \
+	 sourcesettingswin.h gaincombosetting.h fakettdata.h hpfchecksetting.h  \
+	 combosetting.h filtercombosetting.h tholdentrysetting.h voltage.h
+
+cc_sources = clusterrenderer.cc glspikes.c  spikewaveview.cc  cairogltext/glstring.cc ttreader.cc clusterview.cc  shaders.cc  glconfig.cc  ratetimeline.cc tspikemain.cc tspikewin.cc spikewaverenderer.cc somanetcodec.cc sourcesettingswin.cc gaincombosetting.cc fakettdata.cc hpfchecksetting.cc combosetting.cc filtercombosetting.cc tholdentrysetting.cc voltage.cc
 spikevis_SOURCES = clusterrenderer.cc  clusterview.cc  shaders.cc  glconfig.cc  cairogltext/glstring.cc  spikevis.cc
 tspike_SOURCES = $(cc_sources)
 all: all-am
@@ -310,9 +316,11 @@ include ./$(DEPDIR)/sourcesettingswin.Po
 include ./$(DEPDIR)/spikevis.Po
 include ./$(DEPDIR)/spikewaverenderer.Po
 include ./$(DEPDIR)/spikewaveview.Po
+include ./$(DEPDIR)/tholdentrysetting.Po
 include ./$(DEPDIR)/tspikemain.Po
 include ./$(DEPDIR)/tspikewin.Po
 include ./$(DEPDIR)/ttreader.Po
+include ./$(DEPDIR)/voltage.Po
 
 .c.o:
 	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

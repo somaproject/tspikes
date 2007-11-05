@@ -172,6 +172,10 @@ void SomaNetworkCodec::parseEvent(const Event_t & evt)
 	}
       case THOLD:
 	{
+	  int32_t thold (0); 
+	  thold = evt.data[1]; 
+	  thold = (thold << 16 ) | evt.data[2]; 
+	  channelStateCache_[pos].threshold = thold; 
 	  break; 
 	}
       case HPF:
@@ -186,7 +190,7 @@ void SomaNetworkCodec::parseEvent(const Event_t & evt)
       case FILT: 
 	{
 	  channelStateCache_[pos].filtid = evt.data[1]; 
-
+	  break; 
 	}
       default: 
 	std::cerr << "Should not get here; unknown property update"
@@ -335,7 +339,19 @@ void SomaNetworkCodec::setChannelState(int chan, const TSpikeChannelState & news
 
     etxlist.push_back(eventTX); 
 
-  } else if (newstate.hpf != channelStateCache_[chan].hpf) {
+  } else if (newstate.threshold != channelStateCache_[chan].threshold) {
+    // THRESHOLD
+
+    EventTX_t eventTX; 
+    eventTX.destaddr[dsrc_to_esrc(dsrc_)] = 1; // THIS SOURCE DEVICE
+    eventTX.event.src = 4; 
+    eventTX.event.cmd = 0x90; 
+    eventTX.event.data[0] = (THOLD << 8) | chan ; 
+    eventTX.event.data[1] = (newstate.threshold >> 16); 
+    eventTX.event.data[2] = newstate.threshold & 0xFFFF; 
+
+    etxlist.push_back(eventTX); 
+
     
   } else {
     // query so that we at least get an update of some sort? 

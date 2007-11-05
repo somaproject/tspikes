@@ -4,6 +4,7 @@
 #include "gaincombosetting.h"
 #include "filtercombosetting.h"
 #include "hpfchecksetting.h"
+#include "tholdentrysetting.h"
 
 SourceSettingsWin::SourceSettingsWin(SomaNetworkCodec * pSomaNetCodec) :
   pSomaNetCodec_(pSomaNetCodec), 
@@ -69,6 +70,9 @@ void SourceSettingsWin::populate()
   FilterComboSetting * fcsall = new FilterComboSetting(pSomaNetCodec_, chansall, filterMap); 
   pTableSourceSettings_->attach(*fcsall, 3, 4, 1, 2); 
  
+  TholdEntrySetting * tesall = new TholdEntrySetting(pSomaNetCodec_, chansall); 
+  pTableSourceSettings_->attach(*tesall, 4, 5, 1, 2); 
+ 
  
   int rowpos = 2; 
   for (c = chanPropList_.begin(); c != chanPropList_.end(); c++) {
@@ -88,6 +92,9 @@ void SourceSettingsWin::populate()
     FilterComboSetting * fcs = new FilterComboSetting(pSomaNetCodec_, chans, filterMap); 
     pTableSourceSettings_->attach(*fcs, 3, 4, rowpos, rowpos +1); 
 
+    TholdEntrySetting * tes = new TholdEntrySetting(pSomaNetCodec_, chans); 
+    pTableSourceSettings_->attach(*tes, 4, 5, rowpos, rowpos+1); 
+ 
     
     rowpos++; 
   }
