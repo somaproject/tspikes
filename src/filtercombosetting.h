@@ -1,5 +1,5 @@
-#ifndef GAINCOMBOSETTING_H
-#define GAINCOMBOSETTING_H
+#ifndef FILTERCOMBOSETTING_H
+#define FILTERCOMBOSETTING_H
 
 #include <gtkmm.h>
 #include "somanetcodec.h" 
@@ -7,10 +7,10 @@
 #include "combosetting.h" 
 
 
-class GainComboSetting : public ComboSetting
+class FilterComboSetting : public ComboSetting
 {
  public:
-  GainComboSetting(SomaNetworkCodec * nc, chanset_t chanset, 
+  FilterComboSetting(SomaNetworkCodec * nc, chanset_t chanset, 
 		   settingmap_t sm); 
   
  private:

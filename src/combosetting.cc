@@ -1,14 +1,14 @@
 #include "combosetting.h"
 
 ComboSetting::ComboSetting(SomaNetworkCodec * nc, chanset_t chanset, 
-			   settingsmap_t sm) :
+			   settingmap_t sm) :
   pnc_(nc), 
   chanset_(chanset), 
-  settingsMap_(sm)
+  settingMap_(sm)
 {
 
-  for (gainmap_t::iterator i = gainMap_.begin(); 
-       i != gainMap_.end(); ++i)
+  for (settingmap_t::iterator i = settingMap_.begin(); 
+       i != settingMap_.end(); ++i)
     {
       insert_text(i->first, i->second); 
     }
@@ -19,7 +19,7 @@ ComboSetting::ComboSetting(SomaNetworkCodec * nc, chanset_t chanset,
   signal_changed().connect(sigc::mem_fun(*this,
 					 &ComboSetting::on_combo_changed) );
   
-  updateSetting(); 
+  //updateSetting(); 
 }
 
 void ComboSetting::stateChangeCallback(int chan, 
@@ -109,5 +109,22 @@ void ComboSetting::on_combo_changed(void)
       }
     }
   
+
+}
+
+
+int ComboSetting::getSettingFromState(const TSpikeChannelState & state)
+{
+  std::cerr << "error : should never call ComboSetting::getSettingFromState()" << std::endl; 
+  return 0; 
+}
+
+TSpikeChannelState ComboSetting::setSettingInState(TSpikeChannelState state, 
+						       int setting)
+{
+  std::cerr << "error : should never call ComboSetting::setSettingInState()" << std::endl; 
+
+
+  return state; 
 
 }

@@ -185,7 +185,8 @@ void SomaNetworkCodec::parseEvent(const Event_t & evt)
 	}
       case FILT: 
 	{
-	  break; 
+	  channelStateCache_[pos].filtid = evt.data[1]; 
+
 	}
       default: 
 	std::cerr << "Should not get here; unknown property update"
@@ -296,8 +297,8 @@ void SomaNetworkCodec::setChannelState(int chan, const TSpikeChannelState & news
 
 
   if (newstate.gain != channelStateCache_[chan].gain) {
+    // GAIN SETTING
 
-    // create the actual event 
     EventTX_t eventTX; 
     eventTX.destaddr[dsrc_to_esrc(dsrc_)] = 1; // THIS SOURCE DEVICE
     eventTX.event.src = 4; 
@@ -308,7 +309,8 @@ void SomaNetworkCodec::setChannelState(int chan, const TSpikeChannelState & news
     etxlist.push_back(eventTX); 
 
   } else if (newstate.hpf != channelStateCache_[chan].hpf) {
-    // create the actual event 
+    // HPF SETTING
+
     EventTX_t eventTX; 
     eventTX.destaddr[dsrc_to_esrc(dsrc_)] = 1; // THIS SOURCE DEVICE
     eventTX.event.src = 4; 
@@ -321,6 +323,19 @@ void SomaNetworkCodec::setChannelState(int chan, const TSpikeChannelState & news
     }      
 
     etxlist.push_back(eventTX); 
+  } else  if (newstate.filtid != channelStateCache_[chan].filtid) {
+    // DIGITAL FITLER
+
+    EventTX_t eventTX; 
+    eventTX.destaddr[dsrc_to_esrc(dsrc_)] = 1; // THIS SOURCE DEVICE
+    eventTX.event.src = 4; 
+    eventTX.event.cmd = 0x90; 
+    eventTX.event.data[0] = (FILT << 8) | chan ; 
+    eventTX.event.data[1] = newstate.filtid; 
+
+    etxlist.push_back(eventTX); 
+
+  } else if (newstate.hpf != channelStateCache_[chan].hpf) {
     
   } else {
     // query so that we at least get an update of some sort? 

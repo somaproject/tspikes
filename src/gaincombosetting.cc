@@ -1,10 +1,11 @@
 #include "gaincombosetting.h"
 
 GainComboSetting::GainComboSetting(SomaNetworkCodec * nc, chanset_t chanset, 
-				   settingsmap_t sm) 
+				   settingmap_t sm) :
+  ComboSetting(nc, chanset, sm)
   
 {
-  
+  updateSetting(); 
 }
 
 int GainComboSetting::getSettingFromState(const TSpikeChannelState & state)
