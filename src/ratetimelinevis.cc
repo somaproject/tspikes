@@ -73,7 +73,7 @@ Vis::Vis(bool is_sync)
     buttonQuit_("Quit"), 
     liveCheckButton_("Live"),
     rateTimeline_(),
-    ttdata_("../../d118.tt"), 
+    ttdata_("../../a202.tt"), 
     lastSpikeTime_(0)
 {
 
@@ -126,7 +126,7 @@ Vis::~Vis()
 void Vis::on_button_quit_clicked()
 {
   // we should quit
-  
+  hide(); 
 }
 
 bool Vis::on_key_press_event(GdkEventKey* event)

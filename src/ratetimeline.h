@@ -108,7 +108,10 @@ protected:
   // time cursor
   float cursorTime_; 
   bool cursorVisible_; 
+  float cursorOpacity_; 
   void renderCursor(); 
+  void renderStartCursor(); 
+  void renderLatestCursor(); 
 
 };
 

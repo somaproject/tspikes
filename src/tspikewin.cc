@@ -282,7 +282,7 @@ void TSpikeWin::setTime(rtime_t t)
 
       currentTime_ = t; 
     }
-
+  
 
 }
 

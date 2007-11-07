@@ -200,7 +200,7 @@ void ClusterRenderer::renderSpikeVector(GLSPVectpList_t::iterator i, bool live)
 {
   // This is just syntactic sugar to make it easy for us to render
   // an iterator as well
-  renderSpikeVector(*i->second); 
+  renderSpikeVector(*i->second, live); 
   
 }
 
@@ -267,7 +267,7 @@ void ClusterRenderer::renderSpikeVector(const GLSPVect_t & spvect, bool live)
   glUniform1i(vp, viewMode_); 
 
   glDrawArrays(GL_POINTS, 0, spvect.size()); 
-  if(live  &&   spvect.empty()) {
+  if(live  &&  !spvect.empty()) {
     glColor4ubv((GLubyte*)&colors.back()); 
     glPointSize(4.0); 
     glBegin(GL_POINTS); 

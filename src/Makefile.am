@@ -10,11 +10,20 @@ h_sources = clusterrenderer.h  glconfig.h  ratetimeline.h  spikewaveview.h \
 	 sourcesettingswin.h gaincombosetting.h fakettdata.h hpfchecksetting.h  \
 	 combosetting.h filtercombosetting.h tholdentrysetting.h voltage.h
 
-cc_sources = clusterrenderer.cc glspikes.c  spikewaveview.cc  cairogltext/glstring.cc ttreader.cc clusterview.cc  shaders.cc  glconfig.cc  ratetimeline.cc tspikemain.cc tspikewin.cc spikewaverenderer.cc somanetcodec.cc sourcesettingswin.cc gaincombosetting.cc fakettdata.cc hpfchecksetting.cc combosetting.cc filtercombosetting.cc tholdentrysetting.cc voltage.cc
+cc_sources = clusterrenderer.cc glspikes.cc  spikewaveview.cc \
+	 cairogltext/glstring.cc ttreader.cc clusterview.cc \
+	 shaders.cc  glconfig.cc  ratetimeline.cc tspikemain.cc \
+	 tspikewin.cc spikewaverenderer.cc somanetcodec.cc \
+	 sourcesettingswin.cc gaincombosetting.cc fakettdata.cc \
+	 hpfchecksetting.cc combosetting.cc filtercombosetting.cc \
+	 tholdentrysetting.cc voltage.cc
 
 
-bin_PROGRAMS = tspike spikevis
-spikevis_SOURCES =  clusterrenderer.cc  clusterview.cc  shaders.cc  glconfig.cc  cairogltext/glstring.cc  spikevis.cc
+bin_PROGRAMS = tspike spikevis ratetimelinevis
+spikevis_SOURCES =  clusterrenderer.cc  clusterview.cc  shaders.cc  glconfig.cc  cairogltext/glstring.cc  spikevis.cc 
+
+ratetimelinevis_SOURCES = ratetimelinevis.cc ttreader.cc ratetimeline.cc \
+	 glspikes.cc glconfig.cc  shaders.cc cairogltext/glstring.cc 
 
 tspike_SOURCES = $(cc_sources)
 

@@ -34,7 +34,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = x86_64-unknown-linux-gnu
 host_triplet = x86_64-unknown-linux-gnu
-bin_PROGRAMS = tspike$(EXEEXT) spikevis$(EXEEXT)
+bin_PROGRAMS = tspike$(EXEEXT) spikevis$(EXEEXT) \
+	ratetimelinevis$(EXEEXT)
 subdir = src
 DIST_COMMON = README $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -51,6 +52,11 @@ CONFIG_CLEAN_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
+am_ratetimelinevis_OBJECTS = ratetimelinevis.$(OBJEXT) \
+	ttreader.$(OBJEXT) ratetimeline.$(OBJEXT) glspikes.$(OBJEXT) \
+	glconfig.$(OBJEXT) shaders.$(OBJEXT) glstring.$(OBJEXT)
+ratetimelinevis_OBJECTS = $(am_ratetimelinevis_OBJECTS)
+ratetimelinevis_LDADD = $(LDADD)
 am_spikevis_OBJECTS = clusterrenderer.$(OBJEXT) clusterview.$(OBJEXT) \
 	shaders.$(OBJEXT) glconfig.$(OBJEXT) glstring.$(OBJEXT) \
 	spikevis.$(OBJEXT)
@@ -72,15 +78,6 @@ tspike_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
-	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-LTCOMPILE = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-CCLD = $(CC)
-LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
@@ -90,8 +87,10 @@ CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(spikevis_SOURCES) $(tspike_SOURCES)
-DIST_SOURCES = $(spikevis_SOURCES) $(tspike_SOURCES)
+SOURCES = $(ratetimelinevis_SOURCES) $(spikevis_SOURCES) \
+	$(tspike_SOURCES)
+DIST_SOURCES = $(ratetimelinevis_SOURCES) $(spikevis_SOURCES) \
+	$(tspike_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -222,13 +221,23 @@ h_sources = clusterrenderer.h  glconfig.h  ratetimeline.h  spikewaveview.h \
 	 sourcesettingswin.h gaincombosetting.h fakettdata.h hpfchecksetting.h  \
 	 combosetting.h filtercombosetting.h tholdentrysetting.h voltage.h
 
-cc_sources = clusterrenderer.cc glspikes.c  spikewaveview.cc  cairogltext/glstring.cc ttreader.cc clusterview.cc  shaders.cc  glconfig.cc  ratetimeline.cc tspikemain.cc tspikewin.cc spikewaverenderer.cc somanetcodec.cc sourcesettingswin.cc gaincombosetting.cc fakettdata.cc hpfchecksetting.cc combosetting.cc filtercombosetting.cc tholdentrysetting.cc voltage.cc
-spikevis_SOURCES = clusterrenderer.cc  clusterview.cc  shaders.cc  glconfig.cc  cairogltext/glstring.cc  spikevis.cc
+cc_sources = clusterrenderer.cc glspikes.cc  spikewaveview.cc \
+	 cairogltext/glstring.cc ttreader.cc clusterview.cc \
+	 shaders.cc  glconfig.cc  ratetimeline.cc tspikemain.cc \
+	 tspikewin.cc spikewaverenderer.cc somanetcodec.cc \
+	 sourcesettingswin.cc gaincombosetting.cc fakettdata.cc \
+	 hpfchecksetting.cc combosetting.cc filtercombosetting.cc \
+	 tholdentrysetting.cc voltage.cc
+
+spikevis_SOURCES = clusterrenderer.cc  clusterview.cc  shaders.cc  glconfig.cc  cairogltext/glstring.cc  spikevis.cc 
+ratetimelinevis_SOURCES = ratetimelinevis.cc ttreader.cc ratetimeline.cc \
+	 glspikes.cc glconfig.cc  shaders.cc cairogltext/glstring.cc 
+
 tspike_SOURCES = $(cc_sources)
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .c .cc .lo .o .obj
+.SUFFIXES: .cc .lo .o .obj
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -286,6 +295,9 @@ clean-binPROGRAMS:
 	  echo " rm -f $$p $$f"; \
 	  rm -f $$p $$f ; \
 	done
+ratetimelinevis$(EXEEXT): $(ratetimelinevis_OBJECTS) $(ratetimelinevis_DEPENDENCIES) 
+	@rm -f ratetimelinevis$(EXEEXT)
+	$(CXXLINK) $(ratetimelinevis_OBJECTS) $(ratetimelinevis_LDADD) $(LIBS)
 spikevis$(EXEEXT): $(spikevis_OBJECTS) $(spikevis_DEPENDENCIES) 
 	@rm -f spikevis$(EXEEXT)
 	$(CXXLINK) $(spikevis_OBJECTS) $(spikevis_LDADD) $(LIBS)
@@ -310,6 +322,7 @@ include ./$(DEPDIR)/glspikes.Po
 include ./$(DEPDIR)/glstring.Po
 include ./$(DEPDIR)/hpfchecksetting.Po
 include ./$(DEPDIR)/ratetimeline.Po
+include ./$(DEPDIR)/ratetimelinevis.Po
 include ./$(DEPDIR)/shaders.Po
 include ./$(DEPDIR)/somanetcodec.Po
 include ./$(DEPDIR)/sourcesettingswin.Po
@@ -321,27 +334,6 @@ include ./$(DEPDIR)/tspikemain.Po
 include ./$(DEPDIR)/tspikewin.Po
 include ./$(DEPDIR)/ttreader.Po
 include ./$(DEPDIR)/voltage.Po
-
-.c.o:
-	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-	mv -f $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
-#	source='$<' object='$@' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(COMPILE) -c $<
-
-.c.obj:
-	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-	mv -f $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
-#	source='$<' object='$@' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(COMPILE) -c `$(CYGPATH_W) '$<'`
-
-.c.lo:
-	$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-	mv -f $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
-#	source='$<' object='$@' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(LTCOMPILE) -c -o $@ $<
 
 .cc.o:
 	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

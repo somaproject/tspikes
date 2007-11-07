@@ -9,11 +9,12 @@ RateTimeline::RateTimeline() :
   viewT1_(0.0), 
   viewT2_(BASEDURATION), 
   viewX1_(0.0), 
-  viewX2_(100.0),
+  viewX2_(200.0),
   isLive_(true), 
   decayRate_(0.01), 
   activePos_(100.0),
-  cursorTime_(viewT1_), 
+  cursorTime_(viewT1_),
+  cursorOpacity_(0.0), 
   cursorVisible_(false)
 {
 
@@ -271,7 +272,8 @@ bool RateTimeline::on_expose_event(GdkEventExpose* event)
 // 	    << " and T2 = " << viewT2_ << std::endl; 
 
   renderCursor(); 
-
+  renderStartCursor(); 
+  renderLatestCursor(); 
   // Swap buffers.
   gldrawable->swap_buffers();
   gldrawable->gl_end();
@@ -365,28 +367,42 @@ bool RateTimeline::on_motion_notify_event(GdkEventMotion* event)
   if (event->state & GDK_BUTTON1_MASK) 
     {
       
-      float movePixDelta = float(x) - float(lastX_); 
-      
+      // horizontal scrolling
+      if (! isLive_) {
+	float movePixDelta = float(x) - float(lastX_); 
+	
       // how many GL units was this? 
-      float windowDelta = movePixDelta / get_width() * (viewT2_ - viewT1_); 
-      
-      viewT1_ -= windowDelta; 
-      viewT2_ -= windowDelta;
-      
-      invalidate(); 
-      
-      update();
+	float windowDelta = movePixDelta / get_width() * (viewT2_ - viewT1_); 
+	
+	
+	if (! rates_.empty() ) {
+	  // don't scroll past start
+	  if ((viewT1_ - windowDelta) <  rates_[0].time) {
+	    windowDelta = viewT1_ - rates_[0].time; 
+	  }
+	  
+	viewT1_ -= windowDelta; 	  
+	}
+	
+	viewT2_ -= windowDelta;
+	
+	
+	invalidate(); 
+	
+	update();
+      } 
     } 
   else if (event->state & GDK_BUTTON3_MASK)
     {
-
-      float windowPos = float(x) / get_width() * (viewT2_ - viewT1_); 
-
-      activePos_ = viewT1_ + windowPos; 
-      invalidate(); 
-
-      viewSignal_.emit(isLive_, activePos_, decayRate_); 
-      update();
+      if (! isLive_) {
+	float windowPos = float(x) / get_width() * (viewT2_ - viewT1_); 
+	
+	activePos_ = viewT1_ + windowPos; 
+	invalidate(); 
+	
+	viewSignal_.emit(isLive_, activePos_, decayRate_); 
+	update();
+      }
     } 
   else 
     {
@@ -470,9 +486,11 @@ void RateTimeline::setLive(bool v)
 
 void RateTimeline::renderCursor()
 {
+  // The cursor is where the mouse ise. 
+
   if (cursorVisible_) {
     glLineWidth(4.0); 
-    glColor4f(1.0, 1.0, 1.0, 1.0); 
+    glColor4f(1.0, 1.0, 1.0, 0.5); 
     glBegin(GL_LINES);
     
     glVertex2f(cursorTime_, viewX1_); 
@@ -481,8 +499,45 @@ void RateTimeline::renderCursor()
 
   }
 
+} 
+
+void RateTimeline::renderStartCursor() {
+
+  if ( ! rates_.empty() ){
+    glLineWidth(4.0); 
+    glColor4f(0.0, 1.0, 0.0, 1.0); 
+    glBegin(GL_LINES);
+    
+    glVertex2f(rates_[0].time+0.1, viewX1_); 
+    glVertex2f(rates_[0].time+0.1, viewX2_); 
+    glEnd(); 
+  }
 
 }
+
+void RateTimeline::renderLatestCursor() {
+  // The Latest Cursor is the cursor at the most-recently-added point
+
+  if ( ! rates_.empty() ){
+    glLineWidth(4.0); 
+    glColor4f(0.5, 0.5, 1.0, 1.0); 
+    glBegin(GL_LINES);
+    
+    glVertex2f(rates_.back().time, viewX1_); 
+    glVertex2f(rates_.back().time, viewX2_); 
+    glEnd(); 
+
+    glColor4f(1.0, 1.0, 1.0, 1.0); 
+
+    glPointSize(4.0);
+    glBegin(GL_POINTS); 
+    glVertex2f(rates_.back().time, rates_.back().rate); 
+    glEnd(); 
+    
+  }
+
+}
+
 
 void RateTimeline::setCursorTime(float time)
 {
