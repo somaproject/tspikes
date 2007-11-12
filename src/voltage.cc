@@ -1,6 +1,7 @@
 #include <math.h>
 #include <sstream>
 #include <iostream>
+#include <iomanip>
 #include "voltage.h"
 
 
@@ -85,12 +86,12 @@ double Voltage::to_volts()
   return result;
 }
 
-std::string Voltage::str()
+std::string Voltage::str(int floatpoints)
 {
   // Return the canonical string representation. 
   
   boost::format format; 
-
+  
   if (value_ < 1000) {
     // return in NV 
     format = boost::format("%d nV"); 
@@ -99,18 +100,19 @@ std::string Voltage::str()
   } else if (value_ < 1000000) {
     // return in uV
     format = boost::format("%0.2f uV"); 
-    format % ((double)value_ /1e3) ; 
-
+    format %  boost::io::group(std::setprecision(floatpoints),
+			       ((double)value_ /1e3) ); 
   } else if (value_ < 1000000000) {
     // return in mV 
     format = boost::format("%0.2f mV"); 
-    format % ((double)value_ /1e6) ; 
+    format %  boost::io::group(std::setprecision(floatpoints),
+			       ((double)value_ /1e6) ); 
 
   } else {
     // return in V
     format = boost::format("%0.2f V"); 
-    format % ((double)value_ /1e9) ; 
-
+    format %  boost::io::group(std::setprecision(floatpoints),
+			       ((double)value_ /1e9) ); 
   }
 
   return boost::str(format); 

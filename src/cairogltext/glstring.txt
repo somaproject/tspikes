@@ -1,18 +1,10 @@
-What do we want from our text interface? Well, we'd like to be able to
-say "render text at the following location" and not worry about it
-again.
 
-Except that rendering text at location X requires some rather
-unfortunate caching, right?
+The GLString object is constructed with a font name, a boolean indicating if
+the font is bold, and positioning data: 
 
-This is not a scene description language. We should not try and make
-it as such. So what we really want to be able to do is say "correctly
-render text at this location with this string and this size" and
-should that string/size exist, we use an existing texture; otherwise
-we generate the texture.
+Horizontal position: left, center, right: the location of the center text
+vertical position : BASELINE vs MEDIAN 
 
-That suggests we create a GLText object and then tell it
-RenderText(x, y, Size, string).
 
 ------------------------------------------------------------------------
 Internal Guts

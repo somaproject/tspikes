@@ -26,7 +26,7 @@ class Voltage
   Voltage(int V); 
   Voltage(std::string str); 
   
-  std::string str(); 
+  std::string str(int floatpoints = 2); 
   int32_t to_nv(); // returns the voltage as a float in nv; 
   double to_volts(); 
 

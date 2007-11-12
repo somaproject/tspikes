@@ -1,6 +1,10 @@
+
+#include <boost/format.hpp>
 #include "ratetimelinerenderer.h"
 #include "glconfig.h"
 #include "shaders.h"
+
+
 
 RateTimelineRenderer::RateTimelineRenderer() : 
   BASEDURATION(1000.0), 
@@ -203,9 +207,12 @@ void RateTimelineRenderer::renderCursor()
     glVertex2f(cursorTime_, viewX2_); 
     glEnd(); 
 
-    glColor4f(1.0, 1.0, 1.0, 1.0); 
 
-    cursorString_.drawWorldText(cursorTime_ + 1, viewX1_ + 30, "Test String Off", 10); 
+    // render cursor text
+    glColor4f(1.0, 1.0, 1.0, 1.0); 
+    std::string cursorTimeString = boost::str(boost::format("%d") %  cursorTime_); 
+    cursorString_.drawWorldText(cursorTime_ + 1, viewX1_ + 30,
+				cursorTimeString, 10); 
 
     
   }
@@ -245,6 +252,15 @@ void RateTimelineRenderer::renderLatestCursor() {
     glVertex2f(rates_.back().time, rates_.back().rate); 
     glEnd(); 
     
+
+    // render latest value
+    glColor4f(1.0, 1.0, 1.0, 1.0); 
+    std::string rateTimeString = boost::str(boost::format("%d") %  rates_.back().time); 
+    cursorString_.drawWorldText(rates_.back().time + 1, 
+				rates_.back().rate, 
+				rateTimeString, 10); 
+
+
   }
 
 }

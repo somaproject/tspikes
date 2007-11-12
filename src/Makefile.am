@@ -21,7 +21,7 @@ cc_sources = clusterrenderer.cc glspikes.cc  spikewaveview.cc \
 
 
 bin_PROGRAMS = tspike spikevis ratetimelinevis
-spikevis_SOURCES =  clusterrenderer.cc  clusterview.cc  shaders.cc  glconfig.cc  cairogltext/glstring.cc  spikevis.cc 
+spikevis_SOURCES =  clusterrenderer.cc  clusterview.cc  shaders.cc  glconfig.cc  cairogltext/glstring.cc  spikevis.cc  voltage.cc
 
 ratetimelinevis_SOURCES = ratetimelinevis.cc ttreader.cc ratetimeline.cc ratetimelinerenderer.cc \
 	 glspikes.cc glconfig.cc  shaders.cc cairogltext/glstring.cc 

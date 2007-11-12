@@ -53,11 +53,14 @@ class ClusterRenderer
 
   void setRangeBoxVisible(bool); 
 
+  void fadeInText(); 
+  void fadeOutText(); 
+
   void setRange(float x, float y) {
     rangeX_ = x; 
     rangeY_ = y; 
   }
-
+  
  protected:
   
   bool isSetup_; 
@@ -74,6 +77,8 @@ class ClusterRenderer
   
   GLuint gpuProg_; 
   GLString glString_; 
+  GLString glHScaleString_; 
+  GLString glVScaleString_; 
 
   float gridSpacing_; 
   void renderGrid(); 
@@ -85,6 +90,11 @@ class ClusterRenderer
   float rangeX_, rangeY_; 
   void drawRangeBox(); 
   
+  sigc::connection textFadeConn_; 
+  float textAlpha_; 
+
+  bool fadeInTextHandler(); 
+  bool fadeOutTextHandler(); 
 
 };
 

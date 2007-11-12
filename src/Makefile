@@ -60,7 +60,7 @@ ratetimelinevis_OBJECTS = $(am_ratetimelinevis_OBJECTS)
 ratetimelinevis_LDADD = $(LDADD)
 am_spikevis_OBJECTS = clusterrenderer.$(OBJEXT) clusterview.$(OBJEXT) \
 	shaders.$(OBJEXT) glconfig.$(OBJEXT) glstring.$(OBJEXT) \
-	spikevis.$(OBJEXT)
+	spikevis.$(OBJEXT) voltage.$(OBJEXT)
 spikevis_OBJECTS = $(am_spikevis_OBJECTS)
 spikevis_LDADD = $(LDADD)
 am__objects_1 = clusterrenderer.$(OBJEXT) glspikes.$(OBJEXT) \
@@ -231,7 +231,7 @@ cc_sources = clusterrenderer.cc glspikes.cc  spikewaveview.cc \
 	 hpfchecksetting.cc combosetting.cc filtercombosetting.cc \
 	 tholdentrysetting.cc voltage.cc ratetimelinerenderer.cc
 
-spikevis_SOURCES = clusterrenderer.cc  clusterview.cc  shaders.cc  glconfig.cc  cairogltext/glstring.cc  spikevis.cc 
+spikevis_SOURCES = clusterrenderer.cc  clusterview.cc  shaders.cc  glconfig.cc  cairogltext/glstring.cc  spikevis.cc  voltage.cc
 ratetimelinevis_SOURCES = ratetimelinevis.cc ttreader.cc ratetimeline.cc ratetimelinerenderer.cc \
 	 glspikes.cc glconfig.cc  shaders.cc cairogltext/glstring.cc 
 

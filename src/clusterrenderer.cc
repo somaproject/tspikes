@@ -1,5 +1,6 @@
 #include "clusterrenderer.h"
 #include "shaders.h"
+#include "voltage.h"
 
 ClusterRenderer::ClusterRenderer(GLSPVectpList_t * pspvl, CViewMode cvm)
   : pspvl_(pspvl), 
@@ -14,9 +15,12 @@ ClusterRenderer::ClusterRenderer(GLSPVectpList_t * pspvl, CViewMode cvm)
     Xlabel_(""), 
     Ylabel_(""), 
     glString_("Bitstream Vera Sans", true, CENTER), 
+    glHScaleString_("Bitstream Vera Sans", false, CENTER), 
+    glVScaleString_("Bitstream Vera Sans", false, LEFT), 
     rangeBoxVisible_(true), 
     rangeX_(1e-3), 
-    rangeY_(1e-3)
+    rangeY_(1e-3), 
+    textAlpha_(0.0)
   
 {
 
@@ -395,45 +399,59 @@ void ClusterRenderer::renderHGrid()
   } else {
     glColor4f(1.0, 1.0, 1.0, 0.2 * 15.0/N); 
   }
-  if (N < 30) {
 
+  if (N < 30) {
+    
     for (int i = 1; (i*gridSpacing_) < viewX2_; i++) {
+      
+      float x = float(i) * gridSpacing_; 
 	
-	float x = float(i) * gridSpacing_; 
-	
-	
-	glBegin(GL_LINES); 
-	glVertex2f(x, viewY1_); 
-	glVertex2f(x, viewY2_); 
-	glEnd(); 
+      glBegin(GL_LINES); 
+      glVertex2f(x, viewY1_); 
+      glVertex2f(x, viewY2_); 
+      glEnd(); 
     }
-    
-    
   } 
   
   // scale 2
   glColor4f(1.0, 1.0, 1.0, 0.8); 
 
-  glBegin(GL_LINES); 
+
   for (int i = 0; (i*gridSpacing_*10.0) < viewX2_; i++)
     {
+      glBegin(GL_LINES); 
       float x = float(i) * gridSpacing_*10.0; 
       glVertex2f(x, viewY1_); 
       glVertex2f(x, viewY2_); 
+      glEnd(); 
     }
-  glEnd(); 
+
 
   // the text rendering is considerably more tricky
   // because we don't want to render more than a few strings at a given time
   
   /* 
-     the goal is, for a given N, identify 
+     Let's say that at any point in time, we have N current and N old 
+     renderers
+     
+     the current renderers and old renderers must overlap at exactly the same time
 
-     Let's assume we only ever render two text strings on the screen
-     at a time. Which ones should they be?
 
   */ 
 
+
+  // active ones will always be those closest to N/2 and N
+  glColor4f(1.0, 1.0, 1.0, 1.0); 
+  float x1 = round(viewX2_ / gridSpacing_ / 2) * gridSpacing_;  
+  Voltage v1(x1); 
+  glHScaleString_.drawWorldText(x1, viewY1_ + (viewY2_ - viewY1_)*0.05, 
+				v1.str(0), 8); 
+
+  float x2 = round(viewX2_ / gridSpacing_ ) * gridSpacing_;  
+  Voltage v2(x2); 
+  glHScaleString_.drawWorldText(x2, viewY1_ + (viewY2_ - viewY1_)*0.05, 
+				v2.str(0), 8); 
+  
 
 }
 
@@ -450,6 +468,7 @@ void ClusterRenderer::renderVGrid()
   } else {
     glColor4f(1.0, 1.0, 1.0, 0.2 * 15.0/N); 
   }
+
   if (N < 30) {
 
     for (int i = 1; (i*gridSpacing_) < viewY2_; i++) {
@@ -461,6 +480,12 @@ void ClusterRenderer::renderVGrid()
 	glVertex2f(viewX1_, y); 
 	glVertex2f(viewX2_, y); 
 	glEnd(); 
+	
+	Voltage v(y); 
+	glVScaleString_.drawWorldText(viewX1_ + (viewX2_ - viewX1_)*0.03, y, 
+				      v.str(0), 8); 
+
+
     }
     
     
@@ -533,4 +558,41 @@ void ClusterRenderer::drawRangeBox()
 
   
   
+}
+
+void ClusterRenderer::fadeInText()
+{
+  // fade-in sets up a glibmm timer that slowly increases text opacity to 1, 
+  // and disables any running timers for this text
+
+  std::cout << "ClusterRenderer::fade in text" << std::endl; 
+  textFadeConn_ = Glib::signal_timeout().connect(sigc::mem_fun(*this, 
+							     &ClusterRenderer::fadeInTextHandler), 
+					       100,  Glib::PRIORITY_DEFAULT);
+  
+
+}
+
+
+void ClusterRenderer::fadeOutText()
+{
+  // fade-in sets up a glibmm timer that slowly decreases text opacity to 1
+  // and disables any running timers
+  std::cout << "ClusterRenderer::fade out text" << std::endl; 
+
+
+}
+
+bool ClusterRenderer::fadeInTextHandler()
+{
+  std::cout << "ClusterRenderer::fade in text handler" << std::endl; 
+
+  if (textAlpha_ >= 1.0) {
+    textAlpha_ = 1.0; 
+    return false;
+  } else {
+    textAlpha_ += 0.1;
+    return true; 
+  }
+
 }

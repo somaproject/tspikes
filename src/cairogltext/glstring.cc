@@ -5,11 +5,15 @@
 
 GLString::GLString(std::string family, 
 		   bool isBold, 
-		   StringHPos hpos):
+		   StringHPos hpos, 
+		   StringVPos vpos):
   family_(family), 
   isBold_(isBold), 
-  hpos_(hpos)
+  hpos_(hpos), 
+  vpos_(vpos), 
+  gpuProgCompiled_(false)
 {
+  
   
 }
 
@@ -47,6 +51,8 @@ void GLString::setupTexture()
 
 cacheItem_t GLString::generateTexture(textprop_t tp)
 {
+  checkGPUProgCompiled(); 
+
   // Create the string in cairo, render it to an image surface
   // and turn that image surface into a gl texture
   
@@ -107,6 +113,9 @@ cacheItem_t GLString::generateTexture(textprop_t tp)
   
   pContext->show_text(tp.text); 
 
+  // now, remove the premultiplied texture
+  unsigned char * data = surface->get_data(); 
+
   // opengl bind the texture
 
   textureID_t textureName; 
@@ -121,7 +130,7 @@ cacheItem_t GLString::generateTexture(textprop_t tp)
   glBindTexture(GL_TEXTURE_RECTANGLE_ARB, textureName); 
   
   glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA, texWidth, texHeight, 0, 
-	       GL_BGRA, GL_UNSIGNED_BYTE, surface->get_data()); 
+	       GL_BGRA, GL_UNSIGNED_BYTE, data); 
 
   glDisable(GL_TEXTURE_RECTANGLE_ARB); 
 
@@ -142,8 +151,25 @@ cacheItem_t GLString::generateTexture(textprop_t tp)
 
 }
 
+void GLString::checkGPUProgCompiled()
+{
+  // If we've never compiled the shaders before, do so.
+  if (!gpuProgCompiled_) {
+    
+    GLuint vshdr = loadGPUShader("glstring.vert", GL_VERTEX_SHADER); 
+    GLuint fshdr = loadGPUShader("glstring.frag", GL_FRAGMENT_SHADER); 
+    std::list<GLuint> shaders; 
+    shaders.push_back(vshdr); 
+    shaders.push_back(fshdr); 
+    gpuProg_ = createGPUProgram(shaders); 
+    gpuProgCompiled_  = true; 
+  }
+
+}
 void GLString::renderWorldLoc(float x, float y, cacheItem_t tp)
 {
+  checkGPUProgCompiled(); 
+  useGPUProgram(gpuProg_); 
 
   // get and save the GL Blend settings
   GLenum blendSFactor, blendDFactor; 
@@ -155,9 +181,9 @@ void GLString::renderWorldLoc(float x, float y, cacheItem_t tp)
   
   glBindTexture(GL_TEXTURE_RECTANGLE_ARB, tp.textureID); 
 
-  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
   glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA); 
-
+  //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
   
   GLdouble model[16] ;
   GLdouble proj[16] ;
@@ -210,6 +236,8 @@ void GLString::renderWorldLoc(float x, float y, cacheItem_t tp)
 
   // restore GL_BLEND
   glBlendFunc(blendSFactor, blendDFactor); 
+
+  useGPUProgram(0); 
   
 }
 
@@ -217,6 +245,7 @@ void GLString::renderPixLoc(int x, int y, cacheItem_t tp)
 {
   // helps on getting exact rasterization
   //  http://msdn2.microsoft.com/en-us/library/ms537007.aspx
+  useGPUProgram(gpuProg_); 
 
   GLint vp[4]; 
   glGetIntegerv(GL_VIEWPORT, vp); 
@@ -227,15 +256,17 @@ void GLString::renderPixLoc(int x, int y, cacheItem_t tp)
 
   // get and save the GL_BLEND settings
   GLenum blendSFactor, blendDFactor; 
-  glGetIntegerv(GL_BLEND_SRC, (GLint*)&blendSFactor); 
-  glGetIntegerv(GL_BLEND_DST,(GLint*) &blendDFactor); 
+  glGetIntegerv(GL_BLEND_SRC, (GLint*) &blendSFactor); 
+  glGetIntegerv(GL_BLEND_DST, (GLint*) &blendDFactor); 
 
-  glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA); /// test for multiply? 
+  //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
+  glBlendFunc(GL_ONE, GL_SRC_ALPHA); 
+
   glEnable(GL_TEXTURE_RECTANGLE_ARB);
   
   glBindTexture(GL_TEXTURE_RECTANGLE_ARB, tp.textureID); 
 
-  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
   // convert to pixel coords
   
@@ -277,6 +308,7 @@ void GLString::renderPixLoc(int x, int y, cacheItem_t tp)
   // restore GL_BLEND
   glBlendFunc(blendSFactor, blendDFactor); 
 
+  useGPUProgram(0); 
  
 }
 
@@ -327,4 +359,59 @@ cacheItem_t GLString::cacheAppend(textprop_t tp)
   
   return *i; 
   
+}
+
+
+int to_int (float fValue)
+{
+  fValue = floor (fValue * 256);
+  if (fValue > 255)
+    return 255;
+  else
+    return (int) fValue;
+}
+float d1 (int iValue)
+{
+return iValue / 255.0f;
+}
+
+float d2 (int iValue)
+{
+return (iValue + 0.5f) / 256.0f;
+}
+
+void GLString::unpremultiplyAlpha(unsigned char* pbuf, 
+				  int width, int height, int stride)
+{
+  
+  // based on code by macslow, gl-cairo-aatrick
+
+  int iX = 0;
+  int iY = 0;
+  
+  assert (pbuf != NULL);
+  /* get rid of premultiplied-alpha for use in OpenGL */
+  for (iX = 0; iX < width; iX++)
+    {
+      for (iY = 0; iY < height; iY++)
+	{
+	  unsigned char ucRed;
+	  unsigned char ucGreen;
+	  unsigned char ucBlue;
+	  unsigned char ucAlpha;
+	
+	  ucRed = pbuf[iY * stride + iX * 4 + 2];
+	  ucGreen = pbuf[iY * stride + iX * 4 + 1];
+	  ucBlue = pbuf[iY * stride + iX * 4 + 0];
+	  ucAlpha = pbuf[iY * stride + iX * 4 + 3];
+	
+	  ucRed = to_int (d2 (ucRed) / d1 (ucAlpha));
+	  ucGreen = to_int (d2 (ucGreen) / d1 (ucAlpha));
+	  ucBlue = to_int (d2 (ucBlue) / d1 (ucAlpha));
+
+	  pbuf[iY * stride + iX * 4 + 0] = ucBlue;
+	  pbuf[iY * stride + iX * 4 + 1] = ucGreen;
+	  pbuf[iY * stride + iX * 4 + 2] = ucRed;
+	}
+    }
 }
