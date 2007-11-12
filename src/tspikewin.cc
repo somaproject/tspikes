@@ -279,11 +279,11 @@ void TSpikeWin::setTime(rtime_t t)
       rateTimeline_.appendRate(rp); 
       
       spVectpList_.insert(t, new GLSPVect_t); 
-
+      
       currentTime_ = t; 
     }
   
-
+  
 }
 
 

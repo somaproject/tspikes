@@ -53,7 +53,8 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_ratetimelinevis_OBJECTS = ratetimelinevis.$(OBJEXT) \
-	ttreader.$(OBJEXT) ratetimeline.$(OBJEXT) glspikes.$(OBJEXT) \
+	ttreader.$(OBJEXT) ratetimeline.$(OBJEXT) \
+	ratetimelinerenderer.$(OBJEXT) glspikes.$(OBJEXT) \
 	glconfig.$(OBJEXT) shaders.$(OBJEXT) glstring.$(OBJEXT)
 ratetimelinevis_OBJECTS = $(am_ratetimelinevis_OBJECTS)
 ratetimelinevis_LDADD = $(LDADD)
@@ -71,7 +72,7 @@ am__objects_1 = clusterrenderer.$(OBJEXT) glspikes.$(OBJEXT) \
 	gaincombosetting.$(OBJEXT) fakettdata.$(OBJEXT) \
 	hpfchecksetting.$(OBJEXT) combosetting.$(OBJEXT) \
 	filtercombosetting.$(OBJEXT) tholdentrysetting.$(OBJEXT) \
-	voltage.$(OBJEXT)
+	voltage.$(OBJEXT) ratetimelinerenderer.$(OBJEXT)
 am_tspike_OBJECTS = $(am__objects_1)
 tspike_OBJECTS = $(am_tspike_OBJECTS)
 tspike_LDADD = $(LDADD)
@@ -219,7 +220,8 @@ h_sources = clusterrenderer.h  glconfig.h  ratetimeline.h  spikewaveview.h \
 	 ttreader.h clusterview.h  glspikes.h  shaders.h tspikewin.h \
 	 cairogltext/glstring.h spikewaverenderer.h somanetcodec.h \
 	 sourcesettingswin.h gaincombosetting.h fakettdata.h hpfchecksetting.h  \
-	 combosetting.h filtercombosetting.h tholdentrysetting.h voltage.h
+	 combosetting.h filtercombosetting.h tholdentrysetting.h voltage.h \
+	ratetimelinerenderer.h
 
 cc_sources = clusterrenderer.cc glspikes.cc  spikewaveview.cc \
 	 cairogltext/glstring.cc ttreader.cc clusterview.cc \
@@ -227,10 +229,10 @@ cc_sources = clusterrenderer.cc glspikes.cc  spikewaveview.cc \
 	 tspikewin.cc spikewaverenderer.cc somanetcodec.cc \
 	 sourcesettingswin.cc gaincombosetting.cc fakettdata.cc \
 	 hpfchecksetting.cc combosetting.cc filtercombosetting.cc \
-	 tholdentrysetting.cc voltage.cc
+	 tholdentrysetting.cc voltage.cc ratetimelinerenderer.cc
 
 spikevis_SOURCES = clusterrenderer.cc  clusterview.cc  shaders.cc  glconfig.cc  cairogltext/glstring.cc  spikevis.cc 
-ratetimelinevis_SOURCES = ratetimelinevis.cc ttreader.cc ratetimeline.cc \
+ratetimelinevis_SOURCES = ratetimelinevis.cc ttreader.cc ratetimeline.cc ratetimelinerenderer.cc \
 	 glspikes.cc glconfig.cc  shaders.cc cairogltext/glstring.cc 
 
 tspike_SOURCES = $(cc_sources)
@@ -322,6 +324,7 @@ include ./$(DEPDIR)/glspikes.Po
 include ./$(DEPDIR)/glstring.Po
 include ./$(DEPDIR)/hpfchecksetting.Po
 include ./$(DEPDIR)/ratetimeline.Po
+include ./$(DEPDIR)/ratetimelinerenderer.Po
 include ./$(DEPDIR)/ratetimelinevis.Po
 include ./$(DEPDIR)/shaders.Po
 include ./$(DEPDIR)/somanetcodec.Po

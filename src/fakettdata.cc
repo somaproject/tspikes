@@ -34,7 +34,7 @@ Event_t FakeTTData::createStateResponse(int chan, STATEPARM parm)
 {
 
   Event_t response; 
-  response.src = dsrc_to_esrc(0); // DEBUGGING; WE NEED TO FIGURE OUT WHO THE HELL WE ARE
+  response.src = dsrc_to_esrc(0); 
   response.cmd = 0x92; 
   
   // Safety zero everything
@@ -143,7 +143,7 @@ void FakeTTData::eventTXCallback(const EventTXList_t & el)
       case FILT: { 
 	fakestate_[chan].filtid = evt.data[1]; 
 	
-	Event_t e = createStateResponse(chan, THOLD); 
+	Event_t e = createStateResponse(chan, FILT); 
 	pelist->push_back(e); 
 	break; 
 	

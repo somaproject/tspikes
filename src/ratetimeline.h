@@ -24,16 +24,8 @@
 
 #include "glconfig.h"
 #include "glspikes.h"
+#include "ratetimelinerenderer.h"
 
-typedef float rateval_t; 
-typedef float timeval_t; 
-
-struct RatePoint_t
-{
-  timeval_t time; 
-  rateval_t rate; 
-
-};
 
 class RateTimeline : public Gtk::GL::DrawingArea
 {
@@ -55,16 +47,16 @@ public:
     win->invalidate_rect(r, false);
 
   }
-
-  typedef sigc::signal<void, bool, float, float> viewsignal_t;
-  viewsignal_t viewSignal(); 
-
+  
+  viewsignal_t & viewSignal(); 
   void setLive(bool);
   void setCursorTime(float time); 
   void setCursorVisible(bool visible); 
 
 
 protected:
+
+  RateTimelineRenderer renderer_; 
 
   // signal handlers:
   virtual void on_realize();
@@ -85,33 +77,7 @@ protected:
   void updateViewingWindow();
   
   // primary data source
-  const float BASEDURATION; 
-  // state variables
-  int majorTick_; 
-  int minorTick_; 
-  
-  float viewT1_, viewT2_, viewX1_, viewX2_; 
-  float lastX_; 
-  std::vector<RatePoint_t> rates_; 
-  
-  GLuint gpuProgGradient_; 
-
-  viewsignal_t viewSignal_; 
-
-  // selection/active range view variables
-  bool isLive_; 
-  float decayRate_; 
-  float activePos_; 
-
-  void drawTicks(); 
-
-  // time cursor
-  float cursorTime_; 
-  bool cursorVisible_; 
-  float cursorOpacity_; 
-  void renderCursor(); 
-  void renderStartCursor(); 
-  void renderLatestCursor(); 
+  gdouble lastX_; 
 
 };
 
