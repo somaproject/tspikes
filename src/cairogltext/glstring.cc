@@ -116,6 +116,13 @@ cacheItem_t GLString::generateTexture(textprop_t tp)
   // now, remove the premultiplied texture
   unsigned char * data = surface->get_data(); 
 
+  // FIXME Texture all white
+  int pos  = 0;
+  while (pos < texHeight * texWidth * 4) {
+    //data[pos] = 255; 
+    pos++; 
+  }
+  
   // opengl bind the texture
 
   textureID_t textureName; 
@@ -162,6 +169,11 @@ void GLString::checkGPUProgCompiled()
     shaders.push_back(vshdr); 
     shaders.push_back(fshdr); 
     gpuProg_ = createGPUProgram(shaders); 
+
+    GLint texSampler; 
+    texSampler = glGetUniformLocation(gpuProg_, "tex"); 
+    glUniform1i(texSampler, GL_TEXTURE0); 
+
     gpuProgCompiled_  = true; 
   }
 
@@ -169,7 +181,7 @@ void GLString::checkGPUProgCompiled()
 void GLString::renderWorldLoc(float x, float y, cacheItem_t tp)
 {
   checkGPUProgCompiled(); 
-  useGPUProgram(gpuProg_); 
+  //  useGPUProgram(gpuProg_); 
 
   // get and save the GL Blend settings
   GLenum blendSFactor, blendDFactor; 
@@ -181,7 +193,7 @@ void GLString::renderWorldLoc(float x, float y, cacheItem_t tp)
   
   glBindTexture(GL_TEXTURE_RECTANGLE_ARB, tp.textureID); 
 
-  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
   glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA); 
   //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
   
@@ -237,7 +249,7 @@ void GLString::renderWorldLoc(float x, float y, cacheItem_t tp)
   // restore GL_BLEND
   glBlendFunc(blendSFactor, blendDFactor); 
 
-  useGPUProgram(0); 
+  //useGPUProgram(0); 
   
 }
 
@@ -254,20 +266,6 @@ void GLString::renderPixLoc(int x, int y, cacheItem_t tp)
   glPushMatrix(); 
   glLoadIdentity(); 
 
-  // get and save the GL_BLEND settings
-  GLenum blendSFactor, blendDFactor; 
-  glGetIntegerv(GL_BLEND_SRC, (GLint*) &blendSFactor); 
-  glGetIntegerv(GL_BLEND_DST, (GLint*) &blendDFactor); 
-
-  //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
-  glBlendFunc(GL_ONE, GL_SRC_ALPHA); 
-
-  glEnable(GL_TEXTURE_RECTANGLE_ARB);
-  
-  glBindTexture(GL_TEXTURE_RECTANGLE_ARB, tp.textureID); 
-
-  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
   // convert to pixel coords
   
   gluOrtho2D(vp[0], vp[2], vp[1], vp[3]); 
@@ -279,9 +277,17 @@ void GLString::renderPixLoc(int x, int y, cacheItem_t tp)
   glPushMatrix(); 
   glLoadIdentity(); 
   glTranslatef(0.375, 0.375, 0.0); 
-  //glColor4f(1.0, 0.0, 0.0, 1.0); 
+
+  glActiveTexture(GL_TEXTURE0); 
+  glEnable(GL_TEXTURE_RECTANGLE_ARB);
+  glBindTexture(GL_TEXTURE_RECTANGLE_ARB, tp.textureID); 
+
+  //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+
+    
+  glColor4f(1.0, 1.0, 1.0, 1.0); 
   glBegin(GL_QUADS);
-  
 
   glTexCoord2i(0, 0); 
   glVertex2f(0.0, float(tp.texHeight));
@@ -305,9 +311,6 @@ void GLString::renderPixLoc(int x, int y, cacheItem_t tp)
   glMatrixMode(GL_PROJECTION); 
   glPopMatrix();
   
-  // restore GL_BLEND
-  glBlendFunc(blendSFactor, blendDFactor); 
-
   useGPUProgram(0); 
  
 }

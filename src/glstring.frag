@@ -1,8 +1,14 @@
 
+uniform sampler2DRect tex; 
 
 void main()
 {
- vec4 x = vec4(1.0, 0.0, 0.0, 0.0); 
- gl_FragColor = x;
-}	
+	
+vec4 c = texture2DRect(tex, gl_TexCoord[0].st);
+c.r = 1.0; 
+c.g = 1.0; 
+c.b = 1.0; 
 
+gl_FragColor =c ; 
+
+}
