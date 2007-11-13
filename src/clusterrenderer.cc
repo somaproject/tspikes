@@ -63,6 +63,19 @@ ClusterRenderer::ClusterRenderer(GLSPVectpList_t * pspvl, CViewMode cvm)
     Xlabel_ = "OTHERX";
     Ylabel_ = "OTHERY";
   }
+  // populate axis labels
+  axisLabels_.push_back(0.0); 
+  axisLabels_.push_back(100e-6); 
+  axisLabels_.push_back(200e-6); 
+  axisLabels_.push_back(500e-6); 
+  axisLabels_.push_back(1e-3); 
+  axisLabels_.push_back(2e-3); 
+  axisLabels_.push_back(5e-3); 
+  axisLabels_.push_back(10e-3); 
+  axisLabels_.push_back(20e-3); 
+  axisLabels_.push_back(50e-3); 
+  axisLabels_.push_back(100e-3); 
+
     
 }
 
@@ -184,8 +197,8 @@ void ClusterRenderer::render()
   glColor4f(1.0, 1.0, 1.0, 0.4); 
   
     // render text for axes
-  glString_.drawWinText(160, 11, Xlabel_, 20); 
-  glString_.drawWinText(4, 150, Ylabel_, 20); 
+  glString_.drawWinText(160, 11, Xlabel_, 20, 0.5); 
+  glString_.drawWinText(4, 150, Ylabel_, 20, 0.5); 
 
   if (rangeBoxVisible_) {
     drawRangeBox(); 
@@ -427,30 +440,31 @@ void ClusterRenderer::renderHGrid()
     }
 
 
-  // the text rendering is considerably more tricky
-  // because we don't want to render more than a few strings at a given time
+  float range = viewX2_ - viewX1_; // which is basically zero
+
+  // always render the three most recent ones; 
+  std::vector<float>::iterator r = std::lower_bound(axisLabels_.begin(), 
+						    axisLabels_.end(), 
+						    range ); 
   
-  /* 
-     Let's say that at any point in time, we have N current and N old 
-     renderers
-     
-     the current renderers and old renderers must overlap at exactly the same time
+  int num = 0; 
+  float decayalpha = 1.0; 
+  for ( std::vector<float>::iterator i = r; 
+	r != axisLabels_.begin() and num < 4; r--) 
+    {
+      
+      float x1 = round( *r /  gridSpacing_) * gridSpacing_;  
+      Voltage v1(x1); 
 
+      if (num > 1) {
+	decayalpha = x1/range *2;
+      }
 
-  */ 
-
-
-  // active ones will always be those closest to N/2 and N
-  glColor4f(1.0, 1.0, 1.0, 1.0); 
-  float x1 = round(viewX2_ / gridSpacing_ / 2) * gridSpacing_;  
-  Voltage v1(x1); 
-  glHScaleString_.drawWorldText(x1, viewY1_ + (viewY2_ - viewY1_)*0.05, 
-				v1.str(0), 8); 
-
-  float x2 = round(viewX2_ / gridSpacing_ ) * gridSpacing_;  
-  Voltage v2(x2); 
-  glHScaleString_.drawWorldText(x2, viewY1_ + (viewY2_ - viewY1_)*0.05, 
-				v2.str(0), 8); 
+      glHScaleString_.drawWorldText(x1, viewY1_ + (viewY2_ - viewY1_)*0.05, 
+				    v1.str(0), 8, decayalpha); 
+      
+      num += 1; 
+    }
   
 
 }
@@ -481,11 +495,6 @@ void ClusterRenderer::renderVGrid()
 	glVertex2f(viewX2_, y); 
 	glEnd(); 
 	
-	Voltage v(y); 
-	glVScaleString_.drawWorldText(viewX1_ + (viewX2_ - viewX1_)*0.03, y, 
-				      v.str(0), 8); 
-
-
     }
     
     
@@ -503,6 +512,34 @@ void ClusterRenderer::renderVGrid()
     }
   glEnd(); 
   
+
+  float range = viewY2_ - viewY1_; // which is basically zero
+
+  // always render the three most recent ones; 
+  std::vector<float>::iterator r = std::lower_bound(axisLabels_.begin(), 
+						    axisLabels_.end(), 
+						    range); 
+  
+  int num = 0; 
+  float decayalpha = 1.0; 
+  for ( std::vector<float>::iterator i = r; 
+	r != axisLabels_.begin() and num < 4; r--) 
+    {
+      
+      float y1 = round( *r /  gridSpacing_) * gridSpacing_;  
+      Voltage v1(y1); 
+
+      if (num > 1) {
+	decayalpha = y1/range *2;
+      }
+
+      glVScaleString_.drawWorldText(viewX1_,  y1, 
+				    v1.str(0), 8, decayalpha); 
+      
+      num += 1; 
+    }
+  
+
 }
 
 void ClusterRenderer::setRangeBoxVisible(bool vis)
@@ -565,7 +602,6 @@ void ClusterRenderer::fadeInText()
   // fade-in sets up a glibmm timer that slowly increases text opacity to 1, 
   // and disables any running timers for this text
 
-  std::cout << "ClusterRenderer::fade in text" << std::endl; 
   textFadeConn_ = Glib::signal_timeout().connect(sigc::mem_fun(*this, 
 							     &ClusterRenderer::fadeInTextHandler), 
 					       100,  Glib::PRIORITY_DEFAULT);

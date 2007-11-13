@@ -49,8 +49,8 @@ class GLString
   GLString(std::string family, bool isBold, 
 	   StringHPos hpos, StringVPos vpos = BASELINE); 
   ~GLString(); 
-  void drawWinText(int x, int y, std::string text, int size); 
-  void drawWorldText(float x, float y, std::string text, int size); 
+  void drawWinText(int x, int y, std::string text, int size, float alpha =1.0); 
+  void drawWorldText(float x, float y, std::string text, int size, float alpha=1.0); 
   
  private:
   std::string family_; 
@@ -66,8 +66,8 @@ class GLString
   cacheItem_t generateTexture(textprop_t); 
   void setupTexture(); 
   GLuint textureName_; 
-  void renderPixLoc(int x, int y, cacheItem_t); 
-  void renderWorldLoc(float x, float y, cacheItem_t tp);
+  void renderPixLoc(int x, int y, cacheItem_t, float alpha); 
+  void renderWorldLoc(float x, float y, cacheItem_t tp, float alpha);
   
   cacheQueryMap_t cacheQueryMap_; 
   cacheList_t cacheList_; 

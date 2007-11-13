@@ -14,7 +14,6 @@ GLString::GLString(std::string family,
   gpuProgCompiled_(false)
 {
   
-  
 }
 
 GLString::~GLString()
@@ -23,24 +22,26 @@ GLString::~GLString()
 
 }
 
-void GLString::drawWinText(int x, int y, std::string text, int size)
+void GLString::drawWinText(int x, int y, std::string text, int size, 
+			   float alpha)
 {
   textprop_t tp; 
   tp.text = text; 
   tp.size = size; 
 
   cacheItem_t ci = cacheQuery(tp); 
-  renderPixLoc(x, y, ci); 
+  renderPixLoc(x, y, ci, alpha); 
   
 }
-void GLString::drawWorldText(float x, float y, std::string text, int size)
+void GLString::drawWorldText(float x, float y, std::string text, int size,
+			     float alpha)
 {
   textprop_t tp; 
   tp.text = text; 
   tp.size = size; 
 
   cacheItem_t ci = cacheQuery(tp); 
-  renderWorldLoc(x, y, ci); 
+  renderWorldLoc(x, y, ci, alpha); 
   
 }
 
@@ -178,25 +179,11 @@ void GLString::checkGPUProgCompiled()
   }
 
 }
-void GLString::renderWorldLoc(float x, float y, cacheItem_t tp)
+void GLString::renderWorldLoc(float x, float y, cacheItem_t tp, float alpha)
 {
   checkGPUProgCompiled(); 
-  //  useGPUProgram(gpuProg_); 
+  useGPUProgram(gpuProg_); 
 
-  // get and save the GL Blend settings
-  GLenum blendSFactor, blendDFactor; 
-  glGetIntegerv(GL_BLEND_SRC, (GLint*)&blendSFactor); 
-  glGetIntegerv(GL_BLEND_DST,(GLint*) &blendDFactor); 
-
-
-  glEnable(GL_TEXTURE_RECTANGLE_ARB);
-  
-  glBindTexture(GL_TEXTURE_RECTANGLE_ARB, tp.textureID); 
-
-  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-  glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA); 
-  //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
-  
   GLdouble model[16] ;
   GLdouble proj[16] ;
   GLint vp[4]; 
@@ -217,8 +204,13 @@ void GLString::renderWorldLoc(float x, float y, cacheItem_t tp)
   // convert to pixel coords 
 
   glOrtho(float(vp[0]), float(vp[2]), float(vp[1]), float(vp[3]), -3.0, 3.0); 
+
+  glActiveTexture(GL_TEXTURE0); 
+  glEnable(GL_TEXTURE_RECTANGLE_ARB);
+  glBindTexture(GL_TEXTURE_RECTANGLE_ARB, tp.textureID); 
   
-  
+  GLint unialpha = glGetUniformLocation(gpuProg_,"alpha");
+  glUniform1f(unialpha, alpha); 
 
   if (hpos_ == LEFT) {
     // nothing
@@ -246,17 +238,15 @@ void GLString::renderWorldLoc(float x, float y, cacheItem_t tp)
   
   glPopMatrix();
 
-  // restore GL_BLEND
-  glBlendFunc(blendSFactor, blendDFactor); 
-
-  //useGPUProgram(0); 
+  useGPUProgram(0); 
   
 }
 
-void GLString::renderPixLoc(int x, int y, cacheItem_t tp)
+void GLString::renderPixLoc(int x, int y, cacheItem_t tp, float alpha)
 {
   // helps on getting exact rasterization
   //  http://msdn2.microsoft.com/en-us/library/ms537007.aspx
+  checkGPUProgCompiled(); 
   useGPUProgram(gpuProg_); 
 
   GLint vp[4]; 
@@ -282,10 +272,11 @@ void GLString::renderPixLoc(int x, int y, cacheItem_t tp)
   glEnable(GL_TEXTURE_RECTANGLE_ARB);
   glBindTexture(GL_TEXTURE_RECTANGLE_ARB, tp.textureID); 
 
-  //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  
+  // set alpha
+  GLint unialpha = glGetUniformLocation(gpuProg_,"alpha");
+  glUniform1f(unialpha, alpha); 
 
-
-    
   glColor4f(1.0, 1.0, 1.0, 1.0); 
   glBegin(GL_QUADS);
 

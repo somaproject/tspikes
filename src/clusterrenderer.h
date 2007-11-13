@@ -96,6 +96,7 @@ class ClusterRenderer
   bool fadeInTextHandler(); 
   bool fadeOutTextHandler(); 
 
+  std::vector<float> axisLabels_; 
 };
 
 
