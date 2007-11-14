@@ -43,7 +43,7 @@ public:
 
   virtual ~TSpikeWin();
 
-  void setTime(rtime_t t);
+  void setTime(abstime_t t);
   void loadExistingSpikes(const std::vector<TSpike_t> & spikes); 
 
 protected:
@@ -93,17 +93,20 @@ protected:
 
   // properties
 
+ 
 
   // append data functions
   
 
   // update clusters
-  void updateClusterView(bool, float, float); 
+  void updateClusterView(bool, reltime_t, float); 
 
   void liveToggle(); 
 
   // timeline manipulation
-  rtime_t currentTime_; 
+  abstime_t currentTime_; 
+  abstime_t offsetTime_; 
+
   Gtk::ToggleButton liveButton_; 
   SomaNetworkCodec somaNetworkCodec_; 
 

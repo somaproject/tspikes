@@ -28,6 +28,12 @@ FakeTTData::FakeTTData(std::string filename, int rate,
     fakestate_[i].rangeMax = 500000; 
   }
 
+  if (rate == 0 ) {
+    // we are to use real spike timing
+    // so we grab and throw away a spike
+    lastSpikeTime_ = double(ttreader_.getTspike().time) / 50e3; 
+  }
+    
 }
 
 Event_t FakeTTData::createStateResponse(int chan, STATEPARM parm)
@@ -225,11 +231,61 @@ bool FakeTTData::appendToFakeNetwork(FakeNetwork* fn)
     {
       for (int i = 0; i < numtotx; i++) {
 	TSpike_t ts = ttreader_.getTSpike();
-	ts.time = ts.time * 5; 
+	ts.time = ts.time * 5; // convert to our timestamps
 	DataPacket_t *  dp = rawFromTSpike(ts); 
 	fn->appendDataOut(dp); 
 	setTime(fn, ts.time); 
-	
+
+      }
+      
+      timer_.reset(); 
+
+    }
+  
+  
+  return true; 
+
+
+}
+
+bool FakeTTData::appendToFakeNetworkWithRealTime(FakeNetwork* fn)
+{
+  /* 
+     Like appendtofakenetwork but we ignore rate and try and use 
+     realistic timing. 
+  
+
+  */
+
+
+  // get the current wall time
+  // get the wall time of the last time we sent a spike
+
+  // 
+
+
+
+
+
+
+
+  double seconds; 
+  unsigned long useconds; 
+  seconds = timer_.elapsed(useconds); // number of secs since last call
+  
+  while (seconds
+  uint32_t nexttstime = ttreader_.peekNextSpikeTime(); 
+  double nextspiketime = double(nexttstime) / 50e3; // next spike time in seconds
+  
+  if (numtotx > 0 )
+    {
+      for (int i = 0; i < numtotx; i++) {
+	TSpike_t ts = ttreader_.getTSpike();
+	ts.time = ts.time * 5; // convert to our timestamps
+	DataPacket_t *  dp = rawFromTSpike(ts); 
+	fn->appendDataOut(dp); 
+	setTime(fn, ts.time); 
+
       }
       
       timer_.reset(); 

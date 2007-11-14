@@ -303,7 +303,7 @@ void ClusterRenderer::renderSpikeVector(const GLSPVect_t & spvect, bool live)
 void ClusterRenderer::resetAccumBuffer(GLSPVectpList_t::iterator sstart, 
 			      GLSPVectpList_t::iterator send)
 {
- 
+
  // first clear accumulation buffer
   glClearAccum(0.0, 0.0, 0.0, 0.0); 
   glClearColor(0.0, 0.0, 0.0, 0.0); 
@@ -614,14 +614,13 @@ void ClusterRenderer::fadeOutText()
 {
   // fade-in sets up a glibmm timer that slowly decreases text opacity to 1
   // and disables any running timers
-  std::cout << "ClusterRenderer::fade out text" << std::endl; 
 
 
 }
 
 bool ClusterRenderer::fadeInTextHandler()
 {
-  std::cout << "ClusterRenderer::fade in text handler" << std::endl; 
+
 
   if (textAlpha_ >= 1.0) {
     textAlpha_ = 1.0; 

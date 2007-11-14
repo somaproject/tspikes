@@ -181,33 +181,6 @@ void Vis::updateSpikePosFromAdj()
       svpliter++; 
     }
 
-//   GLSPVectpList_t::iterator svpliter2 = svpliter; 
-
-//   clusterView12_.setHistView(spvl.begin(), svpliter, 
-// 			     0.01, LOG); 
-//   svpliter = svpliter2; 
-
-//   clusterView13_.setHistView(spvl.begin(), svpliter, 
-// 			   0.01, LOG); 
-//   svpliter = svpliter2; 
-
-//   clusterView14_.setHistView(spvl.begin(), svpliter, 
-// 			   0.01, LOG); 
-//   svpliter = svpliter2; 
-
-
-//   clusterView23_.setHistView(spvl.begin(), svpliter, 
-// 			   0.01, LOG); 
-//   svpliter = svpliter2; 
-
-//   clusterView24_.setHistView(spvl.begin(), svpliter, 
-// 			   0.01, LOG); 
-//   svpliter = svpliter2; 
-
-//   clusterView34_.setHistView(spvl.begin(), svpliter, 
-// 			   0.01, LOG); 
-//   svpliter = svpliter2; 
-
 
 }
 
@@ -274,14 +247,14 @@ bool Vis::on_idle()
 
       if (spvlp != spvlsrc.end())
 	{
-	  rtime_t rt = spvlp->first; 
+	  reltime_t rt = spvlp->first; 
 	  spvl.insert(rt, new GLSPVect_t); 
 	  
 	  (*getLastIter(spvl)->second) = (*spvlp->second);
 	  spvlp++; 
 
 	} else {
-	  rtime_t rt = 1.0; 
+	  reltime_t rt = 1.0; 
 	  spvl.insert(rt, new GLSPVect_t); 
 	}
       
@@ -307,7 +280,7 @@ void spikesquares(void)
     { 
       for (int j = 0 ; j < 20; j++)
 	{
-	  rtime_t rt = i * 20 + j;
+	  reltime_t rt = i * 20 + j;
 	  spvlsrc.insert(rt, new GLSPVect_t); 
 
 	  for (int x = 0; x < MAXX; x++) 
@@ -321,7 +294,7 @@ void spikesquares(void)
 		  sp1.p2 = float( y + i * SPACEY) * scale; 
 		  sp1.p3 = float( x + j * SPACEX) * scale/2.0; 
 		  sp1.p4 = float( y + i * SPACEY) * scale/2.0; 
-		  sp1.ts = 1000; 
+		  sp1.rtime = 1000; 
 		  sp1.tchan = j % 4; 
 		  (getLastIter(spvlsrc))->second->push_back(sp1); 
 		}
@@ -335,10 +308,6 @@ int main(int argc, char** argv)
 {
   Gtk::Main kit(argc, argv);
 
-  //
-  // Init gtkglextmm.
-  //
-  
 
   Gtk::GL::init(argc, argv);
   spikesquares(); 
@@ -346,7 +315,7 @@ int main(int argc, char** argv)
   spvlp = spvlsrc.begin(); 
 
   int testmode = 0;
-  rtime_t t = 0.0; 
+  reltime_t t = 0.0; 
       
   switch (testmode)
     {

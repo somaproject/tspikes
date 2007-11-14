@@ -1,5 +1,6 @@
 #include "tspikewin.h"
 #include "glspikes.h"
+#include <boost/assign.hpp>
 
 void printEvent(Event_t event)
 {
@@ -40,8 +41,8 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork, datasource_t src) :
   somaNetworkCodec_(pNetwork_, src), 
   sourceSettingsWin_(&somaNetworkCodec_), 
   pMenuPopup_(0), 
-  dsrc_(src)
-  
+  dsrc_(src), 
+  offsetTime_(0.0)  
     
 {
   //
@@ -51,8 +52,10 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork, datasource_t src) :
   set_title("Tetrode Spike Viewer");
 
   set_reallocate_redraws(true);
-  spVectpList_.insert(currentTime_, new GLSPVect_t);
-
+  
+  reltime_t rt = abstimeToRelTime(currentTime_, offsetTime_); 
+  spVectpList_.insert(rt, new GLSPVect_t);
+  //boost::assign::ptr_map_insert<GLSPVect_t>(spVectpList_)(abstimeToRelTime(currentTime_, offsetTime_)); 
   add(mainHBox_); 
   
   int clusterWidth = 165; 
@@ -266,37 +269,41 @@ bool TSpikeWin::on_idle()
 }
 
 
-void TSpikeWin::setTime(rtime_t t)
+void TSpikeWin::setTime(abstime_t t)
 {
   
+  // compute reltime
+  reltime_t reltime = t - offsetTime_; 
+
   if (t - currentTime_  > spVectDuration_ )
     {
       rateval_t rv = (getLastIter(spVectpList_)->second->size() ) / spVectDuration_; 
       
       RatePoint_t rp; 
       rp.rate = rv; 
-      rp.time = t; 
+      rp.time = reltime; 
       rateTimeline_.appendRate(rp); 
       
-      spVectpList_.insert(t, new GLSPVect_t); 
+      spVectpList_.insert(reltime, new GLSPVect_t); 
       
       currentTime_ = t; 
+
     }
   
   
 }
 
 
-void TSpikeWin::updateClusterView(bool isLive, float activePos, float decayRate)
+void TSpikeWin::updateClusterView(bool isLive, reltime_t activePos, float decayRate)
 {
   // decayRate is a rate, luminance/alpha drops per unit time
 
-  
+
   // compute time range
-  float t2 = activePos; 
-  float t1; 
+  reltime_t t2 = activePos; 
+  reltime_t t1; 
   if (decayRate > 0 ) {
-    float winsize = 1 / decayRate; 
+    reltime_t winsize = 1 / decayRate; 
     t1 = t2 - winsize; 
   } else {
     t1 = spVectpList_.begin()->first; 
@@ -345,10 +352,6 @@ void TSpikeWin::updateClusterView(bool isLive, float activePos, float decayRate)
       t2i++; 
     }
 
-  // tada, now we extract out the relevant times
-  std::cout << "t1 = " << t1i->first
-	    << " t2 = " << t2i->first << std::endl;  
-  
   
   // now update internal iterators
   clusterViewXY_.setView(t1i, t2i, 
@@ -385,8 +388,8 @@ void TSpikeWin::loadExistingSpikes(const std::vector<TSpike_t> & spikes)
   for (pts = spikes.begin(); pts != spikes.end(); pts++)
     {
       
-      rtime_t t = float(pts->time) / 10e3; 
-      setTime(t);
+      //rtime_t t = float(pts->time) / 10e3; 
+      //setTime(t);
 
     }
 }
@@ -405,9 +408,10 @@ void TSpikeWin::liveToggle()
 
 }
 
-void TSpikeWin::timeUpdateCallback(somatime_t time)
+void TSpikeWin::timeUpdateCallback(somatime_t stime)
 {
-  setTime(time); 
+
+  setTime(somatimeToAbsTime(stime)); 
 }
 
 void TSpikeWin::sourceStateChangeCalback(int chan, TSpikeChannelState state)
@@ -452,7 +456,7 @@ void TSpikeWin::sourceStateChangeCalback(int chan, TSpikeChannelState state)
 
 void TSpikeWin::newTSpikeCallback(const TSpike_t & ts)
 {
-  std::vector<GLSpikeWave_t> gls = splitSpikeToGLSpikeWaves(ts); 
+  std::vector<GLSpikeWave_t> gls = splitSpikeToGLSpikeWaves(ts, offsetTime_); 
   
   
   spikeWaveViewX_.newSpikeWave(gls[0]); 
@@ -460,7 +464,10 @@ void TSpikeWin::newTSpikeCallback(const TSpike_t & ts)
   spikeWaveViewA_.newSpikeWave(gls[2]); 
   spikeWaveViewB_.newSpikeWave(gls[3]); 
   
-  appendTSpikeToSPL(ts, &spVectpList_); 
+
+  GLSpikePoint_t sp = convertTSpikeToGLSpike(ts, offsetTime_); 
+
+  appendTSpikeToSPL(sp, &spVectpList_); 
 
   clusterViewXY_.invalidate(); 
   clusterViewXA_.invalidate(); 
@@ -478,8 +485,8 @@ bool TSpikeWin::on_button_press_event(GdkEventButton* event)
       (event->button == 3) )
   {
     pMenuPopup_->popup(event->button, event->time);
-    std::cout << "The button was pressed" << std::endl; 
-    return true; //It has been handled.
+
+    return true; 
   }
   else
     return false;

@@ -116,15 +116,13 @@ void SomaNetworkCodec::parseEvent(const Event_t & evt)
   if (evt.src == 0x00 && evt.cmd == 0x10 )
     {
       // this is the time
-      uint64_t time = 0; 
-      time = evt.data[0]; 
-      time = time << 16; 
-      time |= evt.data[1]; 
-      time = time << 16; 
-      time |= evt.data[2]; 
-      float ftime = float(time) / 50e3; 
-      
-      signalTimeUpdate_.emit(ftime); 
+      somatime_t stime = 0; 
+      stime = evt.data[0]; 
+      stime = stime << 16; 
+      stime |= evt.data[1]; 
+      stime = stime << 16; 
+      stime |= evt.data[2]; 
+      signalTimeUpdate_.emit(stime); 
     } 
 
   bool stateCacheUpdate = false; 

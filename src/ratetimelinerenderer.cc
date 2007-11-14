@@ -5,7 +5,6 @@
 #include "shaders.h"
 
 
-
 RateTimelineRenderer::RateTimelineRenderer() : 
   BASEDURATION(1000.0), 
   majorTick_(BASEDURATION), 
@@ -22,7 +21,8 @@ RateTimelineRenderer::RateTimelineRenderer() :
   cursorTime_(viewT1_),
   cursorOpacity_(0.0), 
   cursorVisible_(false),
-  cursorString_("Mono", false, LEFT)
+  cursorString_("Mono", false, LEFT), 
+  offsetTime_(0.0)
 
 {
 
@@ -34,7 +34,11 @@ RateTimelineRenderer::~RateTimelineRenderer()
 {
 }
 
+void RateTimelineRenderer::setOffsetTime(abstime_t offsettime)
+{
+  offsetTime_ = offsettime; 
 
+}
 void RateTimelineRenderer::setup()
 {
 
@@ -150,8 +154,8 @@ void RateTimelineRenderer::render()
     {
       
        glBegin(GL_POLYGON); 
-       timeval_t timel = rates_[i-1].time; 
-       timeval_t timeh = rates_[i].time; 
+       reltime_t timel = rates_[i-1].time; 
+       reltime_t timeh = rates_[i].time; 
        rateval_t ratel = rates_[i-1].rate; 
        rateval_t rater = rates_[i].rate; 
        glVertex2f(timel, 0.0);
@@ -175,9 +179,6 @@ void RateTimelineRenderer::render()
     }
 
   glEnd(); 
-
-//   std::cout << "rendered between T1 =" << viewT1_ 
-// 	    << " and T2 = " << viewT2_ << std::endl; 
 
   renderCursor(); 
   renderStartCursor(); 
@@ -210,10 +211,11 @@ void RateTimelineRenderer::renderCursor()
 
     // render cursor text
     glColor4f(1.0, 1.0, 1.0, 1.0); 
-    std::string cursorTimeString = boost::str(boost::format("%d") %  cursorTime_); 
+    std::string cursorTimeString = getTimeString(offsetTime_ + cursorTime_); 
+
     cursorString_.drawWorldText(cursorTime_ + 1, viewX1_ + 30,
 				cursorTimeString, 10); 
-
+    
     
   }
 
@@ -255,7 +257,7 @@ void RateTimelineRenderer::renderLatestCursor() {
 
     // render latest value
     glColor4f(1.0, 1.0, 1.0, 1.0); 
-    std::string rateTimeString = boost::str(boost::format("%d") %  rates_.back().time); 
+    std::string rateTimeString = getTimeString(offsetTime_ + rates_.back().time);
     cursorString_.drawWorldText(rates_.back().time + 1, 
 				rates_.back().rate, 
 				rateTimeString, 10); 
@@ -266,7 +268,7 @@ void RateTimelineRenderer::renderLatestCursor() {
 }
 
 
-void RateTimelineRenderer::setCursorTime(float time)
+void RateTimelineRenderer::setCursorTime(reltime_t time)
 {
   cursorTime_ = time; 
 }
@@ -293,7 +295,7 @@ float RateTimelineRenderer::getViewT2()
   return viewT2_; 
 }
 
-void RateTimelineRenderer::setViewT(float t1, float t2)
+void RateTimelineRenderer::setViewT(reltime_t t1, reltime_t t2)
 {
   viewT1_ = t1; 
   viewT2_ = t2; 
@@ -305,7 +307,7 @@ bool RateTimelineRenderer::getLive()
   return isLive_; 
 }
 
-void RateTimelineRenderer::setActivePos(float x)
+void RateTimelineRenderer::setActivePos(reltime_t x)
 {
   activePos_ = x; 
 
@@ -317,7 +319,7 @@ bool RateTimelineRenderer::ratesEmpty()
 
 }
 
-timeval_t RateTimelineRenderer::getStartTime()
+reltime_t RateTimelineRenderer::getStartTime()
 {
   if (!rates_.empty() ) {
     return rates_.front().time; 
@@ -332,6 +334,20 @@ void RateTimelineRenderer::setViewPort(int viewportWinX, int viewportWinY)
 {
   viewportWinX_ = viewportWinX; 
   viewportWinY_ = viewportWinY; 
+
+
+}
+
+std::string RateTimelineRenderer::getTimeString(abstime_t time)
+{
+  // convert the absolute time into hrs:min:sec
+  
+  abstime_t hours = trunc(time / (60*60)); 
+  abstime_t mins = trunc((time - (hours*60)) / 60); 
+  abstime_t secs = round(( time - hours * 60 * 60  - mins * 60)); 
+  boost::format timeformat("%d:%02d:%02d"); 
+  timeformat % hours % mins % secs; 
+  return boost::str(timeformat); 
 
 
 }

@@ -131,6 +131,16 @@ TSpike_t ttreader::getTSpike()
   
 }
 
+uint32_t ttreader::peekNextSpikeTime()
+{
+  // non-destructive read of next spike timestamp. 
+  uint32_t time; 
+  file_.read((char*)&(time), sizeof(time));   
+  file_.seek(-sizeof(time)); 
+  return time; 
+}
+
+
 int ttreader::getSpike(ttspike * sp){
   file_.read((char*)&(sp->ts), sizeof(sp->ts));
 

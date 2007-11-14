@@ -9,19 +9,6 @@
 
 #include "fakettdata.h" 
 
-bool fakesettime(TSpikeWin* tsw)
-{
-
-  static double time = 0; 
-  time += 1.0;
-  rtime_t rt(time); 
-  //std::cout << "The time is now " << time << std::endl; 
-  tsw->setTime(rt); 
-  return true; 
-
-
-}
-
 namespace po = boost::program_options;
 
 int main(int argc, char** argv)

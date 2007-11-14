@@ -19,6 +19,7 @@ class ttreader {
   
   int getSpike(ttspike * sp); 
   TSpike_t getTSpike();
+  uint32_t peekNextSpikeTime(); 
 
   bool eof(); 
   

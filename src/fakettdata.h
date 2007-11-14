@@ -24,6 +24,7 @@ class FakeTTData
   int rate_; 
   Glib::Timer timer_; 
   int spikeNum_;
+  double lastSpikeTime_; 
   FakeNetwork * pni_; 
   void eventTXCallback(const EventTXList_t & el); 
   std::vector<TSpikeChannelState> fakestate_; 

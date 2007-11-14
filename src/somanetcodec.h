@@ -8,6 +8,9 @@
 #include <gtkmm.h>
 
 
+typedef float reltime_t; 
+typedef double abstime_t; 
+
 typedef uint64_t somatime_t; 
 
 class TSpikeChannelState 

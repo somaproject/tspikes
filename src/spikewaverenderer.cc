@@ -28,6 +28,7 @@ SpikeWaveRenderer::SpikeWaveRenderer(GLChan_t chan) :
 
 SpikeWaveRenderer::~SpikeWaveRenderer()
 {
+
 }
 
 void SpikeWaveRenderer::setupOpenGL()

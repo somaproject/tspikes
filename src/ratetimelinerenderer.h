@@ -28,11 +28,10 @@
 
 
 typedef float rateval_t; 
-typedef float timeval_t; 
 
 struct RatePoint_t
 {
-  timeval_t time; 
+  reltime_t time; 
   rateval_t rate; 
 
 };
@@ -54,21 +53,22 @@ public:
 
   void setLive(bool);
   bool getLive(); 
-  void setCursorTime(float time); 
-  float getCursorTime(); 
+  void setCursorTime(reltime_t time); 
+  reltime_t getCursorTime(); 
 
   void setCursorVisible(bool visible); 
   void setup(); 
   void render(); 
 
-  float getViewT1(); 
-  float getViewT2(); 
-  void setViewT(float, float); 
-  void setActivePos(float); 
-  timeval_t getStartTime(); 
+  reltime_t getViewT1(); 
+  reltime_t getViewT2(); 
+  void setViewT(reltime_t, reltime_t); 
+  void setActivePos(reltime_t); 
+  reltime_t getStartTime(); 
   bool ratesEmpty(); 
   viewsignal_t & viewSignal(); 
   void setViewPort(int viewportWinX, int viewportWinY); 
+  void setOffsetTime(abstime_t offsettime); 
 
 protected:
 
@@ -81,7 +81,8 @@ protected:
   int majorTick_; 
   int minorTick_; 
   
-  float viewT1_, viewT2_, viewX1_, viewX2_; 
+  reltime_t viewT1_, viewT2_; 
+  float viewX1_, viewX2_; 
   float lastX_; 
   ratevector_t rates_; 
   int viewportWinX_, viewportWinY_; 
@@ -93,12 +94,14 @@ protected:
   // selection/active range view variables
   bool isLive_; 
   float decayRate_; 
-  float activePos_; 
+  reltime_t activePos_; 
+  
+  abstime_t offsetTime_; 
 
   void drawTicks(); 
 
   // time cursor
-  float cursorTime_; 
+  reltime_t cursorTime_; 
   bool cursorVisible_; 
   float cursorOpacity_; 
   GLString cursorString_; 
@@ -106,6 +109,9 @@ protected:
   void renderCursor(); 
   void renderStartCursor(); 
   void renderLatestCursor(); 
+
+  std::string getTimeString(abstime_t time); 
+
 
 };
 
