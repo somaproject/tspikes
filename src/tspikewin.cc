@@ -16,7 +16,6 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork, datasource_t src) :
   pNetwork_(pNetwork), 
   
   spVectpList_(), 
-  spVectDuration_(5.0), 
 
   clusterTable_(2, 3), 
   spikeWaveTable_(2, 2), 
@@ -36,13 +35,14 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork, datasource_t src) :
   spikeWaveViewA_(CHANA), 
   spikeWaveViewB_(CHANB),
 
-  currentTime_(0.0),
+  spVectorStartTime_(0.0),
   liveButton_("Live"), 
   somaNetworkCodec_(pNetwork_, src), 
   sourceSettingsWin_(&somaNetworkCodec_), 
   pMenuPopup_(0), 
   dsrc_(src), 
-  offsetTime_(0.0)  
+  offsetTime_(0.0) , 
+  spikeCount_(0)
     
 {
   //
@@ -53,9 +53,9 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork, datasource_t src) :
 
   set_reallocate_redraws(true);
   
-  reltime_t rt = abstimeToRelTime(currentTime_, offsetTime_); 
+  reltime_t rt = abstimeToRelTime(spVectorStartTime_, offsetTime_); 
   spVectpList_.insert(rt, new GLSPVect_t);
-  //boost::assign::ptr_map_insert<GLSPVect_t>(spVectpList_)(abstimeToRelTime(currentTime_, offsetTime_)); 
+  //boost::assign::ptr_map_insert<GLSPVect_t>(spVectpList_)(abstimeToRelTime(spVectorStartTime_, offsetTime_)); 
   add(mainHBox_); 
   
   int clusterWidth = 165; 
@@ -269,35 +269,46 @@ bool TSpikeWin::on_idle()
 }
 
 
-void TSpikeWin::setTime(abstime_t t)
+void TSpikeWin::setTime(somatime_t  stime)
 {
   
+  abstime_t t= somatimeToAbsTime(stime); 
+
   // compute reltime
   reltime_t reltime = t - offsetTime_; 
 
-  if (t - currentTime_  > spVectDuration_ )
+  if (reltime - spVectorStartTime_  > SPVECTDURATION )
     {
-      rateval_t rv = (getLastIter(spVectpList_)->second->size() ) / spVectDuration_; 
+      spVectpList_.insert(reltime, new GLSPVect_t); 
       
+      spVectorStartTime_ = reltime; 
+
+    }
+  
+  if (reltime - lastRateTime_ > RATEUPDATE ) 
+    {
+      rateval_t rv = double(spikeCount_ - lastRateSpikeCount_)/(reltime - lastRateTime_);  
       RatePoint_t rp; 
       rp.rate = rv; 
       rp.time = reltime; 
       rateTimeline_.appendRate(rp); 
-      
-      spVectpList_.insert(reltime, new GLSPVect_t); 
-      
-      currentTime_ = t; 
-
+      lastRateTime_ = reltime; 
+      lastRateSpikeCount_ = spikeCount_; 
     }
   
-  
+  abstime_t hours = trunc(t / (60*60)); 
+  abstime_t mins = trunc((t - (hours*60)) / 60); 
+  abstime_t secs = round(( t - hours * 60 * 60  - mins * 60)); 
+  boost::format timeformat("Live \n(%d:%02d:%02d)\n%d"); 
+  timeformat % hours % mins % secs % stime; 
+  liveButton_.set_label(boost::str(timeformat)); 
+
 }
 
 
 void TSpikeWin::updateClusterView(bool isLive, reltime_t activePos, float decayRate)
 {
   // decayRate is a rate, luminance/alpha drops per unit time
-
 
   // compute time range
   reltime_t t2 = activePos; 
@@ -411,7 +422,7 @@ void TSpikeWin::liveToggle()
 void TSpikeWin::timeUpdateCallback(somatime_t stime)
 {
 
-  setTime(somatimeToAbsTime(stime)); 
+  setTime(stime); 
 }
 
 void TSpikeWin::sourceStateChangeCalback(int chan, TSpikeChannelState state)
@@ -476,6 +487,7 @@ void TSpikeWin::newTSpikeCallback(const TSpike_t & ts)
   clusterViewYB_.invalidate(); 
   clusterViewAB_.invalidate(); 
 
+  spikeCount_++; 
 
 }
 
@@ -503,4 +515,23 @@ void TSpikeWin::on_action_source_settings(void)
 {
   sourceSettingsWin_.show(); 
   
+}
+
+void TSpikeWin::resetData()
+{
+  spVectpList_.clear(); 
+
+  
+  // reset offset time
+  
+  clusterViewXY_.resetData(); 
+  clusterViewXA_.resetData(); 
+  clusterViewXB_.resetData();
+  clusterViewYA_.resetData(); 
+  clusterViewYB_.resetData(); 
+  clusterViewAB_.resetData();
+  
+
+
+
 }

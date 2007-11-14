@@ -145,10 +145,6 @@ bool RateTimeline::on_map_event(GdkEventAny* event)
   gldrawable->wait_gdk(); 
 
 
-//   glClear(GL_COLOR_BUFFER_BIT | GL_ACCUM_BUFFER_BIT ); 
-  
-//   updateViewingWindow(); 
-
   gldrawable->wait_gl(); 
   //gldrawable->wait_gdk(); 
   
@@ -194,13 +190,12 @@ bool RateTimeline::on_button_press_event(GdkEventButton* event)
   float x = event->x;
   float y = event->y;
 
-  if (event->button == 3)
+  if (event->button == 2)
     {
       float windowPos = float(x) / get_width() * (renderer_.getViewT2() - 
 						  renderer_.getViewT1()); 
 
       float activePos = windowPos + renderer_.getViewT1(); 
-      std::cout << "activePos is being set to " << activePos << std::endl; 
       renderer_.setActivePos(activePos); 
 
 
@@ -298,27 +293,26 @@ bool RateTimeline::on_motion_notify_event(GdkEventMotion* event)
 bool RateTimeline::on_scroll_event(GdkEventScroll* event)
 {
 
-//   float x = event->x;
-//   float y = event->y;
+   float x = event->x;
+   float y = event->y;
   
-//   if (event->state & GDK_BUTTON3_MASK){
+   if (event->state & GDK_BUTTON2_MASK){
     
-//     if (event->direction == 0) {
-//       // UP? zoom out
-//       decayRate_ = decayRate_ * 1.1; 
-      
-//     } else {
-//       decayRate_ = decayRate_ / 1.1; 
-      
-//      }
-//     viewSignal_.emit(isLive_, activePos_, decayRate_); 
+     if (event->direction == 0) {
+       renderer_.setDecayRate(renderer_.getDecayRate() * 1.1); 
+     } else {
+       renderer_.setDecayRate(renderer_.getDecayRate() * 0.8); 
+
+     }
+
+
 	  
     
-//     invalidate();
+     invalidate();
     
-//     update();
+     update();
 
-//   } 
+   } 
 //   else 
 //     {
       

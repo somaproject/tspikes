@@ -245,7 +245,7 @@ void ClusterView::zoomY(float factor)
 void ClusterView::setGrid(float g)
 {
   clusterRenderer_.setGrid(g); 
-
+  
 }
 
 bool ClusterView::on_motion_notify_event(GdkEventMotion* event)
@@ -316,4 +316,11 @@ void ClusterView::updateState(bool X, const TSpikeChannelState & state)
     rangeY_ = max; 
   }
   
+}
+
+void ClusterView::resetData()
+{
+  clusterRenderer_.resetData(); 
+
+
 }

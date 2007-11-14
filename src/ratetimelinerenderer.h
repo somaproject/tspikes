@@ -64,6 +64,8 @@ public:
   reltime_t getViewT2(); 
   void setViewT(reltime_t, reltime_t); 
   void setActivePos(reltime_t); 
+  void setDecayRate(float ); 
+  float getDecayRate(); 
   reltime_t getStartTime(); 
   bool ratesEmpty(); 
   viewsignal_t & viewSignal(); 
@@ -94,7 +96,7 @@ protected:
   // selection/active range view variables
   bool isLive_; 
   float decayRate_; 
-  reltime_t activePos_; 
+  reltime_t activePos_;
   
   abstime_t offsetTime_; 
 

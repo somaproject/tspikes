@@ -284,7 +284,6 @@ bool FakeTTData::appendToFakeNetworkWithRealTime(FakeNetwork* fn)
 void FakeTTData::setTime(FakeNetwork * fn, uint64_t usec)
 {
   Event_t event; 
-  std::cout << "FakeTTData::setTime " << usec << std::endl;
   event.src = 0; 
   event.cmd = 0x10; 
   event.data[0] = (usec >> 32) & 0xFFFF;

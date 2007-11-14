@@ -36,6 +36,10 @@ typedef boost::ptr_vector<SpikeWaveView> pClusterViewVect_t;
 // helper
 void printEvent(Event_t event); 
 
+const reltime_t SPVECTDURATION = 5.0; 
+const reltime_t RATEUPDATE = 1.0; 
+
+
 class TSpikeWin : public Gtk::Window
 {
 public:
@@ -43,8 +47,9 @@ public:
 
   virtual ~TSpikeWin();
 
-  void setTime(abstime_t t);
+  void setTime(somatime_t t);
   void loadExistingSpikes(const std::vector<TSpike_t> & spikes); 
+  void resetData(); 
 
 protected:
   virtual bool on_idle();
@@ -58,8 +63,6 @@ protected:
   GLSPVect_t *  spvect_; 
 
   GLSPVectpList_t spVectpList_; 
-
-  float spVectDuration_; 
 
   // member widgets:
 
@@ -104,7 +107,12 @@ protected:
   void liveToggle(); 
 
   // timeline manipulation
-  abstime_t currentTime_; 
+  reltime_t spVectorStartTime_; 
+  reltime_t lastRateTime_; 
+  long lastRateSpikeCount_; 
+  long spikeCount_;
+  
+
   abstime_t offsetTime_; 
 
   Gtk::ToggleButton liveButton_; 

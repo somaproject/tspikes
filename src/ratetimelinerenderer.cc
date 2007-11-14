@@ -257,10 +257,10 @@ void RateTimelineRenderer::renderLatestCursor() {
 
     // render latest value
     glColor4f(1.0, 1.0, 1.0, 1.0); 
-    std::string rateTimeString = getTimeString(offsetTime_ + rates_.back().time);
+    std::string rateString = boost::str(boost::format("%0.0f Hz") % rates_.back().rate); 
     cursorString_.drawWorldText(rates_.back().time + 1, 
 				rates_.back().rate, 
-				rateTimeString, 10); 
+				rateString, 10); 
 
 
   }
@@ -309,6 +309,7 @@ bool RateTimelineRenderer::getLive()
 
 void RateTimelineRenderer::setActivePos(reltime_t x)
 {
+  viewSignal_.emit(isLive_, activePos_, decayRate_); 
   activePos_ = x; 
 
 }
@@ -348,6 +349,20 @@ std::string RateTimelineRenderer::getTimeString(abstime_t time)
   boost::format timeformat("%d:%02d:%02d"); 
   timeformat % hours % mins % secs; 
   return boost::str(timeformat); 
+
+
+}
+
+float RateTimelineRenderer::getDecayRate()
+{
+  return decayRate_; 
+}
+
+void RateTimelineRenderer::setDecayRate(float rate)
+{
+
+  decayRate_ = rate; 
+  viewSignal_.emit(isLive_, activePos_, decayRate_); 
 
 
 }

@@ -45,9 +45,9 @@ inline STATEPARM  toStateParm(int x) {
   switch(x) {
   case 1 : return GAIN; 
   case 2 : return THOLD; 
-  case  4 : return HPF; 
-  case  8 : return FILT; 
-  case  16: return RANGE; 
+  case 4 : return HPF; 
+  case 8 : return FILT; 
+  case 16: return RANGE; 
   default: 
     std::cerr << "Unknown value " << x << "in toStateParm" << std::endl; 
   }

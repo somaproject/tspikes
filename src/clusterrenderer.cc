@@ -9,7 +9,6 @@ ClusterRenderer::ClusterRenderer(GLSPVectpList_t * pspvl, CViewMode cvm)
     viewChanged_(false), 
     viewMode_( cvm), 
     viewX1_(0), viewX2_(10), viewY1_(0), viewY2_(10), 
-    pCurSPVect_(pspvl->begin()), 
     isSetup_(false),
     gridSpacing_(50e-6),
     Xlabel_(""), 
@@ -23,11 +22,8 @@ ClusterRenderer::ClusterRenderer(GLSPVectpList_t * pspvl, CViewMode cvm)
     textAlpha_(0.0)
   
 {
+  resetData(); 
 
-  // configure view pointers
-  viewStartIter_ = pspvl_->begin(); 
-  viewEndIter_ = pspvl_->end(); 
-  
   switch(viewMode_) {
   case VIEW12:
     Xlabel_ = "X"; 
@@ -630,4 +626,14 @@ bool ClusterRenderer::fadeInTextHandler()
     return true; 
   }
 
+}
+
+void ClusterRenderer::resetData()
+{
+
+  // configure view pointers
+  viewStartIter_ = pspvl_->begin(); 
+  viewEndIter_ = pspvl_->end(); 
+  pCurSPVect_ = pspvl_->begin(); 
+  
 }
