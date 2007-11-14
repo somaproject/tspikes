@@ -79,10 +79,13 @@ int main(int argc, char** argv)
     if (vm.count("ttrate") )
       
       {
-	// actually run from fake network
+	if (ttrate > 0 ) {
 	Glib::signal_timeout().connect(sigc::bind(sigc::mem_fun(fttd, 
 								&FakeTTData::appendToFakeNetwork), &net), 50);
-	
+	} else { 
+	Glib::signal_timeout().connect(sigc::bind(sigc::mem_fun(fttd, 
+								&FakeTTData::appendToFakeNetworkWithRealTime), &net), 50);
+	}
 	
       }
     net.run(); 

@@ -136,7 +136,7 @@ uint32_t ttreader::peekNextSpikeTime()
   // non-destructive read of next spike timestamp. 
   uint32_t time; 
   file_.read((char*)&(time), sizeof(time));   
-  file_.seek(-sizeof(time)); 
+  file_.seekg(-sizeof(time), std::ios_base::cur); 
   return time; 
 }
 

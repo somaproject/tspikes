@@ -31,7 +31,8 @@ FakeTTData::FakeTTData(std::string filename, int rate,
   if (rate == 0 ) {
     // we are to use real spike timing
     // so we grab and throw away a spike
-    lastSpikeTime_ = double(ttreader_.getTspike().time) / 50e3; 
+    lastSpikeTime_ = double(ttreader_.getTSpike().time) / 10e3; 
+    currentDataTime_ = lastSpikeTime_; 
   }
     
 }
@@ -257,41 +258,23 @@ bool FakeTTData::appendToFakeNetworkWithRealTime(FakeNetwork* fn)
 
   */
 
+  double elapsed; 
+  elapsed = timer_.elapsed(); 
+  timer_.reset(); 
 
-  // get the current wall time
-  // get the wall time of the last time we sent a spike
+  currentDataTime_ += elapsed; 
 
-  // 
-
-
-
-
-
-
-
-  double seconds; 
-  unsigned long useconds; 
-  seconds = timer_.elapsed(useconds); // number of secs since last call
-  
-  while (seconds
-  uint32_t nexttstime = ttreader_.peekNextSpikeTime(); 
-  double nextspiketime = double(nexttstime) / 50e3; // next spike time in seconds
-  
-  if (numtotx > 0 )
+  while (currentDataTime_ > (double(ttreader_.peekNextSpikeTime()) / 10e3))
     {
-      for (int i = 0; i < numtotx; i++) {
-	TSpike_t ts = ttreader_.getTSpike();
-	ts.time = ts.time * 5; // convert to our timestamps
-	DataPacket_t *  dp = rawFromTSpike(ts); 
-	fn->appendDataOut(dp); 
-	setTime(fn, ts.time); 
-
-      }
+      std::cout << currentDataTime_ << " " <<  elapsed 
+		<< " " << (double(ttreader_.peekNextSpikeTime()) / 10e3)  << std::endl; 
+      TSpike_t ts = ttreader_.getTSpike();
+      ts.time = ts.time * 5; // convert to our timestamps
+      DataPacket_t *  dp = rawFromTSpike(ts); 
+      fn->appendDataOut(dp); 
+      setTime(fn, ts.time); 
       
-      timer_.reset(); 
-
     }
-  
   
   return true; 
 
@@ -301,6 +284,7 @@ bool FakeTTData::appendToFakeNetworkWithRealTime(FakeNetwork* fn)
 void FakeTTData::setTime(FakeNetwork * fn, uint64_t usec)
 {
   Event_t event; 
+  std::cout << "FakeTTData::setTime " << usec << std::endl;
   event.src = 0; 
   event.cmd = 0x10; 
   event.data[0] = (usec >> 32) & 0xFFFF;

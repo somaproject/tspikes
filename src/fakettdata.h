@@ -18,6 +18,7 @@ class FakeTTData
   bool appendToFakeNetwork(FakeNetwork* fn);
   std::vector<TSpike_t>  getManySpikes(int n); 
   void setTime(FakeNetwork * fn, unsigned long usec);
+  bool appendToFakeNetworkWithRealTime(FakeNetwork* fn); 
 
  private:
   ttreader ttreader_; 
@@ -25,6 +26,7 @@ class FakeTTData
   Glib::Timer timer_; 
   int spikeNum_;
   double lastSpikeTime_; 
+  double currentDataTime_; 
   FakeNetwork * pni_; 
   void eventTXCallback(const EventTXList_t & el); 
   std::vector<TSpikeChannelState> fakestate_; 
