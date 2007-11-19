@@ -19,7 +19,8 @@ ClusterRenderer::ClusterRenderer(GLSPVectpList_t * pspvl, CViewMode cvm)
     rangeBoxVisible_(true), 
     rangeX_(1e-3), 
     rangeY_(1e-3), 
-    textAlpha_(0.0)
+    textAlpha_(0.0), 
+    resetPending_(false)
   
 {
   resetData(); 
@@ -132,6 +133,10 @@ void ClusterRenderer::render()
   // this is the primary render event
   assert (isSetup_ == true); 
   
+  if (resetPending_) {
+    resetPending_ = false; 
+    reset(); 
+  }
   if (viewChanged_) {
     updateViewingWindow(); 
     updateView(); 
@@ -139,6 +144,7 @@ void ClusterRenderer::render()
   }
 
   assert(pCurSPVect_ != pspvl_->end()); 
+
   // if buffer is empty do nothing
   if (viewEndIter_ == pspvl_->end() and
       viewStartIter_ == pspvl_->end())
@@ -630,7 +636,7 @@ bool ClusterRenderer::fadeInTextHandler()
 
 void ClusterRenderer::resetData()
 {
-
+  resetPending_ = true; 
   // configure view pointers
   viewStartIter_ = pspvl_->begin(); 
   viewEndIter_ = pspvl_->end(); 

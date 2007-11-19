@@ -35,6 +35,7 @@ public:
 
   void invalidate(); 
   void resetData(); 
+  void resetView(); 
 
   bool setViewingWindow(float x1, float y1,  float x2, float y2); 
 

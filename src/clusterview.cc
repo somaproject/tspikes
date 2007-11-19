@@ -267,7 +267,7 @@ bool ClusterView::on_motion_notify_event(GdkEventMotion* event)
 
       zoomX(1.0 + zoomXfact); 
       zoomY(1.0 + zoomYfact); 
-
+      invalidate(); 
     } 
   else if (event->state & GDK_BUTTON3_MASK)
     {
@@ -321,6 +321,14 @@ void ClusterView::updateState(bool X, const TSpikeChannelState & state)
 void ClusterView::resetData()
 {
   clusterRenderer_.resetData(); 
+
+
+}
+
+void ClusterView::resetView()
+{
+
+  setViewingWindow(0, 0, rangeX_, rangeY_);
 
 
 }

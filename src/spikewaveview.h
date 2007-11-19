@@ -34,6 +34,9 @@ public:
 
   void setAmplitudeView(float min, float max); 
   
+  sigc::signal <void, float, float> & amplitudeViewChangedSignal()
+    { return amplitudeViewChangedSignal_; }
+
   int getFrameCount(); 
 
   void setTime(uint64_t time); 
@@ -42,7 +45,8 @@ public:
   
   void setListLen(int len);
   void setLive(bool); 
-
+  void resetView(); 
+  void resetData(); 
   // Invalidate whole window.
   void invalidate(); 
 
@@ -62,6 +66,8 @@ protected:
 
   void updateViewingWindow(); 
 
+  sigc::signal <void, float, float> amplitudeViewChangedSignal_;
+
   uint64_t currentTime_; 
 
   int frameCount_;
@@ -76,7 +82,7 @@ protected:
   { get_window()->process_updates(false); }
   
   bool live_; 
-
+  bool constructed_;
 
 };
 

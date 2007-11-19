@@ -10,7 +10,8 @@
 SpikeWaveView::SpikeWaveView(GLChan_t chan) : 
   spikeWaveRenderer_(chan), 
   frameCount_(0), 
-  live_(false)
+  live_(false), 
+  constructed_(false)
 {
 
   //
@@ -87,6 +88,11 @@ void SpikeWaveView::on_realize()
 void SpikeWaveView::setAmplitudeView(float min, float max)
 {
   spikeWaveRenderer_.setAmplitudeView(min, max); 
+  if (!constructed_) {
+    constructed_ = true; 
+  } else {
+    invalidate();
+  }
 }
 
 bool SpikeWaveView::on_configure_event(GdkEventConfigure* event)
@@ -231,6 +237,11 @@ bool SpikeWaveView::on_motion_notify_event(GdkEventMotion* event)
       viewY1 = viewY1 * zoomYfact; 
       viewY2 = viewY2 * zoomYfact;  
       spikeWaveRenderer_.setAmplitudeView(viewY1, viewY2); 
+
+      amplitudeViewChangedSignal_.emit(viewY1, viewY2); 
+
+      invalidate(); 
+
     }
 
       
@@ -285,3 +296,17 @@ void SpikeWaveView::updateState(const TSpikeChannelState & state)
   spikeWaveRenderer_.updateState(state); 
 }
 
+
+void SpikeWaveView::resetView()
+{
+  float min, max;
+  spikeWaveRenderer_.getAmplitudeRange(&min, &max); 
+  spikeWaveRenderer_.setAmplitudeView(min, max); 
+
+}
+
+void SpikeWaveView::resetData()
+{
+  spikeWaveRenderer_.resetData();
+
+}

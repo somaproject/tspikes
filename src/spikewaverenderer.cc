@@ -33,7 +33,7 @@ SpikeWaveRenderer::~SpikeWaveRenderer()
 
 void SpikeWaveRenderer::setupOpenGL()
 {
-    //glEnable(GL_NORMALIZE);
+  //glEnable(GL_NORMALIZE);
   glEnable(GL_BLEND); 
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	
 
@@ -242,7 +242,7 @@ void SpikeWaveRenderer::renderGrid()
   glVertex2f(viewX2_, 0.0); 
   glEnd(); 
 
-  glColor4f(1.0, 1.0, 1.0, 0.5); 
+  glColor4f(1.0, 1.0, 1.0, 0.3); 
   glLineWidth(1.0); 
  
   float ydelta = viewY2_ - viewY1_; 
@@ -373,10 +373,8 @@ void SpikeWaveRenderer::setAmplitudeView(float min, float max)
   // we'd like our scale to look at ~ volts. 
   viewY1_ = min; 
   viewY2_ = max; 
-
  
   sanityCheckViewParameters(); 
-
 
 }
 
@@ -404,10 +402,21 @@ void SpikeWaveRenderer::sanityCheckViewParameters()
 
 void SpikeWaveRenderer::getAmplitudeView(float * min, float * max)
 {
+
   *min = viewY1_; 
   *max = viewY2_; 
 
 }
+
+void SpikeWaveRenderer::getAmplitudeRange(float * min, float * max)
+{
+
+  *min = ampMin_; 
+  *max = ampMax_; 
+
+}
+
+
 void SpikeWaveRenderer::renderTrigger()
 {
   glLineWidth(3.0);
@@ -455,4 +464,13 @@ void SpikeWaveRenderer::updateState(TSpikeChannelState ts)
 {
   channelState_ = ts; 
   trigger_ = Voltage(channelState_.threshold).to_volts(); 
+}
+
+void SpikeWaveRenderer::resetData()
+{
+
+  swl_.clear(); 
+  spikeWaveListFull_ = false; 
+
+
 }

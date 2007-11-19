@@ -159,6 +159,52 @@ TSpikeWin::TSpikeWin(NetworkInterface * pNetwork, datasource_t src) :
   spikeWaveViewY_.setAmplitudeView(-100e-6, 300e-6); 
   spikeWaveViewA_.setAmplitudeView(-100e-6, 300e-6); 
   spikeWaveViewB_.setAmplitudeView(-100e-6, 300e-6); 
+  
+
+  spikeWaveViewX_.amplitudeViewChangedSignal().connect(
+						       sigc::mem_fun(spikeWaveViewY_, 
+								     &SpikeWaveView::setAmplitudeView)); 
+  spikeWaveViewX_.amplitudeViewChangedSignal().connect(
+						       sigc::mem_fun(spikeWaveViewA_, 
+								     &SpikeWaveView::setAmplitudeView)); 
+  spikeWaveViewX_.amplitudeViewChangedSignal().connect(
+						       sigc::mem_fun(spikeWaveViewB_, 
+								     &SpikeWaveView::setAmplitudeView)); 
+
+
+  spikeWaveViewY_.amplitudeViewChangedSignal().connect(
+						       sigc::mem_fun(spikeWaveViewX_, 
+								     &SpikeWaveView::setAmplitudeView)); 
+  spikeWaveViewY_.amplitudeViewChangedSignal().connect(
+						       sigc::mem_fun(spikeWaveViewA_, 
+								     &SpikeWaveView::setAmplitudeView)); 
+  spikeWaveViewY_.amplitudeViewChangedSignal().connect(
+						       sigc::mem_fun(spikeWaveViewB_, 
+								     &SpikeWaveView::setAmplitudeView)); 
+
+  spikeWaveViewA_.amplitudeViewChangedSignal().connect(
+						       sigc::mem_fun(spikeWaveViewX_, 
+								     &SpikeWaveView::setAmplitudeView)); 
+  spikeWaveViewA_.amplitudeViewChangedSignal().connect(
+						       sigc::mem_fun(spikeWaveViewY_, 
+								     &SpikeWaveView::setAmplitudeView)); 
+  spikeWaveViewA_.amplitudeViewChangedSignal().connect(
+						       sigc::mem_fun(spikeWaveViewB_, 
+								     &SpikeWaveView::setAmplitudeView)); 
+
+  spikeWaveViewB_.amplitudeViewChangedSignal().connect(
+						       sigc::mem_fun(spikeWaveViewX_, 
+								     &SpikeWaveView::setAmplitudeView)); 
+  spikeWaveViewB_.amplitudeViewChangedSignal().connect(
+						       sigc::mem_fun(spikeWaveViewY_, 
+								     &SpikeWaveView::setAmplitudeView)); 
+  spikeWaveViewB_.amplitudeViewChangedSignal().connect(
+						       sigc::mem_fun(spikeWaveViewA_, 
+								     &SpikeWaveView::setAmplitudeView)); 
+
+
+
+
   liveButton_.set_active(true); 
 
   show_all();
@@ -203,8 +249,12 @@ void TSpikeWin::setupMenus()
 
   refActionGroup_->add(Gtk::Action::create("Quit", "Quit"), 
 		       sigc::mem_fun(*this, &TSpikeWin::on_action_quit)); 
-  refActionGroup_->add(Gtk::Action::create("ResetViews", "Reset All Views")); 
-  refActionGroup_->add(Gtk::Action::create("ResetData", "Reset All Data History"));
+  refActionGroup_->add(Gtk::Action::create("ResetViews", "Reset All Views"), 
+		       sigc::mem_fun(*this, &TSpikeWin::on_action_reset_views)); 
+
+  refActionGroup_->add(Gtk::Action::create("ResetData", "Reset All Data History"), 
+		       sigc::mem_fun(*this, &TSpikeWin::on_action_reset_data)); 
+
   refActionGroup_->add(Gtk::Action::create("SourceSettings", "Change Source Settings"), 
 		       sigc::mem_fun(*this, &TSpikeWin::on_action_source_settings)); 
   
@@ -499,6 +549,11 @@ bool TSpikeWin::on_button_press_event(GdkEventButton* event)
     pMenuPopup_->popup(event->button, event->time);
 
     return true; 
+  } else if (event->type == GDK_2BUTTON_PRESS) { 
+    std::cout << "Double click!" << std::endl;
+    set_decorated(!get_decorated()); 
+
+    return true; 
   }
   else
     return false;
@@ -517,12 +572,22 @@ void TSpikeWin::on_action_source_settings(void)
   
 }
 
-void TSpikeWin::resetData()
+void TSpikeWin::on_action_reset_data()
 {
   spVectpList_.clear(); 
+  reltime_t rt = abstimeToRelTime(spVectorStartTime_, offsetTime_); 
+  spVectpList_.insert(rt, new GLSPVect_t);
+
+  //  spVectpList_.insert((reltime_t)0.0, new GLSPVect_t);
 
   
   // reset offset time
+
+  spikeWaveViewX_.resetData(); 
+  spikeWaveViewY_.resetData(); 
+  spikeWaveViewA_.resetData(); 
+  spikeWaveViewB_.resetData();
+
   
   clusterViewXY_.resetData(); 
   clusterViewXA_.resetData(); 
@@ -531,7 +596,22 @@ void TSpikeWin::resetData()
   clusterViewYB_.resetData(); 
   clusterViewAB_.resetData();
   
+}
 
+void TSpikeWin::on_action_reset_views()
+{
+  
+  spikeWaveViewX_.resetView(); 
+  spikeWaveViewY_.resetView(); 
+  spikeWaveViewA_.resetView(); 
+  spikeWaveViewB_.resetView();
 
+  clusterViewXY_.resetView(); 
+  clusterViewXA_.resetView(); 
+  clusterViewXB_.resetView();
+  clusterViewYA_.resetView(); 
+  clusterViewYB_.resetView(); 
+  clusterViewAB_.resetView();
+  
 
 }

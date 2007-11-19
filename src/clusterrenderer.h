@@ -93,7 +93,7 @@ class ClusterRenderer
   
   sigc::connection textFadeConn_; 
   float textAlpha_; 
-
+  bool resetPending_; 
   bool fadeInTextHandler(); 
   bool fadeOutTextHandler(); 
 

@@ -39,6 +39,7 @@ public:
   void getAmplitudeView(float * min, float * max); 
 
   void setAmplitudeRange(float min,  float max); 
+  void getAmplitudeRange(float * min, float * max); 
   void setViewPort(int viewportWinX, int viewportWinY); 
   
   void setTime(uint64_t time); 
@@ -49,7 +50,8 @@ public:
   
   void updateState(TSpikeChannelState ts); 
   void setTriggerThreshold(float thold); 
-
+  
+  void resetData(); 
   // Update window synchronously (fast).
   void setPaused(bool state); 
   
@@ -80,6 +82,7 @@ protected:
   bool setViewingWindow(float x1, float y1,  float x2, float y2); 
   void renderGrid(); 
   void renderText(); 
+
 
   int m_Frames;
   GLString glString_; 

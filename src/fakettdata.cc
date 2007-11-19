@@ -266,8 +266,6 @@ bool FakeTTData::appendToFakeNetworkWithRealTime(FakeNetwork* fn)
 
   while (currentDataTime_ > (double(ttreader_.peekNextSpikeTime()) / 10e3))
     {
-      std::cout << currentDataTime_ << " " <<  elapsed 
-		<< " " << (double(ttreader_.peekNextSpikeTime()) / 10e3)  << std::endl; 
       TSpike_t ts = ttreader_.getTSpike();
       ts.time = ts.time * 5; // convert to our timestamps
       DataPacket_t *  dp = rawFromTSpike(ts); 

@@ -49,7 +49,6 @@ public:
 
   void setTime(somatime_t t);
   void loadExistingSpikes(const std::vector<TSpike_t> & spikes); 
-  void resetData(); 
 
 protected:
   virtual bool on_idle();
@@ -131,6 +130,8 @@ protected:
 
   // functions
   void on_action_quit(); 
+  void on_action_reset_views(); 
+  void on_action_reset_data(); 
   void on_action_source_settings(void);
 
 
