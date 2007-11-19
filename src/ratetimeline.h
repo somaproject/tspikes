@@ -52,7 +52,7 @@ public:
   void setLive(bool);
   void setCursorTime(float time); 
   void setCursorVisible(bool visible); 
-
+  void resetData(); 
 
 protected:
 

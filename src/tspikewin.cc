@@ -580,7 +580,7 @@ void TSpikeWin::on_action_reset_data()
 
   //  spVectpList_.insert((reltime_t)0.0, new GLSPVect_t);
 
-  
+  rateTimeline_.resetData(); 
   // reset offset time
 
   spikeWaveViewX_.resetData(); 

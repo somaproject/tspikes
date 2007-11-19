@@ -72,6 +72,8 @@ public:
   void setViewPort(int viewportWinX, int viewportWinY); 
   void setOffsetTime(abstime_t offsettime); 
 
+  void resetData(); 
+
 protected:
 
   // signal handlers:
@@ -110,7 +112,9 @@ protected:
 
   void renderCursor(); 
   void renderStartCursor(); 
-  void renderLatestCursor(); 
+  void renderLatestCursor();
+
+
 
   std::string getTimeString(abstime_t time); 
 

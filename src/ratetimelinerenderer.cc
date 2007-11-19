@@ -366,3 +366,11 @@ void RateTimelineRenderer::setDecayRate(float rate)
 
 
 }
+
+void RateTimelineRenderer::resetData()
+{
+  
+  rates_.clear(); 
+  activePos_ = 0.0; 
+
+}

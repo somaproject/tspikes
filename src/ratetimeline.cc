@@ -378,3 +378,9 @@ bool RateTimeline::on_leave_notify_event(GdkEventCrossing* event)
   return true; 
 }
 
+void RateTimeline::resetData()
+{
+  renderer_.resetData(); 
+  invalidate(); 
+
+}
