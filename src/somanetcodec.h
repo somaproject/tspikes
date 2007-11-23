@@ -112,8 +112,8 @@ class SomaNetworkCodec
   bool dataRXCallback(Glib::IOCondition io_condition); 
 
   // remember, we're just a fitler
-  void processNewData(DataPacket_t* ); 
-  void processNewEvents(EventList_t * ); 
+  void processNewData(pDataPacket_t ); 
+  void processNewEvents(pEventList_t ); 
 
   void querySourceState(int chan); // request a source state update
   

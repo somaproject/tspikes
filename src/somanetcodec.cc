@@ -85,7 +85,7 @@ sigc::signal<void, const TSpike_t &> & SomaNetworkCodec::signalNewTSpike()
 }
 
 
-void SomaNetworkCodec::processNewData(DataPacket_t * dp)
+void SomaNetworkCodec::processNewData(pDataPacket_t  dp)
 {
   if (dp->typ == TSPIKE ) {
     TSpike_t newTSpike = rawToTSpike(dp); 
@@ -98,7 +98,7 @@ void SomaNetworkCodec::processNewData(DataPacket_t * dp)
 
 }
 
-void SomaNetworkCodec::processNewEvents(EventList_t * pEventList)
+void SomaNetworkCodec::processNewEvents(pEventList_t pEventList)
 {
   EventList_t::iterator pe; 
   for (pe = pEventList->begin(); pe != pEventList->end(); pe++) {
@@ -222,11 +222,9 @@ bool SomaNetworkCodec::dataRXCallback(Glib::IOCondition io_condition)
     {
       char x; 
       read(pNetwork_->getDataFifoPipe(), &x, 1); 
-      DataPacket_t * rdp = pNetwork_->getNewData(); 
+      pDataPacket_t rdp = pNetwork_->getNewData(); 
 
       processNewData(rdp); 
-
-      delete rdp; 
       
     }
   return true; 
@@ -244,9 +242,8 @@ bool SomaNetworkCodec::eventRXCallback(Glib::IOCondition io_condition)
     {
       char x; 
       read(pNetwork_->getEventFifoPipe(), &x, 1); 
-      EventList_t * pel = pNetwork_->getNewEvents(); 
+      pEventList_t pel = pNetwork_->getNewEvents(); 
       processNewEvents(pel); 
-      delete pel; 
     }
   return true; 
 }

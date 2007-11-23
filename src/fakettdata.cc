@@ -101,7 +101,7 @@ Event_t FakeTTData::createStateResponse(int chan, STATEPARM parm)
 void FakeTTData::eventTXCallback(const EventTXList_t & el)
 {
   // extract out events and create responses
-  EventList_t * pelist = new EventList_t(); 
+  pEventList_t pelist(new EventList_t()); 
   pelist->reserve(el.size()); 
 
   EventTXList_t::const_iterator e; 
@@ -209,7 +209,7 @@ std::vector<TSpike_t> FakeTTData::getManySpikes(int n)
 
 }
 
-DataPacket_t * FakeTTData::getSpikeDataPacket()
+pDataPacket_t FakeTTData::getSpikeDataPacket()
 {
   TSpike_t ts; 
   ts = ttreader_.getTSpike(); 
@@ -233,7 +233,7 @@ bool FakeTTData::appendToFakeNetwork(FakeNetwork* fn)
       for (int i = 0; i < numtotx; i++) {
 	TSpike_t ts = ttreader_.getTSpike();
 	ts.time = ts.time * 5; // convert to our timestamps
-	DataPacket_t *  dp = rawFromTSpike(ts); 
+	pDataPacket_t dp = rawFromTSpike(ts); 
 	fn->appendDataOut(dp); 
 	setTime(fn, ts.time); 
 
@@ -268,7 +268,7 @@ bool FakeTTData::appendToFakeNetworkWithRealTime(FakeNetwork* fn)
     {
       TSpike_t ts = ttreader_.getTSpike();
       ts.time = ts.time * 5; // convert to our timestamps
-      DataPacket_t *  dp = rawFromTSpike(ts); 
+      pDataPacket_t  dp = rawFromTSpike(ts); 
       fn->appendDataOut(dp); 
       setTime(fn, ts.time); 
       
@@ -288,7 +288,7 @@ void FakeTTData::setTime(FakeNetwork * fn, uint64_t usec)
   event.data[1] = (usec >> 16 ) & 0xFFFF; 
   event.data[2] = usec & 0xFFFF; 
 
-  EventList_t * pelt = new EventList_t; 
+  pEventList_t  pelt(new EventList_t); 
   pelt->push_back(event); 
   fn->appendEventOut(pelt); 
   

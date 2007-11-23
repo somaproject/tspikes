@@ -14,7 +14,7 @@ class FakeTTData
  public:
   FakeTTData(std::string filename, int rate, 
 	     FakeNetwork* pni); 
-  DataPacket_t *  getSpikeDataPacket(); 
+  pDataPacket_t  getSpikeDataPacket(); 
   bool appendToFakeNetwork(FakeNetwork* fn);
   std::vector<TSpike_t>  getManySpikes(int n); 
   void setTime(FakeNetwork * fn, unsigned long usec);
