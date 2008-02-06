@@ -1,0 +1,12 @@
+Source: tspikes
+Section: Physionics Software
+Priority: extra
+Maintainer: Stuart Layton <slayton@mit.edu>
+Build-Depends: debhelper (>= 5), autotools-dev, libboost-dev, libgtkmm-2.4, libgtkmm-2.4-dev, libglademm-2.4, libxt
+Standards-Version: 3.7.2
+
+Package: tspikes
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: TSpikes visualization
+ <insert long description, indented with spaces>
