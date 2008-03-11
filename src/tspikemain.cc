@@ -44,7 +44,7 @@ int main(int argc, char** argv)
     
     TSpikeWin tspikewin(&net, vm["networksrc"].as<int>());
     
-    //net.run(); 
+    net.run(); 
     kit.run(tspikewin);
     
     return 0; 
