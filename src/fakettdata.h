@@ -17,7 +17,7 @@ class FakeTTData
   pDataPacket_t  getSpikeDataPacket(); 
   bool appendToFakeNetwork(FakeNetwork* fn);
   std::vector<TSpike_t>  getManySpikes(int n); 
-  void setTime(FakeNetwork * fn, unsigned long usec);
+  void setTime(FakeNetwork * fn, uint64_t usec);
   bool appendToFakeNetworkWithRealTime(FakeNetwork* fn); 
 
  private:
