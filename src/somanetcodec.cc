@@ -89,6 +89,11 @@ void SomaNetworkCodec::processNewData(pDataPacket_t  dp)
 {
   if (dp->typ == TSPIKE ) {
     TSpike_t newTSpike = rawToTSpike(dp); 
+//     std::cout << "ts.x.wave[0] = " << newTSpike.x.wave[0] << std::endl; 
+//     std::cout << "ts.y.wave[0] = " << newTSpike.x.wave[0] << std::endl; 
+//     std::cout << "ts.a.wave[0] = " << newTSpike.x.wave[0] << std::endl; 
+//     std::cout << "ts.b.wave[0] = " << newTSpike.x.wave[0] << std::endl; 
+
     signalNewTSpike_.emit(newTSpike); 
 
   } else {
