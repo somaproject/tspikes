@@ -2,11 +2,13 @@ Source: tspikes
 Section: Soma Software
 Priority: extra
 Maintainer: Stuart Layton <slayton@mit.edu>
-Build-Depends: debhelper (>= 5), autotools-dev, libboost-dev
+Build-Depends: debhelper (>= 5), libgtkglextmm-x11-1.2, libsomanetwork
 Standards-Version: 3.7.2
 
 Package: tspikes
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: Soma spike vizualizatin software
- <insert long description, indented with spaces>
+Depends: ${shlibs:Depends}, ${misc:Depends}, libgtkglextmm-x11-1.2
+Description: Soma 4 channel spike vizualizatin software
+tSpikes allows for the realtime visuallization of spike information 
+coming from Soma hardware. It displays the 4 waveforms collected from 
+each of the four tetrode channels.  It is a modern replacement for AD
