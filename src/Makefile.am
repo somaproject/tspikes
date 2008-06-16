@@ -28,7 +28,7 @@ ratetimelinevis_SOURCES = ratetimelinevis.cc ttreader.cc ratetimeline.cc ratetim
 
 tspike_SOURCES = $(cc_sources)
 tspikedir = $(datadir)/tspikes
-tspike_DATA = cluster.frag glstring.frag rtgrad.frag cluster.vert glstring.vert rtgrad.vert 
+tspike_DATA = cluster.frag glstring.frag rtgrad.frag cluster.vert glstring.vert rtgrad.vert tspikes.glade
 
 
 #http://www.gnu.org/software/autoconf/manual/autoconf-2.57/html_chapter/autoconf_17.html#SEC179  FAQ entry for how to handle the data directory

@@ -1,5 +1,5 @@
 #include "sourcesettingswin.h"
-
+#include <string>
 #include "combosetting.h" 
 #include "gaincombosetting.h"
 #include "filtercombosetting.h"
@@ -12,8 +12,11 @@ SourceSettingsWin::SourceSettingsWin(SomaNetworkCodec * pSomaNetCodec) :
   pTableSourceSettings_(0)
 {
   chanPropList_  = pSomaNetCodec_->getChans(); 
-  
-  refXml_ = Gnome::Glade::Xml::create("tspikes.glade");//, "windowSourceSettings");
+  std::string basedir = DATADIR; 
+  std::string totalfile = basedir + "/tspikes.glade"; 
+
+
+  refXml_ = Gnome::Glade::Xml::create(totalfile.c_str());//, "windowSourceSettings");
   
   // populate widget pointers
   refXml_->get_widget("dialogSourceSettings", pDialog_); 
