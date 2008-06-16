@@ -1,6 +1,6 @@
 # 
 
-AM_CXXFLAGS = $(GTKDEPS_CFLAGS)  $(BOOST_CPPFLAGS) $(SOMADEPS_CFLAGS)  -pthread 
+
 AM_LDFLAGS = $(GTKDEPS_LIBS) $(BOOST_LDFLAGS) $(SOMADEPS_LIBS) $(BOOST_THREAD_LIB)  $(BOOST_PROGRAM_OPTIONS_LIB)
 
 
@@ -27,4 +27,11 @@ ratetimelinevis_SOURCES = ratetimelinevis.cc ttreader.cc ratetimeline.cc ratetim
 	 glspikes.cc glconfig.cc  shaders.cc cairogltext/glstring.cc 
 
 tspike_SOURCES = $(cc_sources)
+tspikedir = $(datadir)/tspikes
+tspike_DATA = cluster.frag glstring.frag rtgrad.frag cluster.vert glstring.vert rtgrad.vert 
 
+
+#http://www.gnu.org/software/autoconf/manual/autoconf-2.57/html_chapter/autoconf_17.html#SEC179  FAQ entry for how to handle the data directory
+
+
+AM_CXXFLAGS = -DDATADIR=\"$(tspikedir)\"  $(GTKDEPS_CFLAGS)  $(BOOST_CPPFLAGS) $(SOMADEPS_CFLAGS)  -pthread 

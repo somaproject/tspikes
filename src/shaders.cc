@@ -10,9 +10,12 @@ GLuint loadGPUShader(const std::string & filename, GLuint shaderType)
 {
   GLuint shdr = glCreateShader(shaderType); 
   
-  ifstream shaderFile; 
-  shaderFile.open(filename.c_str()); 
+  string basedir = DATADIR; 
+  string totalfile = basedir + "/" + filename; 
 
+  ifstream shaderFile; 
+    shaderFile.open(totalfile.c_str()); 
+  
   string shaderSrc = ""; 
   string line = ""; 
   while (shaderFile and not shaderFile.eof()) {
