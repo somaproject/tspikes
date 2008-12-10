@@ -59,6 +59,10 @@ rm Soma-Directory.directory
 rm Soma-tspikes.desktop
 echo "Entries Created! Cleaning up..."
 
+<<<<<<< .mine
+
+=======
+>>>>>>> .r2942
 exit 0
 
 

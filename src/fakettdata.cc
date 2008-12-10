@@ -187,7 +187,9 @@ void FakeTTData::eventTXCallback(const EventTXList_t & el)
     }
     }
   }
-  pni_->appendEventOut(pelist); 
+  pEventPacket_t pep(new EventPacket_t); 
+  pep->events = pelist; 
+  pni_->appendEventOut(pep);
   
 }
 
@@ -290,7 +292,9 @@ void FakeTTData::setTime(FakeNetwork * fn, uint64_t usec)
 
   pEventList_t  pelt(new EventList_t); 
   pelt->push_back(event); 
-  fn->appendEventOut(pelt); 
+  pEventPacket_t pep(new EventPacket_t); 
+  pep->events = pelt; 
+  fn->appendEventOut(pep); 
   
 }
 

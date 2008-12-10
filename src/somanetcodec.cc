@@ -247,7 +247,7 @@ bool SomaNetworkCodec::eventRXCallback(Glib::IOCondition io_condition)
     {
       char x; 
       read(pNetwork_->getEventFifoPipe(), &x, 1); 
-      pEventList_t pel = pNetwork_->getNewEvents(); 
+      pEventList_t pel = pNetwork_->getNewEvents()->events; 
       processNewEvents(pel); 
     }
   return true; 

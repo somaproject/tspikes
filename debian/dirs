@@ -1,2 +1,5 @@
-usr/bin
+usr/bin 
 usr/sbin
+usr/share
+usr/share/soma
+usr/share/soma/tspikes

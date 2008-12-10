@@ -1,6 +1,12 @@
-tspikes (1.0-1) unstable; urgency=low
+tspikes (1.0-2ubuntu1) stable; urgency=low
+
+  * Updated source code and tspikes icon added to installer
+
+ -- Stuart Layton <slayton@mit.edu>  Tues, 12 Aug 2008 16:42:54 -0500
+
+tspikes (1.0-1ubuntu1) stable; urgency=low
 
   * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
 
- -- Stuart Layton <slayton@mit.edu>  Wed, 06 Feb 2008 15:54:47 -0500
+ -- Stuart Layton <slayton@mit.edu>  Tues, 12 Aug 2008 16:42:54 -0500
 

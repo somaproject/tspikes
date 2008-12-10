@@ -1,4 +1,4 @@
-Source: tspikes
+Source: tspikes 
 Section: Soma Software
 Priority: extra
 Maintainer: Stuart Layton <slayton@mit.edu>
@@ -7,5 +7,5 @@ Standards-Version: 3.7.2
 
 Package: tspikes
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libgtkglextmm-x11-1.2
+Depends: ${shlibs:Depends}, ${misc:Depends}, libgtkglextmm-x11-1.2, soma-common
 Description: Soma 4 channel spike vizualizatin software
