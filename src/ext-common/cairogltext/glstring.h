@@ -10,7 +10,7 @@
 #include <GL/glu.h>
 #include <GL/glext.h>
 #include <string>
-#include "shaders.h"
+#include "shaderutil/shaders.h"
 
 
 typedef GLuint textureID_t; 

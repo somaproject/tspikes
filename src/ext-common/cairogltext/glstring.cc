@@ -2,6 +2,7 @@
 #include <iostream>
 #include <assert.h>
 #include <fstream>
+#include "shaderprogs.h"
 
 GLString::GLString(std::string family, 
 		   bool isBold, 
@@ -164,8 +165,8 @@ void GLString::checkGPUProgCompiled()
   // If we've never compiled the shaders before, do so.
   if (!gpuProgCompiled_) {
     
-    GLuint vshdr = loadGPUShader("glstring.vert", GL_VERTEX_SHADER); 
-    GLuint fshdr = loadGPUShader("glstring.frag", GL_FRAGMENT_SHADER); 
+    GLuint vshdr = loadGPUShader(glstring_vertex, GL_VERTEX_SHADER); 
+    GLuint fshdr = loadGPUShader(glstring_fragment, GL_FRAGMENT_SHADER); 
     std::list<GLuint> shaders; 
     shaders.push_back(vshdr); 
     shaders.push_back(fshdr); 
