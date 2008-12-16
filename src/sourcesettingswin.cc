@@ -13,11 +13,13 @@ SourceSettingsWin::SourceSettingsWin(SomaNetworkCodec * pSomaNetCodec) :
 {
   chanPropList_  = pSomaNetCodec_->getChans(); 
   std::string basedir = DATADIR; 
-  std::string totalfile = basedir + "/tspikes.glade"; 
-
-
-  refXml_ = Gnome::Glade::Xml::create(totalfile.c_str());//, "windowSourceSettings");
+  std::string totalfile = basedir + "/" + "tspikes.glade"; 
   
+  try { 
+    refXml_ = Gnome::Glade::Xml::create(totalfile.c_str());//, "windowSourceSettings");
+  } catch (Gnome::Glade::XmlError & e) {
+    refXml_ = Gnome::Glade::Xml::create("tspikes.glade");
+  }
   // populate widget pointers
   refXml_->get_widget("dialogSourceSettings", pDialog_); 
   refXml_->get_widget("tableSourceSettings", pTableSourceSettings_); 

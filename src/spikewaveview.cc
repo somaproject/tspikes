@@ -1,5 +1,5 @@
 #include "spikewaveview.h"
-#include "shaders.h"
+#include "shaderutil/shaders.h"
 #include "glconfig.h"
 #include <cairomm/context.h>
 #include <cairomm/surface.h>

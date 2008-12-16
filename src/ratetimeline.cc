@@ -1,6 +1,6 @@
 #include "ratetimeline.h"
 #include "glconfig.h"
-#include "shaders.h"
+#include "shaderutil/shaders.h"
 
 RateTimeline::RateTimeline() 
 

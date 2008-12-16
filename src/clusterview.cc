@@ -1,5 +1,5 @@
 #include "clusterview.h"
-#include "shaders.h"
+#include "shaderutil/shaders.h"
 
 
 int ClusterView::getFrames()

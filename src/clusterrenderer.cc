@@ -1,5 +1,5 @@
 #include "clusterrenderer.h"
-#include "shaders.h"
+#include "shaderutil/shaders.h"
 #include "voltage.h"
 
 ClusterRenderer::ClusterRenderer(GLSPVectpList_t * pspvl, CViewMode cvm)
@@ -92,9 +92,11 @@ void ClusterRenderer::setup()
 
   glEnable (GL_BLEND); 
   glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
-
-  GLuint vshdr = loadGPUShader("cluster.vert", GL_VERTEX_SHADER); 
-  GLuint fshdr = loadGPUShader("cluster.frag", GL_FRAGMENT_SHADER); 
+  
+  std::cout << "About to compile cluster shader" << std::endl; 
+  GLuint vshdr = loadGPUShaderFromFile("cluster.vert", GL_VERTEX_SHADER); 
+  GLuint fshdr = loadGPUShaderFromFile("cluster.frag", GL_FRAGMENT_SHADER); 
+  std::cout << "About to compile cluster shader..done" << std::endl; 
   std::list<GLuint> shaders; 
   shaders.push_back(vshdr); 
   shaders.push_back(fshdr); 

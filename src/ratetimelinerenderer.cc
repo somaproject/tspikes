@@ -2,7 +2,7 @@
 #include <boost/format.hpp>
 #include "ratetimelinerenderer.h"
 #include "glconfig.h"
-#include "shaders.h"
+#include "shaderutil/shaders.h"
 
 
 RateTimelineRenderer::RateTimelineRenderer() : 
@@ -53,8 +53,8 @@ void RateTimelineRenderer::setup()
   
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-  GLuint vshdr = loadGPUShader("rtgrad.vert", GL_VERTEX_SHADER); 
-  GLuint fshdr = loadGPUShader("rtgrad.frag", GL_FRAGMENT_SHADER); 
+  GLuint vshdr = loadGPUShaderFromFile("rtgrad.vert", GL_VERTEX_SHADER); 
+  GLuint fshdr = loadGPUShaderFromFile("rtgrad.frag", GL_FRAGMENT_SHADER); 
   std::list<GLuint> shaders; 
   shaders.push_back(vshdr); 
   shaders.push_back(fshdr); 

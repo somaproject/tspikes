@@ -1,5 +1,5 @@
 #include "spikewaverenderer.h"
-#include "shaders.h"
+#include "shaderutil/shaders.h"
 #include "glconfig.h"
 #include "voltage.h"
 #include <cairomm/context.h>
