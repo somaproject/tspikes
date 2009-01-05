@@ -5,8 +5,12 @@
 #include <sigc++/sigc++.h>
 #include <somanetwork/fakenetwork.h>
 #include <somanetwork/network.h>
+#include  <somadspio/eventcodec.h>
+
 #include "somanetcodec.h" 
 #include "ttreader.h"
+
+using namespace dspiolib::codec; 
 
 
 class FakeTTData
@@ -30,7 +34,8 @@ class FakeTTData
   FakeNetwork * pni_; 
   void eventTXCallback(const EventTXList_t & el); 
   std::vector<TSpikeChannelState> fakestate_; 
-  Event_t createStateResponse(int chan, STATEPARM param);
+  Event_t createAcqResponse(int chan, AcqDataSource::PARAMETERS param);
+
 };
 
 

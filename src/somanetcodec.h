@@ -6,12 +6,8 @@
 #include <somanetwork/tspike.h>
 #include <sigc++/sigc++.h>
 #include <gtkmm.h>
-
-
-typedef float reltime_t; 
-typedef double abstime_t; 
-
-typedef uint64_t somatime_t; 
+#include <somatime.h>
+#include  <somadspio/dspcontrol.h>
 
 class TSpikeChannelState 
 {
@@ -34,24 +30,6 @@ struct chanprop_t
   int chan; 
   std::string name; 
 }; 
-
-enum STATEPARM {GAIN = 1, 
-		THOLD = 2, 
-		HPF = 4, 
-		FILT = 8,
-		RANGE = 16}; 
-
-inline STATEPARM  toStateParm(int x) {
-  switch(x) {
-  case 1 : return GAIN; 
-  case 2 : return THOLD; 
-  case 4 : return HPF; 
-  case 8 : return FILT; 
-  case 16: return RANGE; 
-  default: 
-    std::cerr << "Unknown value " << x << "in toStateParm" << std::endl; 
-  }
-}
 
 
 typedef std::vector<chanprop_t> chanproplist_t; 
@@ -117,7 +95,19 @@ class SomaNetworkCodec
 
   void querySourceState(int chan); // request a source state update
   
+  dspiolib::StateProxy dspStateProxy_; 
+  void sendEvent(const EventTX_t &); 
 
+  // callbacks
+  void dspLinkStatus(bool); 
+  void dspMode(int mode); 
+  void dspGain(int chan, int gain); 
+  void dspHPFen(int chan, bool hpfen); 
+  void dspRange(int chan, dspiolib::range_t); 
+
+  void dspThold(int chan, int thold); 
+  void dspFilterID(int chan, dspiolib::filterid_t fid); 
+  
 }; 
 
 

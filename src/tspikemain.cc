@@ -22,7 +22,8 @@ int main(int argc, char** argv)
   po::options_description desc("Allowed options");
   desc.add_options()
     ("help", "produce help message")
-    ("networksrc", po::value<int>(), "Network source")
+    ("datasrc", po::value<int>(), "Network data source")
+    ("somaip", po::value<std::string>(), "Soma IP address")
     ("ttfile", po::value<std::string>(), "ttfile to read in data from")
     ("ttprenum", po::value<int>(), "number of spikes to read from ttfile")
     ("ttrate", po::value<int>(), "rough rate of spike arrival")
@@ -32,17 +33,25 @@ int main(int argc, char** argv)
   po::store(po::parse_command_line(argc, argv, desc), vm);
   po::notify(vm);    
   
-  if (vm.count("help")) {
+  if (vm.count("help") or argc == 1) {
     std::cout << desc << "\n";
     return 1;
   }
   
-  if (vm.count("networksrc")) {
+  if (vm.count("datasrc") and vm.count("ttfile")) {
+    std::cout << "Cannot run with both file and network" << std::endl; 
+    return 1; 
+  }
+  if (vm.count("datasrc")) {
     
-    Network net("192.168.1.100"); 
-    net.enableDataRX( vm["networksrc"].as<int>(), TSPIKE); 
+    if(!vm.count("somaip")) {
+      std::cout << "Cannot run without specified IP address" << std::endl; 
+
+    }
+    Network net(vm["somaip"].as<std::string>()); 
+    net.enableDataRX( vm["datasrc"].as<int>(), TSPIKE); 
     
-    TSpikeWin tspikewin(&net, vm["networksrc"].as<int>());
+    TSpikeWin tspikewin(&net, vm["datasrc"].as<int>());
     
     net.run(); 
     kit.run(tspikewin);
@@ -53,6 +62,7 @@ int main(int argc, char** argv)
     // ZOMG these abstractions are all wrong; should clean up
 
     FakeNetwork net; 
+    net.enableDataRX(0, TSPIKE); 
 
     int ttrate = 0; 
     if (vm.count("ttfile")) {
