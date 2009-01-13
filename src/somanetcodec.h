@@ -9,6 +9,8 @@
 #include <somatime.h>
 #include  <somadspio/dspcontrol.h>
 
+using namespace somanetwork; 
+
 class TSpikeChannelState 
 {
  public:

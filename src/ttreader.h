@@ -4,6 +4,8 @@
 #include <string>
 #include <somanetwork/tspike.h>
 
+using namespace somanetwork; 
+
 struct ttspike {
   unsigned int ts; 
   short w1[32];
