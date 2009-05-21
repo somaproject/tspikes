@@ -1,0 +1,2 @@
+#cmakedefine SHADER_PATH "${SHADER_PATH}"
+#cmakedefine GLADE_PATH "${GLADE_PATH}"

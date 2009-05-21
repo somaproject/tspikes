@@ -5,6 +5,7 @@
 #include "filtercombosetting.h"
 #include "hpfchecksetting.h"
 #include "tholdentrysetting.h"
+#include "config.h"
 
 SourceSettingsWin::SourceSettingsWin(SomaNetworkCodec * pSomaNetCodec) :
   pSomaNetCodec_(pSomaNetCodec), 
@@ -12,7 +13,7 @@ SourceSettingsWin::SourceSettingsWin(SomaNetworkCodec * pSomaNetCodec) :
   pTableSourceSettings_(0)
 {
   chanPropList_  = pSomaNetCodec_->getChans(); 
-  std::string basedir = DATADIR; 
+  std::string basedir = GLADE_PATH; 
   std::string totalfile = basedir + "/" + "tspikes.glade"; 
   
   try { 

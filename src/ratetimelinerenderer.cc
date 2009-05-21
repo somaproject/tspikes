@@ -3,6 +3,10 @@
 #include "ratetimelinerenderer.h"
 #include "glconfig.h"
 #include "shaderutil/shaders.h"
+#include "config.h"
+#include "boost/filesystem.hpp"
+
+using namespace  boost::filesystem;
 
 
 RateTimelineRenderer::RateTimelineRenderer() : 
@@ -53,8 +57,39 @@ void RateTimelineRenderer::setup()
   
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-  GLuint vshdr = loadGPUShaderFromFile("rtgrad.vert", GL_VERTEX_SHADER); 
-  GLuint fshdr = loadGPUShaderFromFile("rtgrad.frag", GL_FRAGMENT_SHADER); 
+  path default_shader_path(SHADER_PATH); 
+  path rtgrad_vert("rtgrad.vert"); 
+
+  if (exists(rtgrad_vert)) {
+    // use local 
+    
+  } else {
+    rtgrad_vert = default_shader_path / rtgrad_vert ; 
+  }
+
+  if (!exists(rtgrad_vert)) {
+    throw std::runtime_error("Could not find rtgrad vertex shader");    
+  }
+
+  path rtgrad_frag("rtgrad.frag"); 
+
+  if (exists(rtgrad_frag)) {
+    // use local 
+    
+  } else {
+    rtgrad_frag = default_shader_path / rtgrad_frag ; 
+  }
+
+  if (!exists(rtgrad_frag)) {
+    throw std::runtime_error("Could not find rtgrad fragment shader");    
+  }
+
+
+
+  GLuint vshdr = loadGPUShaderFromFile(rtgrad_vert.string(), GL_VERTEX_SHADER); 
+  GLuint fshdr = loadGPUShaderFromFile(rtgrad_frag.string(), GL_FRAGMENT_SHADER); 
+
+
   std::list<GLuint> shaders; 
   shaders.push_back(vshdr); 
   shaders.push_back(fshdr); 

@@ -1,6 +1,10 @@
 #include "clusterrenderer.h"
 #include "shaderutil/shaders.h"
 #include "voltage.h"
+#include "config.h"
+#include "boost/filesystem.hpp"
+
+using namespace  boost::filesystem;
 
 ClusterRenderer::ClusterRenderer(GLSPVectpList_t * pspvl, CViewMode cvm)
   : pspvl_(pspvl), 
@@ -92,11 +96,39 @@ void ClusterRenderer::setup()
 
   glEnable (GL_BLEND); 
   glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
+
+  path default_shader_path(SHADER_PATH); 
+  path cluster_vert("cluster.vert"); 
+
+  if (exists(cluster_vert)) {
+    // use local 
+    
+  } else {
+    cluster_vert = default_shader_path / cluster_vert ; 
+  }
+
+  if (!exists(cluster_vert)) {
+    throw std::runtime_error(
+			     "Could not find cluster vertex shader, looked in " + cluster_vert.string());    
+  }
+
+  path cluster_frag("cluster.frag"); 
+
+  if (exists(cluster_frag)) {
+    // use local 
+    
+  } else {
+    cluster_frag = default_shader_path / cluster_frag ; 
+  }
+
+  if (!exists(cluster_frag)) {
+    throw std::runtime_error("Could not find cluster fragment shader");    
+  }
+
   
-  std::cout << "About to compile cluster shader" << std::endl; 
-  GLuint vshdr = loadGPUShaderFromFile("cluster.vert", GL_VERTEX_SHADER); 
-  GLuint fshdr = loadGPUShaderFromFile("cluster.frag", GL_FRAGMENT_SHADER); 
-  std::cout << "About to compile cluster shader..done" << std::endl; 
+  GLuint vshdr = loadGPUShaderFromFile(cluster_vert.string(), GL_VERTEX_SHADER); 
+  GLuint fshdr = loadGPUShaderFromFile(cluster_frag.string(), GL_FRAGMENT_SHADER); 
+
   std::list<GLuint> shaders; 
   shaders.push_back(vshdr); 
   shaders.push_back(fshdr); 
