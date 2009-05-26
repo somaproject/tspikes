@@ -36,9 +36,6 @@ ClusterView::ClusterView(GLSPVectpList_t * pspvl, CViewMode cvm)
       throw std::logic_error("Unable to acquire double-buffered visual"); 
     }
 
-  // print frame buffer attributes.
-  GLConfigUtil::examine_gl_attrib(glconfig);
-
   //
   // Set OpenGL-capability to the widget.
   //

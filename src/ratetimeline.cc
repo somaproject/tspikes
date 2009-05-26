@@ -17,9 +17,6 @@ RateTimeline::RateTimeline()
       throw std::runtime_error("Could not acquire double-buffered visual"); 
     }
 
-  // print frame buffer attributes.
-  GLConfigUtil::examine_gl_attrib(glconfig);
-
   set_gl_capability(glconfig);
 
   // Add events.
