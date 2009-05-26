@@ -1,0 +1,7 @@
+Tspikes uses CMake for build configuration. 
+
+example: 
+
+cmake .
+make
+sudo make install

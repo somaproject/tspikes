@@ -43,7 +43,7 @@ const reltime_t RATEUPDATE = 1.0;
 class TSpikeWin : public Gtk::Window
 {
 public:
-  explicit TSpikeWin(NetworkInterface * network, datasource_t src);
+  explicit TSpikeWin(pNetworkInterface_t network, datasource_t src);
 
   virtual ~TSpikeWin();
 
@@ -56,7 +56,7 @@ protected:
 protected:
   
   
-  NetworkInterface * pNetwork_; 
+  pNetworkInterface_t pNetwork_; 
   datasource_t dsrc_; 
 
   GLSPVect_t *  spvect_; 

@@ -11,7 +11,7 @@ void printEvent(Event_t event)
 
 }
 
-TSpikeWin::TSpikeWin(NetworkInterface * pNetwork, datasource_t src) : 
+TSpikeWin::TSpikeWin(pNetworkInterface_t pNetwork, datasource_t src) : 
 
   pNetwork_(pNetwork), 
   

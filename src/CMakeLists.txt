@@ -3,7 +3,7 @@ set(tspikes_SRCS
   ttreader.cc clusterview.cc
   glconfig.cc  ratetimeline.cc tspikemain.cc
   tspikewin.cc spikewaverenderer.cc somanetcodec.cc
-  sourcesettingswin.cc gaincombosetting.cc fakettdata.cc
+  sourcesettingswin.cc gaincombosetting.cc 
   hpfchecksetting.cc combosetting.cc filtercombosetting.cc
   tholdentrysetting.cc voltage.cc ratetimelinerenderer.cc )
 
@@ -11,6 +11,10 @@ set(tspikes_SRCS
 set(ext_SRCS
   ext-common/cairogltext/glstring.cc
   ext-common/shaderutil/shaders.cc
+)
+
+set(logging_SRCS
+  ext-logging/src/logging.cc
 )
 
 set(clustervis_SRCS
@@ -33,11 +37,13 @@ include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${GUIDEPS_INCLUDE_DIRS})
 include_directories(${SOMADEPS_INCLUDE_DIRS})
 include_directories(ext-common/)
+include_directories(ext-logging/src)
 
 
 ADD_EXECUTABLE(tspikes
   ${tspikes_SRCS}
   ${ext_SRCS}
+  ${logging_SRCS}
 )
 
 TARGET_LINK_LIBRARIES(tspikes

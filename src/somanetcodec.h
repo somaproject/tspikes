@@ -47,10 +47,10 @@ class SomaNetworkCodec
   // data
 
  public: 
-  SomaNetworkCodec(NetworkInterface * pNetwork, int src, 
+  SomaNetworkCodec(pNetworkInterface_t pNetwork, int src, 
 		   chanproplist_t channels); 
   
-  SomaNetworkCodec(NetworkInterface * pNetwork, int src); 
+  SomaNetworkCodec(pNetworkInterface_t pNetwork, int src); 
   
   // state change interface
   void setChannelState(int channel, const TSpikeChannelState &) ; 
@@ -67,7 +67,7 @@ class SomaNetworkCodec
   void refreshStateCache(); 
   chanproplist_t getChans() { return chanprops_; } ; 
  private:
-  NetworkInterface * pNetwork_; 
+  pNetworkInterface_t pNetwork_; 
   int dsrc_;  /// data source # 
   chanproplist_t chanprops_; 
   

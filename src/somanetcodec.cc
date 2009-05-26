@@ -20,7 +20,7 @@ TSpikeChannelState::TSpikeChannelState()
   rangeMax = 0; 
 }
 
-SomaNetworkCodec::SomaNetworkCodec(NetworkInterface * pNetwork, int src, 
+SomaNetworkCodec::SomaNetworkCodec(pNetworkInterface_t pNetwork, int src, 
 				   chanproplist_t channels) :
   pNetwork_(pNetwork), 
   dsrc_(src), 
@@ -53,7 +53,7 @@ SomaNetworkCodec::SomaNetworkCodec(NetworkInterface * pNetwork, int src,
 
 }
 
-SomaNetworkCodec::SomaNetworkCodec(NetworkInterface * pNetwork, int src) :
+SomaNetworkCodec::SomaNetworkCodec(pNetworkInterface_t pNetwork, int src) :
   pNetwork_(pNetwork), 
   dsrc_(src),
   dspStateProxy_(src, sigc::mem_fun(*this, &SomaNetworkCodec::sendEvent))
