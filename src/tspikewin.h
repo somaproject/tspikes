@@ -11,11 +11,6 @@
 #define GL_GLEXT_PROTOTYPES
 #include <gtkglmm.h>
 
-#ifdef G_OS_WIN32
-#define WIN32_LEAN_AND_MEAN 1
-#include <windows.h>
-#endif
-
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 

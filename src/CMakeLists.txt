@@ -46,6 +46,17 @@ ADD_EXECUTABLE(tspikes
   ${logging_SRCS}
 )
 
+ADD_EXECUTABLE(test_iterator
+  test_iterator.cc
+)
+
+TARGET_LINK_LIBRARIES(test_iterator
+  ${Boost_LIBRARIES} 
+  ${GUIDEPS_LIBRARIES}
+  ${SOMADEPS_LIBRARIES}
+)
+
+
 TARGET_LINK_LIBRARIES(tspikes
   ${Boost_LIBRARIES} 
   ${GUIDEPS_LIBRARIES}
