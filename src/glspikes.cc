@@ -113,7 +113,7 @@ GLSpikePoint_t convertTSpikeToGLSpike(const TSpike_t & ts, abstime_t offset)
 }
 
 void appendTSpikeToSPL(const GLSpikePoint_t & sp, 
-		       GLSPVectpList_t * pspVectpList)
+		       GLSPVectMap_t * pspVectpList)
 {
 
 

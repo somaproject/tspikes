@@ -26,7 +26,7 @@
 
 // widget list types
 typedef boost::ptr_vector<SpikeWaveView> pSpikeWaveViewVect_t; 
-typedef boost::ptr_vector<SpikeWaveView> pClusterViewVect_t; 
+typedef boost::ptr_vector<SpikeWaveView> pClusterViewVect_t;
 
 // helper
 void printEvent(Event_t event); 
@@ -38,7 +38,8 @@ const reltime_t RATEUPDATE = 1.0;
 class TSpikeWin : public Gtk::Window
 {
 public:
-  explicit TSpikeWin(pNetworkInterface_t network, datasource_t src);
+  explicit TSpikeWin(pNetworkInterface_t network, 
+		     datasource_t src, somatime_t expStartTime_soma);
 
   virtual ~TSpikeWin();
 
@@ -54,9 +55,7 @@ protected:
   pNetworkInterface_t pNetwork_; 
   datasource_t dsrc_; 
 
-  GLSPVect_t *  spvect_; 
-
-  GLSPVectpList_t spVectpList_; 
+  GLSPVectMap_t spVectpList_; 
 
   // member widgets:
 
@@ -129,7 +128,7 @@ protected:
   void on_action_reset_data(); 
   void on_action_source_settings(void);
 
-
+  somatime_t expStartTime_; 
 };
 
 #endif // TSPIKEWIN_H

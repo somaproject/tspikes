@@ -27,10 +27,10 @@ enum CViewMode  {VIEW12, VIEW13, VIEW14, VIEW23, VIEW24, VIEW34};
 class ClusterRenderer 
 {
  public:
-  explicit ClusterRenderer(GLSPVectpList_t * pspvl, CViewMode cvm);  
+  explicit ClusterRenderer(GLSPVectMap_t & pspvl, CViewMode cvm);  
   virtual ~ClusterRenderer();
-  void setView(GLSPVectpList_t::iterator sstart, 
-		   GLSPVectpList_t::iterator send, 
+  void setView(GLSPVectMap_t::iterator sstart, 
+		   GLSPVectMap_t::iterator send, 
 		   float decayRate, DecayMode dm); 
   void setGrid(float); 
 
@@ -42,11 +42,11 @@ class ClusterRenderer
   void resetData(); 
   void reset(); 
 
-  void resetAccumBuffer(GLSPVectpList_t::iterator sstart, 
-			GLSPVectpList_t::iterator send); 
+  void resetAccumBuffer(GLSPVectMap_t::iterator sstart, 
+			GLSPVectMap_t::iterator send); 
   void renderSpikeVector(const GLSPVect_t & spvect, 
 			 bool live = false); 
-  void renderSpikeVector(GLSPVectpList_t::iterator i, 
+  void renderSpikeVector(GLSPVectMap_t::iterator i, 
 			 bool live = false); 
 
   void updateView(); 
@@ -65,15 +65,15 @@ class ClusterRenderer
  protected:
   
   bool isSetup_; 
-  GLSPVectpList_t*  pspvl_; 
+  GLSPVectMap_t &   pspvl_; 
   float decayRate_; 
   DecayMode decayMode_; 
   bool viewChanged_;   
-  GLSPVectpList_t::iterator viewStartIter_;  
-  GLSPVectpList_t::iterator viewEndIter_;  
+  GLSPVectMap_t::iterator viewStartIter_;  
+  GLSPVectMap_t::iterator viewEndIter_;  
 
   CViewMode viewMode_; 
-  GLSPVectpList_t::iterator pCurSPVect_; 
+  GLSPVectMap_t::iterator pCurSPVect_; 
   GLfloat viewX1_, viewX2_, viewY1_, viewY2_; 
   
   GLuint gpuProg_; 

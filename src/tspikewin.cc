@@ -11,7 +11,10 @@ void printEvent(Event_t event)
 
 }
 
-TSpikeWin::TSpikeWin(pNetworkInterface_t pNetwork, datasource_t src) : 
+TSpikeWin::TSpikeWin(pNetworkInterface_t pNetwork, 
+		     datasource_t src,
+		     somatime_t expStartTime_soma
+		     ) : 
 
   pNetwork_(pNetwork), 
   
@@ -23,12 +26,12 @@ TSpikeWin::TSpikeWin(pNetworkInterface_t pNetwork, datasource_t src) :
   clusterViewVBox_(false, 0), 
   mainHBox_(false, 0), 
 
-  clusterViewXY_(&spVectpList_, VIEW12), 
-  clusterViewXA_(&spVectpList_, VIEW13), 
-  clusterViewXB_(&spVectpList_, VIEW14), 
-  clusterViewYA_(&spVectpList_, VIEW23), 
-  clusterViewYB_(&spVectpList_, VIEW24), 
-  clusterViewAB_(&spVectpList_, VIEW34), 
+  clusterViewXY_(spVectpList_, VIEW12), 
+  clusterViewXA_(spVectpList_, VIEW13), 
+  clusterViewXB_(spVectpList_, VIEW14), 
+  clusterViewYA_(spVectpList_, VIEW23), 
+  clusterViewYB_(spVectpList_, VIEW24), 
+  clusterViewAB_(spVectpList_, VIEW34), 
   
   spikeWaveViewX_(CHANX), 
   spikeWaveViewY_(CHANY), 
@@ -41,9 +44,9 @@ TSpikeWin::TSpikeWin(pNetworkInterface_t pNetwork, datasource_t src) :
   sourceSettingsWin_(&somaNetworkCodec_), 
   pMenuPopup_(0), 
   dsrc_(src), 
-  offsetTime_(0.0) , 
-  spikeCount_(0)
-    
+  offsetTime_(0.0), 
+  spikeCount_(0), 
+  expStartTime_(expStartTime_soma)
 {
   //
   // Top-level window.
@@ -371,7 +374,7 @@ void TSpikeWin::updateClusterView(bool isLive, reltime_t activePos, float decayR
   }
   
   // now find iterators
-  GLSPVectpList_t::iterator t1i, t2i; 
+  GLSPVectMap_t::iterator t1i, t2i; 
 
   // -----------------------------------------------------------
   // get lower bound
@@ -525,10 +528,10 @@ void TSpikeWin::newTSpikeCallback(const TSpike_t & ts)
   spikeWaveViewA_.newSpikeWave(gls[2]); 
   spikeWaveViewB_.newSpikeWave(gls[3]); 
   
-
   GLSpikePoint_t sp = convertTSpikeToGLSpike(ts, offsetTime_); 
 
   appendTSpikeToSPL(sp, &spVectpList_); 
+  spikeCount_++; 
 
   clusterViewXY_.invalidate(); 
   clusterViewXA_.invalidate(); 
@@ -537,7 +540,7 @@ void TSpikeWin::newTSpikeCallback(const TSpike_t & ts)
   clusterViewYB_.invalidate(); 
   clusterViewAB_.invalidate(); 
 
-  spikeCount_++; 
+
 
 }
 

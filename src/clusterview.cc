@@ -10,16 +10,14 @@ int ClusterView::getFrames()
 
 }
 
-ClusterView::ClusterView(GLSPVectpList_t * pspvl, CViewMode cvm)
+ClusterView::ClusterView(GLSPVectMap_t & pspvl, CViewMode cvm)
   : 
   clusterRenderer_(pspvl, cvm), 
   frameCount_(0),
   viewMode_(cvm), 
   rangeX_(400e-6), 
   rangeY_(400e-6)
-
 {
-  //assert (!pspvl->empty()); 
 
   //
   // Configure OpenGL-capable visual.
@@ -206,8 +204,8 @@ bool ClusterView::on_visibility_notify_event(GdkEventVisibility* event)
 }
 
 
-void ClusterView::setView(GLSPVectpList_t::iterator sstart, 
-			  GLSPVectpList_t::iterator send, 
+void ClusterView::setView(GLSPVectMap_t::iterator sstart, 
+			  GLSPVectMap_t::iterator send, 
 			  float decayRate, DecayMode dm)
 {
 
