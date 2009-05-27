@@ -10,9 +10,9 @@ int ClusterView::getFrames()
 
 }
 
-ClusterView::ClusterView(GLSPVectMap_t & pspvl, CViewMode cvm)
+ClusterView::ClusterView(SpikePointVectDatabase & spvdb, CViewMode cvm)
   : 
-  clusterRenderer_(pspvl, cvm), 
+  clusterRenderer_(spvdb, cvm), 
   frameCount_(0),
   viewMode_(cvm), 
   rangeX_(400e-6), 
@@ -204,8 +204,8 @@ bool ClusterView::on_visibility_notify_event(GdkEventVisibility* event)
 }
 
 
-void ClusterView::setView(GLSPVectMap_t::iterator sstart, 
-			  GLSPVectMap_t::iterator send, 
+void ClusterView::setView(GLSPVectMap_t::const_iterator sstart, 
+			  GLSPVectMap_t::const_iterator send, 
 			  float decayRate, DecayMode dm)
 {
 

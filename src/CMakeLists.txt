@@ -41,19 +41,20 @@ include_directories(ext-logging/src)
 
 
 ADD_EXECUTABLE(tspikes
+  spvectdb.cc
   ${tspikes_SRCS}
   ${ext_SRCS}
   ${logging_SRCS}
 )
 
-ADD_LIBRARY(mvc
-  mvc.cc
+ADD_LIBRARY(spvectdb
+  spvectdb.cc
   ${tspikes_SRCS}
   ${ext_SRCS}
   ${logging_SRCS}
 )
 
-TARGET_LINK_LIBRARIES(mvc
+TARGET_LINK_LIBRARIES(spvectdb
   ${Boost_LIBRARIES} 
   ${GUIDEPS_LIBRARIES}
   ${SOMADEPS_LIBRARIES}

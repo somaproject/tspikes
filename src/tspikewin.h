@@ -54,8 +54,8 @@ protected:
   
   pNetworkInterface_t pNetwork_; 
   datasource_t dsrc_; 
-
-  GLSPVectMap_t spVectpList_; 
+  
+  SpikePointVectDatabase spvdb_; 
 
   // member widgets:
 

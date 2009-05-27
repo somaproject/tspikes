@@ -6,8 +6,8 @@
 
 using namespace  boost::filesystem;
 
-ClusterRenderer::ClusterRenderer(GLSPVectMap_t &  pspvl, CViewMode cvm)
-  : pspvl_(pspvl), 
+ClusterRenderer::ClusterRenderer(SpikePointVectDatabase & spvdb , CViewMode cvm)
+  : spvdb_(spvdb),
     decayRate_(0.09), 
     decayMode_(LOG), 
     viewChanged_(false), 
@@ -177,11 +177,11 @@ void ClusterRenderer::render()
     viewChanged_ = false; 
   }
 
-  assert(pCurSPVect_ != pspvl_.end()); 
+  assert(pCurSPVect_ != spvdb_.end()); 
 
   // if buffer is empty do nothing
-  if (viewEndIter_ == pspvl_.end() and
-      viewStartIter_ == pspvl_.end())
+  if (viewEndIter_ == spvdb_.end() and
+      viewStartIter_ == spvdb_.end())
     { 
       glClear(GL_COLOR_BUFFER_BIT); 
     } 
@@ -193,10 +193,10 @@ void ClusterRenderer::render()
       // copy things into current buffer
       glAccum(GL_RETURN, 1.0); 
 
-      if (viewEndIter_ == pspvl_.end() )
+      if (viewEndIter_ == spvdb_.end() )
 	{
 	  // we are always viewing the latest data 
-	  GLSPVectMap_t::iterator lastp = pspvl_.end(); 
+	  GLSPVectMap_t::const_iterator lastp = spvdb_.end(); 
 	  lastp--; 
 	  if (pCurSPVect_ != lastp) // these are iterators
 	    {
@@ -249,7 +249,7 @@ void ClusterRenderer::render()
   }
 }
 
-void ClusterRenderer::renderSpikeVector(GLSPVectMap_t::iterator i, bool live)
+void ClusterRenderer::renderSpikeVector(GLSPVectMap_t::const_iterator i, bool live)
 {
   // This is just syntactic sugar to make it easy for us to render
   // an iterator as well
@@ -336,8 +336,8 @@ void ClusterRenderer::renderSpikeVector(const GLSPVect_t & spvect, bool live)
     
 }
 
-void ClusterRenderer::resetAccumBuffer(GLSPVectMap_t::iterator sstart, 
-			      GLSPVectMap_t::iterator send)
+void ClusterRenderer::resetAccumBuffer(GLSPVectMap_t::const_iterator sstart, 
+			      GLSPVectMap_t::const_iterator send)
 {
 
  // first clear accumulation buffer
@@ -347,7 +347,7 @@ void ClusterRenderer::resetAccumBuffer(GLSPVectMap_t::iterator sstart,
   glClear(GL_COLOR_BUFFER_BIT |  GL_ACCUM_BUFFER_BIT); 
   
   
-  GLSPVectMap_t::iterator i; 
+  GLSPVectMap_t::const_iterator i; 
   glReadBuffer(GL_BACK); 
   
   int pos = 0; 
@@ -375,8 +375,8 @@ void ClusterRenderer::resetAccumBuffer(GLSPVectMap_t::iterator sstart,
 
 }
 
-void ClusterRenderer::setView(GLSPVectMap_t::iterator sstart, 
-			  GLSPVectMap_t::iterator send, 
+void ClusterRenderer::setView(GLSPVectMap_t::const_iterator sstart, 
+			  GLSPVectMap_t::const_iterator send, 
 			  float decayRate, DecayMode dm)
 {
 
@@ -393,9 +393,9 @@ void ClusterRenderer::updateView()
   
   resetAccumBuffer(viewStartIter_, viewEndIter_); 
 
-  if (viewEndIter_ == pspvl_.end() )
+  if (viewEndIter_ == spvdb_.end() )
     {
-      pCurSPVect_ = getLastIter(pspvl_); 
+      pCurSPVect_ = spvdb_.getLastIter(); 
     } else {
       pCurSPVect_ = viewEndIter_; 
     }
@@ -672,8 +672,8 @@ void ClusterRenderer::resetData()
 {
   resetPending_ = true; 
   // configure view pointers
-  viewStartIter_ = pspvl_.begin(); 
-  viewEndIter_ = pspvl_.end(); 
-  pCurSPVect_ = pspvl_.begin(); 
+  viewStartIter_ = spvdb_.begin(); 
+  viewEndIter_ = spvdb_.end(); 
+  pCurSPVect_ = spvdb_.begin(); 
   
 }

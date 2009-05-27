@@ -1,0 +1,41 @@
+
+Spike Point Vector Database
+===============================
+
+In short, this structure takes in GLSpikePoints and places
+them in a "current buffer". We periodically inform this
+structure of the current time, which it uses to segregate the
+incoming spike points into buffers of a reasonable size. 
+
+
+An attempt to centralize the mechanisms behind the spike point vector
+buffer. Not really a database, but because there is some policy in
+here it seemed inappropriate to just call it a container.
+  
+This is the result of a surprising amount of design angst that
+ultimately resulted in an interesting set of design trade-offs: 
+  
+This structure only understands RELATIVE TIME. That is, on
+initialization, it thinks the current time is ZERO. All
+operations involving time, including the addition of GLSpikePoints
+and calls to setTime(), will respect this time. 
+
+  1. Spikes, as they come in, are stuck into std::vectors 
+  as GLSpikes, suitable for being copied into VBOs. These vectors
+  are called GLSpikePointVectors (GLSPVs). 
+
+  2. In general, the GLSpikePoints in a GLSPV are in order
+  of increasing time, but that should not be relied upon. 
+
+  3. We store these vectors in a SpikePointVectDatabase, 
+  which is effectively some syntactic sugar around a 
+  boost::shared_map containing the actual GLSPVs. 
+
+  4. With each stored GLSPV, there is an associated "start time", 
+  which is the time at which the GLSPV was created. 
+
+  5. There are some standard iterators available for use, such
+  as begin() and end() and upper_bound() and lower_bound(), 
+  which just pass directly to the underlying GLSPVectMap_t
+  
+  

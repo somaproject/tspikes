@@ -72,7 +72,7 @@ int main(int argc, char** argv)
 
   network->enableDataRX( vm["datasrc"].as<int>(), TSPIKE); 
   
-  TSpikeWin tspikewin(network, vm["datasrc"].as<int>());
+  TSpikeWin tspikewin(network, vm["datasrc"].as<int>(), 0);
   
   network->run(); 
   kit.run(tspikewin);

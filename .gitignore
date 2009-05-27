@@ -41,3 +41,10 @@ ltmain.sh
 src/fakenetwork.loT
 */semantic.cache
 src/CMakeFiles
+CMakeFiles/
+*.a
+Testing/
+*.cmake
+/CMakeCache.txt
+/tests/simple_test
+/tests/spvectdb_test

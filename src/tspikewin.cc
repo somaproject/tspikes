@@ -17,21 +17,19 @@ TSpikeWin::TSpikeWin(pNetworkInterface_t pNetwork,
 		     ) : 
 
   pNetwork_(pNetwork), 
-  
-  spVectpList_(), 
-
+  spvdb_(5, 1000000), 
   clusterTable_(2, 3), 
   spikeWaveTable_(2, 2), 
   spikeWaveVBox_(false, 0), 
   clusterViewVBox_(false, 0), 
   mainHBox_(false, 0), 
 
-  clusterViewXY_(spVectpList_, VIEW12), 
-  clusterViewXA_(spVectpList_, VIEW13), 
-  clusterViewXB_(spVectpList_, VIEW14), 
-  clusterViewYA_(spVectpList_, VIEW23), 
-  clusterViewYB_(spVectpList_, VIEW24), 
-  clusterViewAB_(spVectpList_, VIEW34), 
+  clusterViewXY_(spvdb_, VIEW12), 
+  clusterViewXA_(spvdb_, VIEW13), 
+  clusterViewXB_(spvdb_, VIEW14), 
+  clusterViewYA_(spvdb_, VIEW23), 
+  clusterViewYB_(spvdb_, VIEW24), 
+  clusterViewAB_(spvdb_, VIEW34), 
   
   spikeWaveViewX_(CHANX), 
   spikeWaveViewY_(CHANY), 
@@ -55,10 +53,9 @@ TSpikeWin::TSpikeWin(pNetworkInterface_t pNetwork,
   set_title("Tetrode Spike Viewer");
 
   set_reallocate_redraws(true);
-  
-  reltime_t rt = abstimeToRelTime(spVectorStartTime_, offsetTime_); 
-  spVectpList_.insert(rt, new GLSPVect_t);
-  //boost::assign::ptr_map_insert<GLSPVect_t>(spVectpList_)(abstimeToRelTime(spVectorStartTime_, offsetTime_)); 
+
+
+  //boost::assign::ptr_map_insert<GLSPVect_t>(spvdb_)(abstimeToRelTime(spVectorStartTime_, offsetTime_)); 
   add(mainHBox_); 
   
   int clusterWidth = 165; 
@@ -110,33 +107,33 @@ TSpikeWin::TSpikeWin(pNetworkInterface_t pNetwork,
   //
 
   float decay = 0.05; 
-  clusterViewXY_.setView(spVectpList_.begin(), 
-			 spVectpList_.end(), 
+  clusterViewXY_.setView(spvdb_.begin(), 
+			 spvdb_.end(), 
 			 decay, LOG); 
   clusterViewXY_.setViewingWindow(0, 0, float(150e-6), float(150e-6));
 
-  clusterViewXA_.setView(spVectpList_.begin(), 
-			 spVectpList_.end(), 
+  clusterViewXA_.setView(spvdb_.begin(), 
+			 spvdb_.end(), 
 			 decay, LOG); 
   clusterViewXA_.setViewingWindow(0, 0, float(150e-6), float(150e-6));
 
-  clusterViewXB_.setView(spVectpList_.begin(), 
-			 spVectpList_.end(), 
+  clusterViewXB_.setView(spvdb_.begin(), 
+			 spvdb_.end(), 
 			 decay, LOG); 
   clusterViewXB_.setViewingWindow(0, 0, float(150e-6), float(150e-6));
 
-  clusterViewYA_.setView(spVectpList_.begin(), 
-			 spVectpList_.end(), 
+  clusterViewYA_.setView(spvdb_.begin(), 
+			 spvdb_.end(), 
 			 decay, LOG); 
   clusterViewYA_.setViewingWindow(0, 0, float(150e-6), float(150e-6));
 
-  clusterViewYB_.setView(spVectpList_.begin(), 
-			 spVectpList_.end(), 
+  clusterViewYB_.setView(spvdb_.begin(), 
+			 spvdb_.end(), 
 			 decay, LOG); 
   clusterViewYB_.setViewingWindow(0, 0, float(150e-6), float(150e-6));
 
-  clusterViewAB_.setView(spVectpList_.begin(), 
-			 spVectpList_.end(), 
+  clusterViewAB_.setView(spvdb_.begin(), 
+			 spvdb_.end(), 
 			 decay, LOG); 
   clusterViewAB_.setViewingWindow(0, 0, float(150e-6), float(150e-6));
 
@@ -330,13 +327,7 @@ void TSpikeWin::setTime(somatime_t  stime)
   // compute reltime
   reltime_t reltime = t - offsetTime_; 
 
-  if (reltime - spVectorStartTime_  > SPVECTDURATION )
-    {
-      spVectpList_.insert(reltime, new GLSPVect_t); 
-      
-      spVectorStartTime_ = reltime; 
-
-    }
+  spvdb_.setTime(reltime); 
   
   if (reltime - lastRateTime_ > RATEUPDATE ) 
     {
@@ -370,25 +361,25 @@ void TSpikeWin::updateClusterView(bool isLive, reltime_t activePos, float decayR
     reltime_t winsize = 1 / decayRate; 
     t1 = t2 - winsize; 
   } else {
-    t1 = spVectpList_.begin()->first; 
+    t1 = spvdb_.begin()->first; 
   }
   
   // now find iterators
-  GLSPVectMap_t::iterator t1i, t2i; 
+  GLSPVectMap_t::const_iterator t1i, t2i; 
 
   // -----------------------------------------------------------
   // get lower bound
   // -----------------------------------------------------------
-  t1i =  spVectpList_.lower_bound(t1); 
+  t1i =  spvdb_.lower_bound(t1); 
 
-  if (t1i == spVectpList_.end())
+  if (t1i == spvdb_.end())
     {
       // there is now element lower than t1
 
       // DO SOMETHING
       
     } 
-  else if (t1i == spVectpList_.begin())
+  else if (t1i == spvdb_.begin())
     {
       // the first element, don't dec
     } 
@@ -401,9 +392,9 @@ void TSpikeWin::updateClusterView(bool isLive, reltime_t activePos, float decayR
   // -----------------------------------------------------------
   // get upper bound
   // -----------------------------------------------------------
-  t2i =  spVectpList_.lower_bound(t2); 
+  t2i =  spvdb_.lower_bound(t2); 
 
-  if (t2i == spVectpList_.end())
+  if (t2i == spvdb_.end())
     {
       // there is now element lower than t1 - that's okay, we want the full
       // range
@@ -529,8 +520,9 @@ void TSpikeWin::newTSpikeCallback(const TSpike_t & ts)
   spikeWaveViewB_.newSpikeWave(gls[3]); 
   
   GLSpikePoint_t sp = convertTSpikeToGLSpike(ts, offsetTime_); 
+  spvdb_.append(sp); 
 
-  appendTSpikeToSPL(sp, &spVectpList_); 
+
   spikeCount_++; 
 
   clusterViewXY_.invalidate(); 
@@ -577,11 +569,10 @@ void TSpikeWin::on_action_source_settings(void)
 
 void TSpikeWin::on_action_reset_data()
 {
-  spVectpList_.clear(); 
   reltime_t rt = abstimeToRelTime(spVectorStartTime_, offsetTime_); 
-  spVectpList_.insert(rt, new GLSPVect_t);
+  spvdb_.reset(); 
 
-  //  spVectpList_.insert((reltime_t)0.0, new GLSPVect_t);
+  //  spvdb_.insert((reltime_t)0.0, new GLSPVect_t);
 
   rateTimeline_.resetData(); 
   // reset offset time
