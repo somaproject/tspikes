@@ -13,7 +13,8 @@ void printEvent(Event_t event)
 
 TSpikeWin::TSpikeWin(pNetworkInterface_t pNetwork, 
 		     datasource_t src,
-		     somatime_t expStartTime_soma
+		     somatime_t expStartTime_soma, 
+		     const std::vector<TSpike_t> & preloadspikes
 		     ) : 
 
   pNetwork_(pNetwork), 
@@ -42,9 +43,9 @@ TSpikeWin::TSpikeWin(pNetworkInterface_t pNetwork,
   sourceSettingsWin_(&somaNetworkCodec_), 
   pMenuPopup_(0), 
   dsrc_(src), 
-  offsetTime_(0.0), 
   spikeCount_(0), 
-  expStartTime_(expStartTime_soma)
+  expStartTime_(expStartTime_soma), 
+  lastSomaTime_(expStartTime_)
 {
   //
   // Top-level window.
@@ -54,6 +55,7 @@ TSpikeWin::TSpikeWin(pNetworkInterface_t pNetwork,
 
   set_reallocate_redraws(true);
 
+  pNetwork_->enableDataRX(dsrc_, TSPIKE); 
 
   //boost::assign::ptr_map_insert<GLSPVect_t>(spvdb_)(abstimeToRelTime(spVectorStartTime_, offsetTime_)); 
   add(mainHBox_); 
@@ -233,6 +235,8 @@ TSpikeWin::TSpikeWin(pNetworkInterface_t pNetwork,
   setupMenus(); 
 
 
+  // preload the indicated data
+  loadExistingSpikes(preloadspikes); 
   
   // now query state
   somaNetworkCodec_.refreshStateCache(); 
@@ -321,11 +325,18 @@ bool TSpikeWin::on_idle()
 
 void TSpikeWin::setTime(somatime_t  stime)
 {
-  
+
+  if ( !(stime  > lastSomaTime_)) {
+    log4cpp::Category& logtspikewin = log4cpp::Category::getInstance("soma.tspikes.tspikewin");
+    logtspikewin.errorStream() << "Error, set soma time " << stime
+			    << " not strictly greater than previous time " 
+			    << lastSomaTime_; 
+
+  }
   abstime_t t= somatimeToAbsTime(stime); 
 
   // compute reltime
-  reltime_t reltime = t - offsetTime_; 
+  reltime_t reltime = t - somatimeToAbsTime(expStartTime_); 
 
   spvdb_.setTime(reltime); 
   
@@ -346,7 +357,7 @@ void TSpikeWin::setTime(somatime_t  stime)
   boost::format timeformat("Live \n(%d:%02d:%02d)\n%d"); 
   timeformat % hours % mins % secs % stime; 
   liveButton_.set_label(boost::str(timeformat)); 
-
+  lastSomaTime_; 
 }
 
 
@@ -443,9 +454,10 @@ void TSpikeWin::loadExistingSpikes(const std::vector<TSpike_t> & spikes)
   for (pts = spikes.begin(); pts != spikes.end(); pts++)
     {
       
-      //rtime_t t = float(pts->time) / 10e3; 
-      //setTime(t);
-
+      somatime_t t = pts->time; 
+      setTime(t);
+      newTSpikeCallback(*pts); 
+      
     }
 }
 
@@ -511,7 +523,8 @@ void TSpikeWin::sourceStateChangeCalback(int chan, TSpikeChannelState state)
 
 void TSpikeWin::newTSpikeCallback(const TSpike_t & ts)
 {
-  std::vector<GLSpikeWave_t> gls = splitSpikeToGLSpikeWaves(ts, offsetTime_); 
+  reltime_t offsetTime = somatimeToAbsTime(expStartTime_); 
+  std::vector<GLSpikeWave_t> gls = splitSpikeToGLSpikeWaves(ts, offsetTime); 
   
   
   spikeWaveViewX_.newSpikeWave(gls[0]); 
@@ -519,7 +532,7 @@ void TSpikeWin::newTSpikeCallback(const TSpike_t & ts)
   spikeWaveViewA_.newSpikeWave(gls[2]); 
   spikeWaveViewB_.newSpikeWave(gls[3]); 
   
-  GLSpikePoint_t sp = convertTSpikeToGLSpike(ts, offsetTime_); 
+  GLSpikePoint_t sp = convertTSpikeToGLSpike(ts, offsetTime); 
   spvdb_.append(sp); 
 
 
@@ -569,7 +582,7 @@ void TSpikeWin::on_action_source_settings(void)
 
 void TSpikeWin::on_action_reset_data()
 {
-  reltime_t rt = abstimeToRelTime(spVectorStartTime_, offsetTime_); 
+  //reltime_t rt = abstimeToRelTime(spVectorStartTime_, offsetTime_); 
   spvdb_.reset(); 
 
   //  spvdb_.insert((reltime_t)0.0, new GLSPVect_t);

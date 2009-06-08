@@ -20,8 +20,6 @@
 
 #include "glspikes.h"
 #include "ratetimeline.h"
-#include "ttreader.h"
-
 
 
 void viewParamUpdate(bool isLive, float activePos, float decayRate)
@@ -58,14 +56,11 @@ protected:
   Gtk::Button buttonQuit_;
   Gtk::CheckButton liveCheckButton_; 
   RateTimeline rateTimeline_; 
-  ttreader ttdata_; 
-  uint64_t lastSpikeTime_; 
-  uint64_t firstSpikeTime_; 
   void updateSpikePosFromAdj(); 
   sigc::connection m_ConnectionIdle;
   virtual bool on_key_press_event(GdkEventKey* event); 
   void on_live_clicked(); 
-  
+  reltime_t curtime_; 
 };
 
 Vis::Vis(bool is_sync)
@@ -73,8 +68,7 @@ Vis::Vis(bool is_sync)
     buttonQuit_("Quit"), 
     liveCheckButton_("Live"),
     rateTimeline_(),
-    ttdata_("../../a202.tt"), 
-    lastSpikeTime_(0)
+    curtime_(0.0)
 {
 
   set_title("Vis");
@@ -160,36 +154,12 @@ bool Vis::on_idle()
   
   if (seconds >= 0.1)
     {
-      // every second, read the next n-seconds of spike data in
-      // we assume 100 usec timestamps on this data
-      
-      //rateTimeline_.appendRate(5.0); 
-     
-      TSpike_t tspike = ttdata_.getTSpike(); 
-      //std::cout << tspike.time << std::endl; 
-      
-      float secs = 5.0; 
-      float tslen = secs * 10000; 
-      
-      if (lastSpikeTime_ == 0) {
-	lastSpikeTime_ = tspike.time; 
-	firstSpikeTime_ = tspike.time; 
-      } else {
-	int scnt = 0; 
-	while((tspike.time - lastSpikeTime_ ) < tslen) {
-	  scnt++; 
-	  tspike = ttdata_.getTSpike(); 
-	  
-	}
-	float ttime = (lastSpikeTime_ - firstSpikeTime_) / 10000.0; 
-	RatePoint_t rp; 
-	rp.time = ttime; 
-	rp.rate = float(scnt) / secs; 
-	rateTimeline_.appendRate(rp); 
-	lastSpikeTime_ = tspike.time; 
-	//std::cout << "scnt = " << scnt << std::endl; 
-      }
+      RatePoint_t rp; 
+      rp.time = curtime_; 
+      rp.rate = 50 * sin(curtime_ / 5.0) + 60.0; 
+      rateTimeline_.appendRate(rp); 
       timer_.reset();
+      curtime_ += 1.0; 
     }
 
    double dseconds = dtimer_.elapsed();

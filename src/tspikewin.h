@@ -23,6 +23,7 @@
 #include "ratetimeline.h"
 #include "somanetcodec.h"
 #include "sourcesettingswin.h" 
+#include "logging.h" 
 
 // widget list types
 typedef boost::ptr_vector<SpikeWaveView> pSpikeWaveViewVect_t; 
@@ -38,8 +39,16 @@ const reltime_t RATEUPDATE = 1.0;
 class TSpikeWin : public Gtk::Window
 {
 public:
+  /*
+    The preloaded spikes are assumed to : 
+    1. occur after the expStartTime. 
+    2. the next somatime_t coming across the network should be -later-. 
+
+   */ 
   explicit TSpikeWin(pNetworkInterface_t network, 
-		     datasource_t src, somatime_t expStartTime_soma);
+		     datasource_t src, 
+		     somatime_t expStartTime, 
+		     const std::vector<TSpike_t> & preloadspikes);
 
   virtual ~TSpikeWin();
 
@@ -105,9 +114,7 @@ protected:
   long lastRateSpikeCount_; 
   long spikeCount_;
   
-
-  abstime_t offsetTime_; 
-
+  
   Gtk::ToggleButton liveButton_; 
   SomaNetworkCodec somaNetworkCodec_; 
 
@@ -129,6 +136,8 @@ protected:
   void on_action_source_settings(void);
 
   somatime_t expStartTime_; 
+  somatime_t lastSomaTime_; 
+
 };
 
 #endif // TSPIKEWIN_H

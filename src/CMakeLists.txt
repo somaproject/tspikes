@@ -5,7 +5,8 @@ set(tspikes_SRCS
   tspikewin.cc spikewaverenderer.cc somanetcodec.cc
   sourcesettingswin.cc gaincombosetting.cc 
   hpfchecksetting.cc combosetting.cc filtercombosetting.cc
-  tholdentrysetting.cc voltage.cc ratetimelinerenderer.cc )
+  tholdentrysetting.cc voltage.cc ratetimelinerenderer.cc
+  fakedata.cc util.cc )
 
 
 set(ext_SRCS
@@ -66,6 +67,12 @@ TARGET_LINK_LIBRARIES(tspikes
   ${SOMADEPS_LIBRARIES}
 )
 
+ADD_EXECUTABLE(tspikes-test-ratetimeline
+  ratetimeline.cc
+  ratetimelinerenderer.cc
+  ratetimelinevis.cc
+  ${ext_SRCS}
+)  
 
 ADD_EXECUTABLE(tspikes-test-clustervis
   ${clustervis_SRCS}
@@ -73,6 +80,13 @@ ADD_EXECUTABLE(tspikes-test-clustervis
 )
 
 TARGET_LINK_LIBRARIES(tspikes-test-clustervis
+  ${Boost_LIBRARIES} 
+  ${GUIDEPS_LIBRARIES}
+  ${SOMADEPS_LIBRARIES}
+)
+
+
+TARGET_LINK_LIBRARIES(tspikes-test-ratetimeline
   ${Boost_LIBRARIES} 
   ${GUIDEPS_LIBRARIES}
   ${SOMADEPS_LIBRARIES}

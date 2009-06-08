@@ -27,6 +27,12 @@
 #include "ratetimelinerenderer.h"
 
 
+/*
+  Ratetimeline starts at the "beginning" of the experiment
+  which is even more reason for us to use our internal 
+  reltime as the "beginning" of the experiment
+
+ */ 
 class RateTimeline : public Gtk::GL::DrawingArea
 {
 public:

@@ -8,8 +8,14 @@ add_executable(spvectdb_test
   spvectdb_test.cc
 )
 
+add_executable(util_test
+  runner.cc
+  util_test.cc
+)
+
 set(testlist 
   spvectdb_test
+  util_test
 )
 
 foreach(testname ${testlist})
