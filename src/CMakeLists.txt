@@ -39,7 +39,7 @@ include_directories(${GUIDEPS_INCLUDE_DIRS})
 include_directories(${SOMADEPS_INCLUDE_DIRS})
 include_directories(ext-common/)
 include_directories(ext-logging/src)
-
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 ADD_EXECUTABLE(tspikes
   spvectdb.cc
@@ -74,16 +74,16 @@ ADD_EXECUTABLE(tspikes-test-ratetimeline
   ${ext_SRCS}
 )  
 
-ADD_EXECUTABLE(tspikes-test-clustervis
-  ${clustervis_SRCS}
-  ${ext_SRCS}
-)
+#ADD_EXECUTABLE(tspikes-test-clustervis
+#  ${clustervis_SRCS}
+#  ${ext_SRCS}
+#)
 
-TARGET_LINK_LIBRARIES(tspikes-test-clustervis
-  ${Boost_LIBRARIES} 
-  ${GUIDEPS_LIBRARIES}
-  ${SOMADEPS_LIBRARIES}
-)
+#TARGET_LINK_LIBRARIES(tspikes-test-clustervis
+#  ${Boost_LIBRARIES} 
+#  ${GUIDEPS_LIBRARIES}
+#  ${SOMADEPS_LIBRARIES}
+#)
 
 
 TARGET_LINK_LIBRARIES(tspikes-test-ratetimeline
@@ -100,8 +100,8 @@ set(SHADERS
 set(GLADEFILES
   tspikes.glade)
 
-install( TARGETS tspikes tspikes-test-clustervis
-  DESTINATION bin)
+#install( TARGETS tspikes tspikes-test-clustervis
+#  DESTINATION bin)
 
 install(FILES ${SHADERS}
   DESTINATION share/${PROJECT_NAME})
