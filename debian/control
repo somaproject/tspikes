@@ -2,9 +2,10 @@ Source: tspikes
 Section: Soma Software
 Priority: extra
 Maintainer: Stuart Layton <slayton@mit.edu>
-Build-Depends: debhelper (>= 7), cdbs libsomanetwork0
-Standards-Version: 3.8.0
+Build-Depends: debhelper (>= 7), cdbs, libsomanetwork-dev, libsomadspio-dev,
+               libgtkglextmm-x11-1.2-dev, libgtkglext1-dev 
 
+Standards-Version: 3.8.0
 Package: tspikes
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
