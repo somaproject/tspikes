@@ -2,10 +2,10 @@ Source: tspikes
 Section: Soma Software
 Priority: extra
 Maintainer: Stuart Layton <slayton@mit.edu>
-Build-Depends: debhelper (>= 5), libgtkglextmm-x11-1.2, libsomanetwork
-Standards-Version: 3.7.2
+Build-Depends: debhelper (>= 7), cdbs libsomanetwork0
+Standards-Version: 3.8.0
 
 Package: tspikes
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libgtkglextmm-x11-1.2, soma-common
-Description: Soma 4 channel spike vizualizatin software
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Soma 4 channel spike visualizatin software
