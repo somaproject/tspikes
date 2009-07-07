@@ -41,6 +41,12 @@ include_directories(ext-common/)
 include_directories(ext-logging/src)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
+link_directories(
+  ${Boost_LIBRARY_DIRS}
+  ${GUIDEPS_LIBRARY_DIRS}
+  ${SOMADEPS_LIBRARY_DIRS}
+)
+
 ADD_EXECUTABLE(tspikes
   spvectdb.cc
   ${tspikes_SRCS}
