@@ -12,10 +12,6 @@
 
 #include <gtkglmm.h>
 
-#ifdef G_OS_WIN32
-#define WIN32_LEAN_AND_MEAN 1
-#include <windows.h>
-#endif
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -30,8 +26,8 @@ const int M = 6000;
 GLfloat points[N][4]; 
 
 
-GLSPVectpList_t spvl, spvlsrc; 
-GLSPVectpList_t::iterator spvlp; 
+GLSPVectMap_t spvl, spvlsrc; 
+GLSPVectMap_t::iterator spvlp; 
 
 const float GSCALE = 100.0 ; 
 
@@ -78,12 +74,12 @@ protected:
 Vis::Vis(bool is_sync)
   : m_VBox(false, 0), 
     table_(2, 3), 
-    clusterView12_(&spvl, VIEW12), 
-    clusterView13_(&spvl, VIEW13), 
-    clusterView14_(&spvl, VIEW14), 
-    clusterView23_(&spvl, VIEW23), 
-    clusterView24_(&spvl, VIEW24), 
-    clusterView34_(&spvl, VIEW34), 
+    clusterView12_(spvl, VIEW12), 
+    clusterView13_(spvl, VIEW13), 
+    clusterView14_(spvl, VIEW14), 
+    clusterView23_(spvl, VIEW23), 
+    clusterView24_(spvl, VIEW24), 
+    clusterView34_(spvl, VIEW34), 
     m_ButtonQuit("Quit"),
     spikePosAdjustment_(0.0, 0.0, spvl.size(), 10.0, 10.0, 0), 
     spikePosScale_(spikePosAdjustment_)
@@ -174,7 +170,7 @@ void Vis::on_button_quit_clicked()
 void Vis::updateSpikePosFromAdj()
 {
   std::cout << "updateSpikePosFromAdj: " << spikePosAdjustment_.get_value() << std::endl; 
-  GLSPVectpList_t::iterator svpliter = spvl.begin(); 
+  GLSPVectMap_t::iterator svpliter = spvl.begin(); 
   
   for (int i = 0; i < spikePosAdjustment_.get_value(); i++)
     {

@@ -9,6 +9,7 @@
 #include <sigc++/sigc++.h>
 
 #include "logging.h" 
+#include "fakedata.h"
 
 namespace po = boost::program_options;
 namespace bf = boost::filesystem;
@@ -69,10 +70,19 @@ int main(int argc, char** argv)
     logtspike.fatal("Neet to specify a data source (0-63) to listen to"); 
     return -1; 
   }
-
-  network->enableDataRX( vm["datasrc"].as<int>(), TSPIKE); 
   
-  TSpikeWin tspikewin(network, vm["datasrc"].as<int>());
+  somatime_t expStartTime = 0; 
+  // the time at which the experiment is viewed as "starting" 
+
+  fakedata::Grid g(0, 10, 10000); 
+
+  std::vector<TSpike_t> preload_spikes; 
+  for (int i = 0; i < 50000; i++) {
+    preload_spikes.push_back(g.next()); 
+  }
+
+  TSpikeWin tspikewin(network, vm["datasrc"].as<int>(), expStartTime,
+		      preload_spikes);
   
   network->run(); 
   kit.run(tspikewin);

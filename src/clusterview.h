@@ -21,15 +21,15 @@
 #include "glspikes.h"
 #include "clusterrenderer.h"
 #include "somanetcodec.h"
-
+#include "spvectdb.h" 
 
 class ClusterView : public Gtk::GL::DrawingArea
 {
 public:
-  explicit ClusterView(GLSPVectpList_t * pspvl, CViewMode cvm);  
+  explicit ClusterView(SpikePointVectDatabase & pspvl, CViewMode cvm);  
   virtual ~ClusterView();
-  void setView(GLSPVectpList_t::iterator sstart, 
-		   GLSPVectpList_t::iterator send, 
+  void setView(GLSPVectMap_t::const_iterator sstart, 
+		   GLSPVectMap_t::const_iterator send, 
 		   float decayRate, DecayMode dm); 
   // Invalidate whole window.
 
@@ -85,7 +85,6 @@ protected:
   float x2_;
   float y2_; 
   CViewMode viewMode_;   
-  GLSPVectpList_t*  pspvl_; 
   ClusterRenderer clusterRenderer_; 
   float lastX_; 
   float lastY_; 

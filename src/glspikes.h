@@ -5,6 +5,7 @@
 #include <vector>
 #include <list>
 #include <somanetwork/tspike.h>
+#include <boost/utility.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
 #include "somanetcodec.h"
 
@@ -29,9 +30,9 @@ typedef std::vector<GLSpikePoint_t> GLSPVect_t;
 
 // we use a map to give us sorted O(lg n ) access to the data 
 
-typedef boost::ptr_map<reltime_t, GLSPVect_t> GLSPVectpList_t; 
-inline GLSPVectpList_t::iterator getLastIter( GLSPVectpList_t & sp) {
-  GLSPVectpList_t::iterator i; 
+typedef boost::ptr_map<reltime_t, GLSPVect_t> GLSPVectMap_t; 
+inline GLSPVectMap_t::iterator getLastIter( GLSPVectMap_t & sp) {
+  GLSPVectMap_t::iterator i; 
   i = sp.end(); 
   assert(sp.empty() == false); 
   
@@ -66,8 +67,6 @@ reltime_t somatimeToRelTime(somatime_t ts, abstime_t offset);
 GLSpikePoint_t convertTSpikeToGLSpike(const TSpike_t & ts, abstime_t offset); 
 
 void appendTSpikeToSPL(const GLSpikePoint_t & sp, 
-		       GLSPVectpList_t * pspVectpList); 
-
-
+		       GLSPVectMap_t * pspVectpList); 
 
 #endif //GLSPIKES_H
