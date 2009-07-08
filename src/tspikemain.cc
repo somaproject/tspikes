@@ -32,12 +32,13 @@ int main(int argc, char** argv)
     ("domain-socket-dir", po::value<string>(), "Domain socket directory for use with testing; use in place of IP")
     ;
   
+  desc.add(logging_desc()); 
+
   po::variables_map vm;
   po::store(po::parse_command_line(argc, argv, desc), vm);
   po::notify(vm);    
   
   int loglevel = config_logging(vm, LOGROOT); 
-  desc.add(logging_desc()); 
 
   if (vm.count("help") or argc == 1) {
     std::cout << desc << "\n";
@@ -74,16 +75,18 @@ int main(int argc, char** argv)
   somatime_t expStartTime = 0; 
   // the time at which the experiment is viewed as "starting" 
 
-  fakedata::Grid g(0, 10, 10000); 
+  //  fakedata::Grid g(0, 10, 10000); 
 
   std::vector<TSpike_t> preload_spikes; 
-  for (int i = 0; i < 50000; i++) {
-    preload_spikes.push_back(g.next()); 
-  }
-
+//   for (int i = 0; i < 50000; i++) {
+//     preload_spikes.push_back(g.next()); 
+//   }
+  
+  logtspike.info("Constructing GUI object"); 
   TSpikeWin tspikewin(network, vm["datasrc"].as<int>(), expStartTime,
 		      preload_spikes);
   
+  logtspike.info("Setting network state to run"); 
   network->run(); 
   kit.run(tspikewin);
   
