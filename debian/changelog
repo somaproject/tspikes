@@ -1,3 +1,57 @@
+tspikes (0.9~soma-ubuntu10) jaunty; urgency=low
+
+  * added missing coma
+
+ -- Stuart Layton <slayton@mit.edu>  Tue, 07 Jul 2009 12:40:55 -0400
+
+tspikes (0.9~soma-ubuntu9) jaunty; urgency=low
+
+  * added another libglademm dependency
+
+ -- Stuart Layton <slayton@mit.edu>  Tue, 07 Jul 2009 10:12:56 -0400
+
+tspikes (0.9~soma-ubuntu8) jaunty; urgency=low
+
+  * fixed misspelling on log4cpp
+
+ -- Stuart Layton <slayton@mit.edu>  Tue, 07 Jul 2009 09:40:21 -0400
+
+tspikes (0.9~soma-ubuntu7) jaunty; urgency=low
+
+  * added log4cpp5-dev to builddepends
+
+ -- Stuart Layton <slayton@mit.edu>  Tue, 07 Jul 2009 09:34:48 -0400
+
+tspikes (0.9~soma-ubuntu6) jaunty; urgency=low
+
+  * more spelling errors
+
+ -- Stuart Layton <slayton@mit.edu>  Tue, 07 Jul 2009 09:14:43 -0400
+
+tspikes (0.9~soma-ubuntu5) jaunty; urgency=low
+
+  * fixed spelling error on libglademm
+
+ -- Stuart Layton <slayton@mit.edu>  Tue, 07 Jul 2009 08:38:22 -0400
+
+tspikes (0.9~soma-ubuntu4) jaunty; urgency=low
+
+  * updated more syntax issues in the debian directory
+
+ -- Stuart Layton <slayton@mit.edu>  Tue, 07 Jul 2009 08:24:32 -0400
+
+tspikes (0.9~soma-ubuntu3) jaunty; urgency=low
+
+  * updated buildepends to include libglademm
+
+ -- Stuart Layton <slayton@mit.edu>  Tue, 07 Jul 2009 08:12:32 -0400
+
+tspikes (0.9~soma-ubuntu2) jaunty; urgency=low
+
+  * added cmake to builddepends
+
+ -- Stuart Layton <slayton@mit.edu>  Mon, 06 Jul 2009 23:57:14 -0400
+
 tspikes (0.9~soma-ubuntu1) jaunty; urgency=low
 
   * Initial release for soma-testing ppa
