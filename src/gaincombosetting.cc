@@ -1,6 +1,6 @@
 #include "gaincombosetting.h"
 
-GainComboSetting::GainComboSetting(SomaNetworkCodec * nc, chanset_t chanset, 
+GainComboSetting::GainComboSetting(pSomaNetworkCodec_t  nc, chanset_t chanset, 
 				   settingmap_t sm) :
   ComboSetting(nc, chanset, sm)
   

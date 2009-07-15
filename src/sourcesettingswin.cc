@@ -7,12 +7,10 @@
 #include "tholdentrysetting.h"
 #include "config.h"
 
-SourceSettingsWin::SourceSettingsWin(SomaNetworkCodec * pSomaNetCodec) :
-  pSomaNetCodec_(pSomaNetCodec), 
+SourceSettingsWin::SourceSettingsWin() :
   pDialog_(0), 
   pTableSourceSettings_(0)
 {
-  chanPropList_  = pSomaNetCodec_->getChans(); 
   std::string basedir = GLADE_PATH; 
   std::string totalfile = basedir + "/" + "tspikes.glade"; 
   
@@ -27,9 +25,16 @@ SourceSettingsWin::SourceSettingsWin(SomaNetworkCodec * pSomaNetCodec) :
 
 }
 
+void SourceSettingsWin::setCodec(pSomaNetworkCodec_t nc) {
+  pSomaNetCodec_ = nc; 
+  chanPropList_  = pSomaNetCodec_->getChans(); 
+
+}
 void SourceSettingsWin::show()
 {
-  std::cout << "presenting window" << std::endl; 
+  if (pSomaNetCodec_ == 0) {
+    throw std::runtime_error("Can't show SourceSettingsWin without attached SomaNetworkCodec"); 
+  }
   populate();   
   pDialog_->run(); 
 }

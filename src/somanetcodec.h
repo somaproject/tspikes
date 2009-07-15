@@ -8,6 +8,7 @@
 #include <gtkmm.h>
 #include <somatime.h>
 #include  <somadspio/dspcontrol.h>
+#include  <somadspio/types.h>
 
 using namespace somanetwork; 
 
@@ -47,14 +48,15 @@ class SomaNetworkCodec
   // data
 
  public: 
-  SomaNetworkCodec(pNetworkInterface_t pNetwork, int src, 
-		   chanproplist_t channels); 
+//   SomaNetworkCodec(pNetworkInterface_t pNetwork, int src, 
+// 		   chanproplist_t channels); 
   
   SomaNetworkCodec(pNetworkInterface_t pNetwork, int src); 
   
   // state change interface
   void setChannelState(int channel, const TSpikeChannelState &) ; 
   TSpikeChannelState getChannelState(int channel); 
+
   sigc::signal<void, int, TSpikeChannelState> &  signalSourceStateChange(); 
   
   // timing update signal
@@ -66,6 +68,7 @@ class SomaNetworkCodec
   // query state
   void refreshStateCache(); 
   chanproplist_t getChans() { return chanprops_; } ; 
+
  private:
   pNetworkInterface_t pNetwork_; 
   int dsrc_;  /// data source # 
@@ -97,21 +100,22 @@ class SomaNetworkCodec
 
   void querySourceState(int chan); // request a source state update
   
-  dspiolib::StateProxy dspStateProxy_; 
-  void sendEvent(const EventTX_t &); 
+  somadspio::StateProxy * dspStateProxy_; 
+  void sendEvent(const EventTXList_t &); 
 
   // callbacks
   void dspLinkStatus(bool); 
   void dspMode(int mode); 
   void dspGain(int chan, int gain); 
   void dspHPFen(int chan, bool hpfen); 
-  void dspRange(int chan, dspiolib::range_t); 
+  void dspRange(int chan, somadspio::range_t); 
 
   void dspThold(int chan, int thold); 
-  void dspFilterID(int chan, dspiolib::filterid_t fid); 
+  void dspFilterID(int chan, somadspio::filterid_t fid); 
   
 }; 
 
+typedef boost::shared_ptr<SomaNetworkCodec> pSomaNetworkCodec_t; 
 
 
 #endif // SOMANETCODEC_H

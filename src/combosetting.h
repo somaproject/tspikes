@@ -16,12 +16,12 @@ typedef std::map<int, std::string> settingmap_t;
 class ComboSetting : public Gtk::ComboBoxText
 {
  public:
-  ComboSetting(SomaNetworkCodec * nc, chanset_t chanset, settingmap_t sm); 
+  ComboSetting(pSomaNetworkCodec_t nc, chanset_t chanset, settingmap_t sm); 
 
   void updateSetting();   
  private:
 
-  SomaNetworkCodec * pnc_; 
+  pSomaNetworkCodec_t  pnc_; 
   chanset_t chanset_; 
   settingmap_t settingMap_; 
   

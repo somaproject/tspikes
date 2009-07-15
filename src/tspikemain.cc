@@ -4,11 +4,14 @@
 #include "tspikewin.h"
 #include <somanetwork/fakenetwork.h>
 #include <somanetwork/network.h>
+#include <somanetwork/logging.h>
+#include <somadspio/logging.h>
 
 #include "ttreader.h"
 #include <sigc++/sigc++.h>
 
 #include "logging.h" 
+#include "tslogging.h"
 #include "fakedata.h"
 
 namespace po = boost::program_options;
@@ -18,6 +21,8 @@ std::string LOGROOT("soma.tspikes");
 
 int main(int argc, char** argv)
 {
+  using namespace std; 
+
   Gtk::Main kit(argc, argv);
 
   Gtk::GL::init(argc, argv);
@@ -30,45 +35,73 @@ int main(int argc, char** argv)
     ("datasrc", po::value<int>(), "Network data source")
     ("soma-ip", po::value<std::string>(), "Soma IP address")
     ("domain-socket-dir", po::value<string>(), "Domain socket directory for use with testing; use in place of IP")
+    ("enable-tspikes-log", po::value<string>(), "Enable logging for tspikes")
+    ("enable-network-log", po::value<string>()->default_value("warning"), "Enable soma network debugging at this level")
+    ("enable-dspio-log", po::value<string>()->default_value("warning"), "Enable soma DSP IO debugging at this level")
     ;
   
-  desc.add(logging_desc()); 
 
   po::variables_map vm;
   po::store(po::parse_command_line(argc, argv, desc), vm);
   po::notify(vm);    
-  
-  int loglevel = config_logging(vm, LOGROOT); 
 
   if (vm.count("help") or argc == 1) {
     std::cout << desc << "\n";
     return 1;
   }
   
-  log4cpp::Category& logtspike = log4cpp::Category::getInstance(LOGROOT);
+  if (vm.count("enable-network-log")) {
+    string logstr = vm["enable-network-log"].as<string>(); 
+    if (logstr == "") {
+      logstr = "warning"; 
+    }
+    boost::logging::level::type lt = log_level_parse(logstr); 
+    somanetwork::init_logs(lt);  
+  }
+
+  if (vm.count("enable-dspio-log")) {
+    string logstr = vm["enable-dspio-log"].as<string>(); 
+    if (logstr == "") {
+      logstr = "warning"; 
+    }
+    boost::logging::level::type lt = log_level_parse(logstr); 
+    somadspio::init_logs(lt);
+  }
+
+  if (vm.count("enable-tspikes-log")) {
+    string logstr = vm["enable-tspikes-log"].as<string>(); 
+    if (logstr == "") {
+      logstr = "warning"; 
+    }
+    boost::logging::level::type lt = log_level_parse(logstr); 
+    init_tslogs();  // FIXME have level init
+  }
+
+
+//   log4cpp::Category& logtspike = log4cpp::Category::getInstance(LOGROOT);
 
   somanetwork::pNetworkInterface_t network; 
   
   if (vm.count("soma-ip")) {
     std::string somaip = vm["soma-ip"].as<string>();     
-    logtspike.infoStream() << "Using IP network to talk to soma"; 
-    logtspike.infoStream() << "soma hardware IP: " << somaip; 
+//     logtspike.infoStream() << "Using IP network to talk to soma"; 
+//     logtspike.infoStream() << "soma hardware IP: " << somaip; 
     network = somanetwork::Network::createINet(somaip);
 
   } else if (vm.count("domain-socket-dir")) {
     bf::path domainsockdir(vm["domain-socket-dir"].as<string>()); 
 
-    logtspike.infoStream() << "Using domain sockets to talk to local process"; 
-    logtspike.infoStream() << "domain socket dir: " << domainsockdir; 
+//     logtspike.infoStream() << "Using domain sockets to talk to local process"; 
+//     logtspike.infoStream() << "domain socket dir: " << domainsockdir; 
     network = somanetwork::Network::createDomain(domainsockdir); 
 
   } else {
-    logtspike.fatal("soma-ip not specified, domain-socket-dir not specified; no way to get data"); 
+//     logtspike.fatal("soma-ip not specified, domain-socket-dir not specified; no way to get data"); 
     return -1; 
   }
 
   if (!vm.count("datasrc")) {
-    logtspike.fatal("Neet to specify a data source (0-63) to listen to"); 
+//     logtspike.fatal("Neet to specify a data source (0-63) to listen to"); 
     return -1; 
   }
   
@@ -82,12 +115,14 @@ int main(int argc, char** argv)
 //     preload_spikes.push_back(g.next()); 
 //   }
   
-  logtspike.info("Constructing GUI object"); 
+  //logtspike.info("Constructing GUI object"); 
   TSpikeWin tspikewin(network, vm["datasrc"].as<int>(), expStartTime,
 		      preload_spikes);
   
-  logtspike.info("Setting network state to run"); 
-  network->run(); 
+  //logtspike.info("Setting network state to run"); 
+  //network->run(); 
+  // logtspike.info("Running GUI"); 
+  
   kit.run(tspikewin);
   
   return 0; 

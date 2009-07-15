@@ -29,11 +29,13 @@ class SourceSettingsWin
 // 
 {
  public: 
-  SourceSettingsWin(SomaNetworkCodec * pSomaNetCodec); 
+  SourceSettingsWin(); 
+  void setCodec(pSomaNetworkCodec_t sc); 
+
   void show(); 
 
  private:
-  SomaNetworkCodec * pSomaNetCodec_; 
+  pSomaNetworkCodec_t pSomaNetCodec_; 
 
   Glib::RefPtr<Gnome::Glade::Xml> refXml_; 
   chanproplist_t chanPropList_; 

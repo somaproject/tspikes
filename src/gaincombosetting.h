@@ -10,7 +10,7 @@
 class GainComboSetting : public ComboSetting
 {
  public:
-  GainComboSetting(SomaNetworkCodec * nc, chanset_t chanset, 
+  GainComboSetting(pSomaNetworkCodec_t  nc, chanset_t chanset, 
 		   settingmap_t sm); 
   
  private:

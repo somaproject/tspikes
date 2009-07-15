@@ -2,15 +2,6 @@
 #include "glspikes.h"
 #include <boost/assign.hpp>
 
-void printEvent(Event_t event)
-{
-  printf("Event cmd = %2.2X src = %2.2X\n", event.cmd, event.src); 
-  for (int i = 0; i < 5; i++) {
-    printf("Data word %d: %4.4X\n", i, event.data[i]); 
-  }
-
-}
-
 TSpikeWin::TSpikeWin(pNetworkInterface_t pNetwork, 
 		     datasource_t src,
 		     somatime_t expStartTime_soma, 
@@ -24,7 +15,7 @@ TSpikeWin::TSpikeWin(pNetworkInterface_t pNetwork,
   spikeWaveVBox_(false, 0), 
   clusterViewVBox_(false, 0), 
   mainHBox_(false, 0), 
-
+#ifndef NO_GL
   clusterViewXY_(spvdb_, VIEW12), 
   clusterViewXA_(spvdb_, VIEW13), 
   clusterViewXB_(spvdb_, VIEW14), 
@@ -36,11 +27,10 @@ TSpikeWin::TSpikeWin(pNetworkInterface_t pNetwork,
   spikeWaveViewY_(CHANY), 
   spikeWaveViewA_(CHANA), 
   spikeWaveViewB_(CHANB),
-
+#endif // NO_GL
   spVectorStartTime_(0.0),
   liveButton_("Live"), 
-  somaNetworkCodec_(pNetwork_, src), 
-  sourceSettingsWin_(&somaNetworkCodec_), 
+  sourceSettingsWin_(), 
   pMenuPopup_(0), 
   dsrc_(src), 
   spikeCount_(0), 
@@ -61,6 +51,7 @@ TSpikeWin::TSpikeWin(pNetworkInterface_t pNetwork,
   add(mainHBox_); 
   
   int clusterWidth = 165; 
+#ifndef NO_GL
   clusterViewXY_.set_size_request(clusterWidth, clusterWidth);
   clusterViewXA_.set_size_request(clusterWidth, clusterWidth);
   clusterViewXB_.set_size_request(clusterWidth, clusterWidth);
@@ -76,17 +67,21 @@ TSpikeWin::TSpikeWin(pNetworkInterface_t pNetwork,
   clusterTable_.attach(clusterViewYB_, 1, 2, 1, 2);
   clusterTable_.attach(clusterViewAB_, 2, 3, 1, 2);
 
+  rateTimeline_.set_size_request(clusterWidth*3, 60); 
+#endif // NO_GL
+  
   clusterTable_.set_border_width(1.0); 
   clusterTable_.set_row_spacings(1.0); 
   clusterTable_.set_col_spacings(1.0); 
 
-  rateTimeline_.set_size_request(clusterWidth*3, 60); 
-  
   clusterViewVBox_.pack_start(clusterTable_) ;
   clusterViewVBox_.pack_start(timeLineHBox_); 
+#ifndef NO_GL
   timeLineHBox_.pack_start(rateTimeline_); 
+#endif // NO_GL
   timeLineHBox_.pack_start(liveButton_); 
   
+#ifndef NO_GL
   spikeWaveViewX_.set_size_request(150, clusterWidth); 
   spikeWaveViewY_.set_size_request(150, clusterWidth); 
   spikeWaveViewA_.set_size_request(150, clusterWidth); 
@@ -96,6 +91,8 @@ TSpikeWin::TSpikeWin(pNetworkInterface_t pNetwork,
   spikeWaveTable_.attach(spikeWaveViewY_, 1, 2, 0, 1); 
   spikeWaveTable_.attach(spikeWaveViewA_, 0, 1, 1, 2); 
   spikeWaveTable_.attach(spikeWaveViewB_, 1, 2, 1, 2); 
+
+#endif // NO_GL
 
   spikeWaveTable_.set_border_width(1.0); 
   spikeWaveTable_.set_row_spacings(1.0); 
@@ -109,6 +106,7 @@ TSpikeWin::TSpikeWin(pNetworkInterface_t pNetwork,
   //
 
   float decay = 0.05; 
+#ifndef NO_GL
   clusterViewXY_.setView(spvdb_.begin(), 
 			 spvdb_.end(), 
 			 decay, LOG); 
@@ -205,27 +203,30 @@ TSpikeWin::TSpikeWin(pNetworkInterface_t pNetwork,
 								     &SpikeWaveView::setAmplitudeView)); 
 
 
-
+#endif // NO_GL
 
   liveButton_.set_active(true); 
 
   show_all();
 
+#ifndef NO_GL
   rateTimeline_.viewSignal().connect(sigc::mem_fun(*this, 
 						   &TSpikeWin::updateClusterView)); 
-  
+#endif
   liveButton_.signal_toggled().connect(sigc::mem_fun(*this,
 						     &TSpikeWin::liveToggle)); 
 
   
+  pSomaNetworkCodec_ = pSomaNetworkCodec_t(new SomaNetworkCodec(pNetwork_, dsrc_)); 
+
   /// data recovery callback hookup
-  somaNetworkCodec_.signalSourceStateChange().connect(sigc::mem_fun(*this, 
+  pSomaNetworkCodec_->signalSourceStateChange().connect(sigc::mem_fun(*this, 
 								    &TSpikeWin::sourceStateChangeCalback)); 
   
-  somaNetworkCodec_.signalTimeUpdate().connect(sigc::mem_fun(*this, 
+  pSomaNetworkCodec_->signalTimeUpdate().connect(sigc::mem_fun(*this, 
 							     &TSpikeWin::timeUpdateCallback)); 
 
-  somaNetworkCodec_.signalNewTSpike().connect(sigc::mem_fun(*this, 
+  pSomaNetworkCodec_->signalNewTSpike().connect(sigc::mem_fun(*this, 
 							    &TSpikeWin::newTSpikeCallback)); 
 
 
@@ -237,10 +238,13 @@ TSpikeWin::TSpikeWin(pNetworkInterface_t pNetwork,
 
   // preload the indicated data
   loadExistingSpikes(preloadspikes); 
-  
-  // now query state
-  somaNetworkCodec_.refreshStateCache(); 
 
+  sourceSettingsWin_.setCodec(pSomaNetworkCodec_); 
+
+  // now query state
+  pSomaNetworkCodec_->refreshStateCache(); 
+
+  sourceSettingsWin_.show(); // FIXME
 
 }
 
@@ -306,7 +310,9 @@ TSpikeWin::~TSpikeWin()
 bool TSpikeWin::on_idle()
 
 {
+  TSL_(debug) << "TSpikeWin: on idle"; 
 
+#ifndef NO_GL
   clusterViewXY_.invalidate(); 
   clusterViewXA_.invalidate(); 
   clusterViewXB_.invalidate(); 
@@ -318,7 +324,7 @@ bool TSpikeWin::on_idle()
   spikeWaveViewY_.invalidate(); 
   spikeWaveViewA_.invalidate(); 
   spikeWaveViewB_.invalidate(); 
-
+#endif // NO_GL
   return true;
 }
 
@@ -327,10 +333,9 @@ void TSpikeWin::setTime(somatime_t  stime)
 {
 
   if ( !(stime  > lastSomaTime_)) {
-    log4cpp::Category& logtspikewin = log4cpp::Category::getInstance("soma.tspikes.tspikewin");
-    logtspikewin.errorStream() << "Error, set soma time " << stime
-			    << " not strictly greater than previous time " 
-			    << lastSomaTime_; 
+    TSL_(error) << "TSpikeWin: Error, set soma time " << stime
+		<< " not strictly greater than previous time " 
+		<< lastSomaTime_; 
 
   }
   abstime_t t= somatimeToAbsTime(stime); 
@@ -346,7 +351,10 @@ void TSpikeWin::setTime(somatime_t  stime)
       RatePoint_t rp; 
       rp.rate = rv; 
       rp.time = reltime; 
+#ifndef NO_GL
       rateTimeline_.appendRate(rp); 
+#endif // NO_GL
+
       lastRateTime_ = reltime; 
       lastRateSpikeCount_ = spikeCount_; 
     }
@@ -364,7 +372,7 @@ void TSpikeWin::setTime(somatime_t  stime)
 void TSpikeWin::updateClusterView(bool isLive, reltime_t activePos, float decayRate)
 {
   // decayRate is a rate, luminance/alpha drops per unit time
-
+  TSL_(debug) << "TSpikeWin: update cluster view"; 
   // compute time range
   reltime_t t2 = activePos; 
   reltime_t t1; 
@@ -420,6 +428,7 @@ void TSpikeWin::updateClusterView(bool isLive, reltime_t activePos, float decayR
 
   
   // now update internal iterators
+#ifndef NO_GL
   clusterViewXY_.setView(t1i, t2i, 
 			 decayRate, LOG); 
 
@@ -444,6 +453,7 @@ void TSpikeWin::updateClusterView(bool isLive, reltime_t activePos, float decayR
   clusterViewYA_.invalidate(); 
   clusterViewYB_.invalidate(); 
   clusterViewAB_.invalidate(); 
+#endif // NO_GL
 
 }
 
@@ -465,13 +475,14 @@ void TSpikeWin::loadExistingSpikes(const std::vector<TSpike_t> & spikes)
 
 void TSpikeWin::liveToggle()
 {
+#ifndef NO_GL
 
   rateTimeline_.setLive(liveButton_.get_active()); 
   spikeWaveViewX_.setLive(liveButton_.get_active()); 
   spikeWaveViewY_.setLive(liveButton_.get_active()); 
   spikeWaveViewA_.setLive(liveButton_.get_active()); 
   spikeWaveViewB_.setLive(liveButton_.get_active()); 
-  
+#endif // NO_GL  
 
 }
 
@@ -483,9 +494,13 @@ void TSpikeWin::timeUpdateCallback(somatime_t stime)
 
 void TSpikeWin::sourceStateChangeCalback(int chan, TSpikeChannelState state)
 {
+  TSL_(info) << "TSPikeWin: source state change chan=" << chan; 
+
+#ifndef NO_GL
 
   switch(chan) {
   case 0:
+    TSL_(info) << "Updating chan 0  by calling updateState on stuff" << std::endl; 
     spikeWaveViewX_.updateState(state); 
 
     clusterViewXY_.updateState(true, state); 
@@ -518,33 +533,35 @@ void TSpikeWin::sourceStateChangeCalback(int chan, TSpikeChannelState state)
     break;
 
   }
-  
+#endif  // END_IF
 }
 
 void TSpikeWin::newTSpikeCallback(const TSpike_t & ts)
 {
+  //  std::cout << "New tspike callback" << std::endl; 
   reltime_t offsetTime = somatimeToAbsTime(expStartTime_); 
   std::vector<GLSpikeWave_t> gls = splitSpikeToGLSpikeWaves(ts, offsetTime); 
   
+#ifndef NO_GL
   
   spikeWaveViewX_.newSpikeWave(gls[0]); 
   spikeWaveViewY_.newSpikeWave(gls[1]); 
   spikeWaveViewA_.newSpikeWave(gls[2]); 
   spikeWaveViewB_.newSpikeWave(gls[3]); 
-  
+#endif // NO_GL  
   GLSpikePoint_t sp = convertTSpikeToGLSpike(ts, offsetTime); 
   spvdb_.append(sp); 
 
 
   spikeCount_++; 
-
+#ifndef NO_GL
   clusterViewXY_.invalidate(); 
   clusterViewXA_.invalidate(); 
   clusterViewXB_.invalidate(); 
   clusterViewYA_.invalidate(); 
   clusterViewYB_.invalidate(); 
   clusterViewAB_.invalidate(); 
-
+#endif
 
 
 }
@@ -558,7 +575,6 @@ bool TSpikeWin::on_button_press_event(GdkEventButton* event)
 
     return true; 
   } else if (event->type == GDK_2BUTTON_PRESS) { 
-    std::cout << "Double click!" << std::endl;
     set_decorated(!get_decorated()); 
 
     return true; 
@@ -569,7 +585,7 @@ bool TSpikeWin::on_button_press_event(GdkEventButton* event)
 
 void TSpikeWin::on_action_quit(void)
 {
-  std::cout << "Quitting..." << std::endl; 
+  TSL_(debug) << "TSpikeWin: Quitting..."; 
   hide(); 
 
 }
@@ -586,7 +602,7 @@ void TSpikeWin::on_action_reset_data()
   spvdb_.reset(); 
 
   //  spvdb_.insert((reltime_t)0.0, new GLSPVect_t);
-
+  #ifndef NO_GL
   rateTimeline_.resetData(); 
   // reset offset time
 
@@ -602,12 +618,12 @@ void TSpikeWin::on_action_reset_data()
   clusterViewYA_.resetData(); 
   clusterViewYB_.resetData(); 
   clusterViewAB_.resetData();
-  
+  #endif
 }
 
 void TSpikeWin::on_action_reset_views()
 {
-  
+  #ifndef NO_GL
   spikeWaveViewX_.resetView(); 
   spikeWaveViewY_.resetView(); 
   spikeWaveViewA_.resetView(); 
@@ -619,6 +635,6 @@ void TSpikeWin::on_action_reset_views()
   clusterViewYA_.resetView(); 
   clusterViewYB_.resetView(); 
   clusterViewAB_.resetView();
-  
+  #endif
 
 }

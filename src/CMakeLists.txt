@@ -6,6 +6,7 @@ set(tspikes_SRCS
   sourcesettingswin.cc gaincombosetting.cc 
   hpfchecksetting.cc combosetting.cc filtercombosetting.cc
   tholdentrysetting.cc voltage.cc ratetimelinerenderer.cc
+  tslogging.cc
   fakedata.cc util.cc )
 
 
@@ -39,6 +40,7 @@ include_directories(${GUIDEPS_INCLUDE_DIRS})
 include_directories(${SOMADEPS_INCLUDE_DIRS})
 include_directories(ext-common/)
 include_directories(ext-logging/src)
+include_directories(ext-logging/boost)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 link_directories(

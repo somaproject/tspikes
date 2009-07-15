@@ -10,7 +10,7 @@
 class FilterComboSetting : public ComboSetting
 {
  public:
-  FilterComboSetting(SomaNetworkCodec * nc, chanset_t chanset, 
+  FilterComboSetting(pSomaNetworkCodec_t nc, chanset_t chanset, 
 		   settingmap_t sm); 
   
  private:

@@ -16,12 +16,12 @@ typedef std::map<int, std::string> settingmap_t;
 class TholdEntrySetting : public Gtk::Entry
 {
  public:
-  TholdEntrySetting(SomaNetworkCodec * nc, chanset_t chanset); 
+  TholdEntrySetting(pSomaNetworkCodec_t  nc, chanset_t chanset); 
 
   void updateSetting();   
  private:
 
-  SomaNetworkCodec * pnc_; 
+  pSomaNetworkCodec_t pnc_; 
   chanset_t chanset_; 
   
   void stateChangeCallback(int, TSpikeChannelState); 

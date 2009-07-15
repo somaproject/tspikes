@@ -1,7 +1,7 @@
 #include "tholdentrysetting.h"
 #include "voltage.h"
 
-TholdEntrySetting::TholdEntrySetting(SomaNetworkCodec * nc, chanset_t chanset) :
+TholdEntrySetting::TholdEntrySetting(pSomaNetworkCodec_t  nc, chanset_t chanset) :
   pnc_(nc), 
   chanset_(chanset)
 

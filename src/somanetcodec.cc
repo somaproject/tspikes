@@ -1,14 +1,5 @@
 #include "somanetcodec.h"
-
-void printEvent2(Event_t event)
-{
-  printf("Event cmd = %2.2X src = %2.2X\n", event.cmd, event.src); 
-  for (int i = 0; i < 5; i++) {
-    printf("Data word %d: %4.4X\n", i, event.data[i]); 
-  }
-
-}
-
+#include <tslogging.h>
 
 TSpikeChannelState::TSpikeChannelState()
 {
@@ -20,43 +11,43 @@ TSpikeChannelState::TSpikeChannelState()
   rangeMax = 0; 
 }
 
-SomaNetworkCodec::SomaNetworkCodec(pNetworkInterface_t pNetwork, int src, 
-				   chanproplist_t channels) :
-  pNetwork_(pNetwork), 
-  dsrc_(src), 
-  chanprops_(channels), 
-  dspStateProxy_(src, sigc::mem_fun(*this, &SomaNetworkCodec::sendEvent))
-{
+// SomaNetworkCodec::SomaNetworkCodec(pNetworkInterface_t pNetwork, int src, 
+// 				   chanproplist_t channels) :
+//   pNetwork_(pNetwork), 
+//   dsrc_(src), 
+//   chanprops_(channels), 
+//   dspStateProxy_(src, sigc::mem_fun(*this, &SomaNetworkCodec::sendEvent))
+// {
 
-  Glib::signal_io().connect(sigc::mem_fun(*this, &SomaNetworkCodec::dataRXCallback), 
-			    pNetwork_->getDataFifoPipe(), Glib::IO_IN); 
-  Glib::signal_io().connect(sigc::mem_fun(*this, &SomaNetworkCodec::eventRXCallback), 
-			    pNetwork_->getEventFifoPipe(), Glib::IO_IN); 
+//   Glib::signal_io().connect(sigc::mem_fun(*this, &SomaNetworkCodec::dataRXCallback), 
+// 			    pNetwork_->getDataFifoPipe(), Glib::IO_IN); 
+//   Glib::signal_io().connect(sigc::mem_fun(*this, &SomaNetworkCodec::eventRXCallback), 
+// 			    pNetwork_->getEventFifoPipe(), Glib::IO_IN); 
   
-  channelStateCache_.resize(channels.size()); 
+//   channelStateCache_.resize(channels.size()); 
 
-  dspStateProxy_.acqdatasrc.linkStatus().connect(
-						 sigc::mem_fun(*this, &SomaNetworkCodec::dspLinkStatus)); 
-  dspStateProxy_.acqdatasrc.gain().connect(
- 					   sigc::mem_fun(*this, &SomaNetworkCodec::dspGain)); 
-  dspStateProxy_.acqdatasrc.hpfen().connect(
- 					   sigc::mem_fun(*this, &SomaNetworkCodec::dspHPFen)); 
+//   dspStateProxy_.acqdatasrc.linkStatus().connect(
+// 						 sigc::mem_fun(*this, &SomaNetworkCodec::dspLinkStatus)); 
+//   dspStateProxy_.acqdatasrc.gain().connect(
+//  					   sigc::mem_fun(*this, &SomaNetworkCodec::dspGain)); 
+//   dspStateProxy_.acqdatasrc.hpfen().connect(
+//  					   sigc::mem_fun(*this, &SomaNetworkCodec::dspHPFen)); 
   
-  dspStateProxy_.acqdatasrc.range().connect(
- 					   sigc::mem_fun(*this, &SomaNetworkCodec::dspRange)); 
+//   dspStateProxy_.acqdatasrc.range().connect(
+//  					   sigc::mem_fun(*this, &SomaNetworkCodec::dspRange)); 
   
-  dspStateProxy_.tspikesink.thold().connect(
-					    sigc::mem_fun(*this, &SomaNetworkCodec::dspThold)); 
+//   dspStateProxy_.tspikesink.thold().connect(
+// 					    sigc::mem_fun(*this, &SomaNetworkCodec::dspThold)); 
   
-  dspStateProxy_.tspikesink.filterID().connect(
-					    sigc::mem_fun(*this, &SomaNetworkCodec::dspFilterID)); 
+//   dspStateProxy_.tspikesink.filterID().connect(
+// 					    sigc::mem_fun(*this, &SomaNetworkCodec::dspFilterID)); 
 
-}
+// }
 
 SomaNetworkCodec::SomaNetworkCodec(pNetworkInterface_t pNetwork, int src) :
   pNetwork_(pNetwork), 
   dsrc_(src),
-  dspStateProxy_(src, sigc::mem_fun(*this, &SomaNetworkCodec::sendEvent))
+  dspStateProxy_(NULL)
 {
 
   chanprop_t x, y, a,  b; 
@@ -72,29 +63,33 @@ SomaNetworkCodec::SomaNetworkCodec(pNetworkInterface_t pNetwork, int src) :
   chanprops_.push_back(y); 
   chanprops_.push_back(a); 
   chanprops_.push_back(b); 
-    
   
   Glib::signal_io().connect(sigc::mem_fun(*this, &SomaNetworkCodec::dataRXCallback), 
 			    pNetwork_->getDataFifoPipe(), Glib::IO_IN); 
   Glib::signal_io().connect(sigc::mem_fun(*this, &SomaNetworkCodec::eventRXCallback), 
 			    pNetwork_->getEventFifoPipe(), Glib::IO_IN); 
   
-  channelStateCache_.resize(chanprops_.size()); 
+  std::cout << "Running network" << std::endl; 
+  pNetwork_->run(); 
 
-  dspStateProxy_.acqdatasrc.linkStatus().connect(
+  channelStateCache_.resize(chanprops_.size()); 
+  const uint64_t DSP_TIMEOUT = 50000; // 1 sec
+  dspStateProxy_ = new somadspio::StateProxy(src, sigc::mem_fun(*this, &SomaNetworkCodec::sendEvent), 
+					     DSP_TIMEOUT);
+  dspStateProxy_->acqdatasrc.linkStatus().connect(
 						 sigc::mem_fun(*this, &SomaNetworkCodec::dspLinkStatus)); 
-  dspStateProxy_.acqdatasrc.gain().connect(
+  dspStateProxy_->acqdatasrc.gain().connect(
  					   sigc::mem_fun(*this, &SomaNetworkCodec::dspGain)); 
-  dspStateProxy_.acqdatasrc.hpfen().connect(
+  dspStateProxy_->acqdatasrc.hpfen().connect(
  					   sigc::mem_fun(*this, &SomaNetworkCodec::dspHPFen)); 
   
-  dspStateProxy_.acqdatasrc.range().connect(
+  dspStateProxy_->acqdatasrc.range().connect(
  					   sigc::mem_fun(*this, &SomaNetworkCodec::dspRange)); 
   
-  dspStateProxy_.tspikesink.thold().connect(
+  dspStateProxy_->tspikesink.thold().connect(
 					    sigc::mem_fun(*this, &SomaNetworkCodec::dspThold)); 
   
-  dspStateProxy_.tspikesink.filterID().connect(
+  dspStateProxy_->tspikesink.filterID().connect(
 					    sigc::mem_fun(*this, &SomaNetworkCodec::dspFilterID)); 
   
   
@@ -126,7 +121,6 @@ void SomaNetworkCodec::processNewData(pDataPacket_t  dp)
   if (dp->typ == TSPIKE ) {
     TSpike_t newTSpike = rawToTSpike(dp); 
     signalNewTSpike_.emit(newTSpike); 
-
   } else {
     // somehow we received a datapacket that wasn't for us
   }
@@ -156,10 +150,18 @@ void SomaNetworkCodec::parseEvent(const Event_t & evt)
       stime |= evt.data[1]; 
       stime = stime << 16; 
       stime |= evt.data[2]; 
-      signalTimeUpdate_.emit(stime); 
+      if (stime % 500 == 0)  {
+	// normal time events are just too frequent. 
+	signalTimeUpdate_.emit(stime); 
+	dspStateProxy_->setTime(stime); 
+      }
     } else {
-      dspStateProxy_.newEvent(evt); 
+    if (dspStateProxy_) {
+      if (evt.src > 0 && evt.src < 70) {
+	dspStateProxy_->newEvent(evt); 
+      }
     }
+  }
   
   //   bool stateCacheUpdate = false; 
 //   if (evt.src == dsrc_to_esrc(dsrc_) && evt.cmd  == 0x92) {
@@ -324,79 +326,29 @@ TSpikeChannelState SomaNetworkCodec::getChannelState(int channel)
 
 void SomaNetworkCodec::setChannelState(int chan, const TSpikeChannelState & newstate )
 {
-//   // FIXME Add other settings
-  
-//   EventTXList_t etxlist; 
-//   etxlist.reserve(4); 
 
+  if (newstate.gain != channelStateCache_[chan].gain) {
+    // GAIN SETTING
+    dspStateProxy_->acqdatasrc.setGain(chan, newstate.gain); 
 
-//   if (newstate.gain != channelStateCache_[chan].gain) {
-//     // GAIN SETTING
-
-//     EventTX_t eventTX; 
-//     eventTX.destaddr[dsrc_to_esrc(dsrc_)] = 1; // THIS SOURCE DEVICE
-//     eventTX.event.src = 4; 
-//     eventTX.event.cmd = 0x90; 
-//     eventTX.event.data[0] = (GAIN << 8) | chan ; 
-//     eventTX.event.data[1] = newstate.gain; 
-
-//     etxlist.push_back(eventTX); 
-
-//   } else if (newstate.hpf != channelStateCache_[chan].hpf) {
-//     // HPF SETTING
-
-//     EventTX_t eventTX; 
-//     eventTX.destaddr[dsrc_to_esrc(dsrc_)] = 1; // THIS SOURCE DEVICE
-//     eventTX.event.src = 4; 
-//     eventTX.event.cmd = 0x90; 
-//     eventTX.event.data[0] = (HPF << 8) | chan ; 
-//     if (newstate.hpf) {
-//       eventTX.event.data[1] = 1;
-//     } else {
-//       eventTX.event.data[1] = 0;
-//     }      
-
-//     etxlist.push_back(eventTX); 
-//   } else  if (newstate.filtid != channelStateCache_[chan].filtid) {
-//     // DIGITAL FITLER
-
-//     EventTX_t eventTX; 
-//     eventTX.destaddr[dsrc_to_esrc(dsrc_)] = 1; // THIS SOURCE DEVICE
-//     eventTX.event.src = 4; 
-//     eventTX.event.cmd = 0x90; 
-//     eventTX.event.data[0] = (FILT << 8) | chan ; 
-//     eventTX.event.data[1] = newstate.filtid; 
-
-//     etxlist.push_back(eventTX); 
-
-//   } else if (newstate.threshold != channelStateCache_[chan].threshold) {
-//     // THRESHOLD
-
-//     EventTX_t eventTX; 
-//     eventTX.destaddr[dsrc_to_esrc(dsrc_)] = 1; // THIS SOURCE DEVICE
-//     eventTX.event.src = 4; 
-//     eventTX.event.cmd = 0x90; 
-//     eventTX.event.data[0] = (THOLD << 8) | chan ; 
-//     eventTX.event.data[1] = (newstate.threshold >> 16); 
-//     eventTX.event.data[2] = newstate.threshold & 0xFFFF; 
-
-//     etxlist.push_back(eventTX); 
-
+  } else if (newstate.hpf != channelStateCache_[chan].hpf) {
     
-//   } else {
-//     // query so that we at least get an update of some sort? 
+    dspStateProxy_->acqdatasrc.setHPFen(chan, newstate.hpf); 
 
-//   }
+  } else  if (newstate.filtid != channelStateCache_[chan].filtid) {
 
-//   pNetwork_->sendEvents(etxlist); 
-  
+    dspStateProxy_->tspikesink.setFilterID(chan, newstate.filtid); 
+
+  } else if (newstate.threshold != channelStateCache_[chan].threshold) {
+    // THRESHOLD
+    dspStateProxy_->tspikesink.setThold(chan, newstate.threshold); 
+  }
 }
 
 
-void SomaNetworkCodec::sendEvent(const EventTX_t & evt)
+void SomaNetworkCodec::sendEvent(const EventTXList_t & etxl)
 {
-  EventTXList_t etxl; 
-  etxl.push_back(evt); 
+  std::cout << "sending events" << std::endl; 
   pNetwork_->sendEvents(etxl); 
   
 }
@@ -430,10 +382,13 @@ void SomaNetworkCodec::dspHPFen(int chan, bool hpfen)
 
 }
 
-void SomaNetworkCodec::dspRange(int chan, dspiolib::range_t range)
+void SomaNetworkCodec::dspRange(int chan, somadspio::range_t range)
 {
-  std::cout << "Setting range to " << range.first <<  " "
-	    << range.second << std::endl; 
+
+  
+  TSL_(info) << "SomaNetworkCodec: dsp range for chan = " 
+	     << chan << " range.first = " << range.first 
+	     << " range.second =" << range.second; 
   
   if (chan  < 4) {
     if (range.first < range.second) {
@@ -452,7 +407,7 @@ void SomaNetworkCodec::dspThold(int chan, int thold)
   }
 }
 
-void SomaNetworkCodec::dspFilterID(int chan, dspiolib::filterid_t fid)
+void SomaNetworkCodec::dspFilterID(int chan, somadspio::filterid_t fid)
 {
   if (chan  < 4) {
     channelStateCache_[chan].filtid  = fid; 

@@ -1,6 +1,6 @@
 #include "filtercombosetting.h"
 
-FilterComboSetting::FilterComboSetting(SomaNetworkCodec * nc, chanset_t chanset, 
+FilterComboSetting::FilterComboSetting(pSomaNetworkCodec_t nc, chanset_t chanset, 
 				   settingmap_t sm) :
   ComboSetting(nc, chanset, sm)
   

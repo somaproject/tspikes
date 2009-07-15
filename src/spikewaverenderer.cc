@@ -50,7 +50,6 @@ void SpikeWaveRenderer::setupOpenGL()
 
 void SpikeWaveRenderer::newSpikeWave(const GLSpikeWave_t & sw)
 {
-
   if (spikeWaveListFull_)
     {
       swl_.push_back(sw); 
@@ -96,8 +95,7 @@ void SpikeWaveRenderer::updateViewingWindow()
 
 
   glOrtho(viewX1_, viewX2_, viewY1_, viewY2_, -3, 3); 
-
-  glViewport(0, 0, viewportWinX_, viewportWinY_); 
+   glViewport(0, 0, viewportWinX_, viewportWinY_); 
 
   viewChanged_ = false; 
 
@@ -166,7 +164,6 @@ bool SpikeWaveRenderer::renderSpikeWave(const GLSpikeWave_t & sw,
 
 void SpikeWaveRenderer::render()
 {
-
 
   updateViewingWindow(); 
 
@@ -361,6 +358,7 @@ void SpikeWaveRenderer::setLive(bool l)
 
 void SpikeWaveRenderer::setAmplitudeRange(float min, float max)
 {
+  std::cout << "setAmplitudeRange " << min << " " << max << std::endl;
   ampMin_ = min; 
   ampMax_ = max; 
  
@@ -371,6 +369,7 @@ void SpikeWaveRenderer::setAmplitudeRange(float min, float max)
 void SpikeWaveRenderer::setAmplitudeView(float min, float max)
 {
   // we'd like our scale to look at ~ volts. 
+  std::cout << "setAmplitudeView " << min << " " << max << std::endl;
   viewY1_ = min; 
   viewY2_ = max; 
  
@@ -380,7 +379,10 @@ void SpikeWaveRenderer::setAmplitudeView(float min, float max)
 
 void SpikeWaveRenderer::sanityCheckViewParameters()
 {
-
+  std::cout << "SpikeWaveRenderer::sanityCheckViewParameters()"
+	    << "ampMin_ " << ampMin_ << " viewY1_ =" 
+	    << viewY1_ << " ampMax_="  << ampMax_
+	    << " viewY2_=" << viewY2_ << std::endl; 
   // first, make sure our view is a subset of our range
   if (ampMin_ > viewY1_) {
     viewY1_ = ampMin_; 

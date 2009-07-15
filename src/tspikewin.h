@@ -23,7 +23,7 @@
 #include "ratetimeline.h"
 #include "somanetcodec.h"
 #include "sourcesettingswin.h" 
-#include "logging.h" 
+#include "tslogging.h" 
 
 // widget list types
 typedef boost::ptr_vector<SpikeWaveView> pSpikeWaveViewVect_t; 
@@ -75,7 +75,7 @@ protected:
   Gtk::HBox timeLineHBox_; 
 
   // 
-  
+  #ifndef NO_GL
   ClusterView clusterViewXY_;
   ClusterView clusterViewXA_;
   ClusterView clusterViewXB_;
@@ -89,7 +89,7 @@ protected:
   SpikeWaveView spikeWaveViewB_;
   
   RateTimeline rateTimeline_; 
-
+#endif //NO_GL
   // action menu item 
   Glib::RefPtr<Gtk::ActionGroup> refActionGroup_; 
   Glib::RefPtr<Gtk::UIManager> refUIManager_; 
@@ -116,7 +116,7 @@ protected:
   
   
   Gtk::ToggleButton liveButton_; 
-  SomaNetworkCodec somaNetworkCodec_; 
+  pSomaNetworkCodec_t pSomaNetworkCodec_; 
 
   // property editor
 

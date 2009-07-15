@@ -1,6 +1,6 @@
 #include "hpfchecksetting.h"
 
-HPFCheckSetting::HPFCheckSetting(SomaNetworkCodec * nc, chanset_t chanset) :
+HPFCheckSetting::HPFCheckSetting(pSomaNetworkCodec_t nc, chanset_t chanset) :
   pnc_(nc), 
   chanset_(chanset), 
   blockSignal_(false)

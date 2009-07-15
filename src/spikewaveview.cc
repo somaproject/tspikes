@@ -5,7 +5,7 @@
 #include <cairomm/surface.h>
 #include <sys/time.h>
 #include <time.h>
-
+#include <tslogging.h>
 
 SpikeWaveView::SpikeWaveView(GLChan_t chan) : 
   spikeWaveRenderer_(chan), 
@@ -287,9 +287,10 @@ void SpikeWaveView::updateState(const TSpikeChannelState & state)
 {
   float min, max; 
 
-  min = state.rangeMin / 1e9; 
-  max = state.rangeMax / 1e9; 
-
+  min = float(state.rangeMin) / 1e9; 
+  max = float(state.rangeMax) / 1e9; 
+  TSL_(info) << "SpikeWaveView::updateState " <<
+    min << " " << max << std::endl; 
   spikeWaveRenderer_.setAmplitudeRange(min, max); 
   spikeWaveRenderer_.updateState(state); 
 }

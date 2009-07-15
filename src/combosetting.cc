@@ -1,6 +1,6 @@
 #include "combosetting.h"
 
-ComboSetting::ComboSetting(SomaNetworkCodec * nc, chanset_t chanset, 
+ComboSetting::ComboSetting(pSomaNetworkCodec_t nc, chanset_t chanset, 
 			   settingmap_t sm) :
   pnc_(nc), 
   chanset_(chanset), 

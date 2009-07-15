@@ -10,11 +10,11 @@
 class HPFCheckSetting : public Gtk::CheckButton
 {
  public:
-  HPFCheckSetting(SomaNetworkCodec * nc, chanset_t chanset); 
+  HPFCheckSetting(pSomaNetworkCodec_t nc, chanset_t chanset); 
   
  private:
 
-  SomaNetworkCodec * pnc_; 
+  pSomaNetworkCodec_t pnc_; 
   chanset_t chanset_; 
   bool blockSignal_; 
   
