@@ -365,7 +365,6 @@ void SpikeWaveRenderer::setLive(bool l)
 
 void SpikeWaveRenderer::setAmplitudeRange(float min, float max)
 {
-  std::cout << "setAmplitudeRange " << min << " " << max << std::endl;
   ampMin_ = min; 
   ampMax_ = max; 
  
@@ -376,7 +375,6 @@ void SpikeWaveRenderer::setAmplitudeRange(float min, float max)
 void SpikeWaveRenderer::setAmplitudeView(float min, float max)
 {
   // we'd like our scale to look at ~ volts. 
-  std::cout << "setAmplitudeView " << min << " " << max << std::endl;
   viewY1_ = min; 
   viewY2_ = max; 
  
@@ -386,10 +384,6 @@ void SpikeWaveRenderer::setAmplitudeView(float min, float max)
 
 void SpikeWaveRenderer::sanityCheckViewParameters()
 {
-  std::cout << "SpikeWaveRenderer::sanityCheckViewParameters()"
-	    << "ampMin_ " << ampMin_ << " viewY1_ =" 
-	    << viewY1_ << " ampMax_="  << ampMax_
-	    << " viewY2_=" << viewY2_ << std::endl; 
   // first, make sure our view is a subset of our range
   if (ampMin_ > viewY1_) {
     viewY1_ = ampMin_; 

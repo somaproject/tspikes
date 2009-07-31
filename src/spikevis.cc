@@ -169,7 +169,6 @@ void Vis::on_button_quit_clicked()
 }
 void Vis::updateSpikePosFromAdj()
 {
-  std::cout << "updateSpikePosFromAdj: " << spikePosAdjustment_.get_value() << std::endl; 
   GLSPVectMap_t::iterator svpliter = spvl.begin(); 
   
   for (int i = 0; i < spikePosAdjustment_.get_value(); i++)
@@ -182,7 +181,6 @@ void Vis::updateSpikePosFromAdj()
 
 bool Vis::on_key_press_event(GdkEventKey* event)
 {
-  std::cout << "Keypress" << std::endl; 
   switch (event->keyval)
     {
     case GDK_z:
@@ -190,7 +188,6 @@ bool Vis::on_key_press_event(GdkEventKey* event)
     case GDK_Z:
       break;
     case GDK_Up:
-      std::cout << "Changing zoom" << std::endl; 
       clusterView34_.setViewingWindow(0, 0, 10.0 * GSCALE, 10.0 * GSCALE); 
       clusterView12_.setViewingWindow(0, 0, 10.0 * GSCALE, 10.0 * GSCALE); 
       clusterView13_.setViewingWindow(0, 0, 10.0 * GSCALE, 10.0 * GSCALE); 
@@ -200,7 +197,6 @@ bool Vis::on_key_press_event(GdkEventKey* event)
 
       break;
     case GDK_Down: 
-      std::cout << "Changing zoom down" << std::endl; 
 
       break; 
     default:

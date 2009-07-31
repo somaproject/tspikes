@@ -96,7 +96,6 @@ void SpikeWaveView::setAmplitudeView(float min, float max)
 bool SpikeWaveView::on_configure_event(GdkEventConfigure* event)
 {
 
-  //std::cout << "SPikeWaveView::on_configure_event" << std::endl;
 
   Glib::RefPtr<Gdk::GL::Drawable> gldrawable = get_gl_drawable();
 
@@ -145,8 +144,6 @@ bool SpikeWaveView::on_expose_event(GdkEventExpose* event)
 
 bool SpikeWaveView::on_map_event(GdkEventAny* event)
 {
-
-  //  std::cout << "SpikeWaveView::on_map_event" << std::endl;
 
   spikeWaveRenderer_.setViewPort(get_width(), get_height()); 
   
@@ -290,7 +287,7 @@ void SpikeWaveView::updateState(const TSpikeChannelState & state)
   min = float(state.rangeMin) / 1e9; 
   max = float(state.rangeMax) / 1e9; 
   TSL_(info) << "SpikeWaveView::updateState " <<
-    min << " " << max << std::endl; 
+    min << " " << max ; 
   spikeWaveRenderer_.setAmplitudeRange(min, max); 
   spikeWaveRenderer_.updateState(state); 
   invalidate(); 
