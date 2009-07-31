@@ -123,7 +123,7 @@ protected:
   SourceSettingsWin sourceSettingsWin_;   
   // callbacks
   void timeUpdateCallback(somatime_t); 
-  void sourceStateChangeCalback(int, TSpikeChannelState); 
+  void sourceStateChangeCallback(int, TSpikeChannelState); 
   void newTSpikeCallback(const TSpike_t &); 
   void setupMenus(); 
 

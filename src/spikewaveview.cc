@@ -293,6 +293,8 @@ void SpikeWaveView::updateState(const TSpikeChannelState & state)
     min << " " << max << std::endl; 
   spikeWaveRenderer_.setAmplitudeRange(min, max); 
   spikeWaveRenderer_.updateState(state); 
+  invalidate(); 
+
 }
 
 

@@ -221,7 +221,7 @@ TSpikeWin::TSpikeWin(pNetworkInterface_t pNetwork,
 
   /// data recovery callback hookup
   pSomaNetworkCodec_->signalSourceStateChange().connect(sigc::mem_fun(*this, 
-								    &TSpikeWin::sourceStateChangeCalback)); 
+								    &TSpikeWin::sourceStateChangeCallback)); 
   
   pSomaNetworkCodec_->signalTimeUpdate().connect(sigc::mem_fun(*this, 
 							     &TSpikeWin::timeUpdateCallback)); 
@@ -492,7 +492,7 @@ void TSpikeWin::timeUpdateCallback(somatime_t stime)
   setTime(stime); 
 }
 
-void TSpikeWin::sourceStateChangeCalback(int chan, TSpikeChannelState state)
+void TSpikeWin::sourceStateChangeCallback(int chan, TSpikeChannelState state)
 {
   TSL_(info) << "TSPikeWin: source state change chan=" << chan; 
 

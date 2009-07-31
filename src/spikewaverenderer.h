@@ -80,7 +80,7 @@ protected:
   bool renderSpikeWave(const GLSpikeWave_t & sw, 
 		       float alpha, bool plotPoints);
   bool setViewingWindow(float x1, float y1,  float x2, float y2); 
-  void renderGrid(); 
+  void renderGrid(float gridinc); 
   void renderText(); 
 
 

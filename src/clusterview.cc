@@ -310,7 +310,7 @@ void ClusterView::updateState(bool X, const TSpikeChannelState & state)
   } else {
     rangeY_ = max; 
   }
-  
+  invalidate(); 
 }
 
 void ClusterView::resetData()

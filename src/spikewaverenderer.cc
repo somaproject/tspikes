@@ -170,9 +170,17 @@ void SpikeWaveRenderer::render()
   if (isLive_) { 
     glClearColor(0.0, 0.0, 0.0, 1.0); 
     glClear(GL_COLOR_BUFFER_BIT | GL_ACCUM_BUFFER_BIT ); 
-    renderTrigger(); 
-    renderGrid(); 
-    renderRange(); 
+    if ( channelState_.gain != 0) {
+      renderTrigger(); 
+
+      if (ampMax_ - ampMin_ > 2e-3) { 
+	renderGrid(500e-6); 
+      } else { 
+	renderGrid(100e-6); 
+      }
+      
+      renderRange(); 
+    }
     // real work 
     SpikeWaveList_t::iterator csIter; 
     // always show the last N spikes, and only the last N. 
@@ -225,10 +233,8 @@ void SpikeWaveRenderer::setTime(uint64_t ts)
   currentTime_ = ts; 
 }
 
-void SpikeWaveRenderer::renderGrid()
+void SpikeWaveRenderer::renderGrid(float GRIDINC)
 {
-  // draw the various vertical markings, at 100 uV
-  const float GRIDINC = 100e-6; 
 
   glLineWidth(3.0); 
    
@@ -314,6 +320,7 @@ void SpikeWaveRenderer::renderRange()
  
   // Render the dynamic range Scale -- this is way too complex. 
   
+
   glDisable(GL_LINE_SMOOTH); 
   
   glPushMatrix(); 
