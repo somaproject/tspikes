@@ -24,7 +24,7 @@ BOOST_DECLARE_LOG(tspikes_l, tspikes_finder::logger)
 #define TSL_(lvl) BOOST_LOG_USE_LOG_IF_LEVEL(tspikes_l(), tspikes_log_level(), lvl )
 
 
-void init_tslogs(); 
+void init_tslogs( boost::logging::level::type level); 
 
 
 

@@ -16,6 +16,7 @@
 
 namespace po = boost::program_options;
 namespace bf = boost::filesystem;
+namespace bl = boost::logging; 
 
 std::string LOGROOT("soma.tspikes"); 
 
@@ -74,54 +75,48 @@ int main(int argc, char** argv)
       logstr = "warning"; 
     }
     boost::logging::level::type lt = log_level_parse(logstr); 
-    init_tslogs();  // FIXME have level init
+    init_tslogs(lt); 
   }
 
-
-//   log4cpp::Category& logtspike = log4cpp::Category::getInstance(LOGROOT);
 
   somanetwork::pNetworkInterface_t network; 
   
   if (vm.count("soma-ip")) {
     std::string somaip = vm["soma-ip"].as<string>();     
-//     logtspike.infoStream() << "Using IP network to talk to soma"; 
-//     logtspike.infoStream() << "soma hardware IP: " << somaip; 
+    TSL_(info) << "TSpikeMain: Using IP network to talk to Soma, IP="
+	       << somaip; 
     network = somanetwork::Network::createINet(somaip);
 
   } else if (vm.count("domain-socket-dir")) {
     bf::path domainsockdir(vm["domain-socket-dir"].as<string>()); 
+    TSL_(info) << "TSpikeMain: Using Domain Sockets to talk to local process, dir ="
+	       << domainsockdir; 
 
-//     logtspike.infoStream() << "Using domain sockets to talk to local process"; 
-//     logtspike.infoStream() << "domain socket dir: " << domainsockdir; 
     network = somanetwork::Network::createDomain(domainsockdir); 
 
   } else {
-//     logtspike.fatal("soma-ip not specified, domain-socket-dir not specified; no way to get data"); 
+    TSL_(fatal) << "Soma IP Not Specified, domain socket not specified -- no way to get data" ; 
     return -1; 
   }
 
   if (!vm.count("datasrc")) {
-//     logtspike.fatal("Neet to specify a data source (0-63) to listen to"); 
+    TSL_(fatal) << "TSpikeMain: Need to specify a data source (0-63) to listen to"; 
+
     return -1; 
   }
   
   somatime_t expStartTime = 0; 
-  // the time at which the experiment is viewed as "starting" 
 
   //  fakedata::Grid g(0, 10, 10000); 
 
   std::vector<TSpike_t> preload_spikes; 
-//   for (int i = 0; i < 50000; i++) {
-//     preload_spikes.push_back(g.next()); 
-//   }
+// //   for (int i = 0; i < 50000; i++) {
+// //     preload_spikes.push_back(g.next()); 
+// //   }
   
-  //logtspike.info("Constructing GUI object"); 
   TSpikeWin tspikewin(network, vm["datasrc"].as<int>(), expStartTime,
 		      preload_spikes);
   
-  //logtspike.info("Setting network state to run"); 
-  //network->run(); 
-  // logtspike.info("Running GUI"); 
   
   kit.run(tspikewin);
   
