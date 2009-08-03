@@ -8,7 +8,12 @@ find_package(PkgConfig)
 
 # we should handle this with build/release distinctions, but I'm not that l33t. 
 
-SET(CMAKE_CXX_FLAGS "-O2 ${CMAKE_CXX_FLAGS}")
+IF(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
+   SET(CMAKE_BUILD_TYPE RelWithDebInfo)
+ENDIF(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
+
+
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
 pkg_check_modules(GUIDEPS REQUIRED 
   sigc++-2.0>=2.0 
