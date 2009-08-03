@@ -5,7 +5,7 @@ varying vec4 passworld;
 
 void main()
 {		
-  vec4 outcolor = vec4{1.0, 1.0, 1.0, 0.0}; 	
+  vec4 outcolor = vec4(1.0, 1.0, 1.0, 0.0); 	
 
   if (passworld.x < activePos)
   {	
