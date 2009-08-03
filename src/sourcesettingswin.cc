@@ -63,7 +63,7 @@ void SourceSettingsWin::show()
     throw std::runtime_error("Can't show SourceSettingsWin without attached SomaNetworkCodec"); 
   }
   populate();   
-  pDialog_->run(); 
+  pDialog_->show(); 
 }
 
 void SourceSettingsWin::populate()
