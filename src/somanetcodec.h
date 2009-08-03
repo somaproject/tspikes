@@ -52,7 +52,8 @@ class SomaNetworkCodec
 // 		   chanproplist_t channels); 
   
   SomaNetworkCodec(pNetworkInterface_t pNetwork, int src); 
-  
+  ~SomaNetworkCodec(); 
+
   // state change interface
   void setChannelState(int channel, const TSpikeChannelState &) ; 
   TSpikeChannelState getChannelState(int channel); 

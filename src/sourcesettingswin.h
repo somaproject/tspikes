@@ -23,6 +23,14 @@ typedef Glib::RefPtr<Gtk::Widget> pwidget_t;
 typedef int channel_t; 
 typedef std::set<channel_t> chanset_t; 
 
+// forward declarations
+class GainComboSetting; 
+class HPFCheckSetting; 
+class FilterComboSetting; 
+class TholdEntrySetting;
+
+
+
 class SourceSettingsWin
 // Generic management and configuration for the soma 
 // network protocol; takes in a somanetcodec and operates asynchronously
@@ -30,6 +38,7 @@ class SourceSettingsWin
 {
  public: 
   SourceSettingsWin(); 
+  ~SourceSettingsWin(); 
   void setCodec(pSomaNetworkCodec_t sc); 
 
   void show(); 
@@ -46,8 +55,12 @@ class SourceSettingsWin
 
   
   void populate(); 
-
-  
+  // pointers that we need to keep a hold on
+  std::list<GainComboSetting *> gcsptrs_;
+  std::list<HPFCheckSetting *> hcsptrs_; 
+  std::list<FilterComboSetting *> fcsptrs_; 
+  std::list<TholdEntrySetting *> tesptrs_; 
+ 
 }; 
 
 #endif // SOURCESETTINGSWIN_H

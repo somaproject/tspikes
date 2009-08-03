@@ -62,7 +62,11 @@ SomaNetworkCodec::SomaNetworkCodec(pNetworkInterface_t pNetwork, int src) :
   
 }
 
-
+SomaNetworkCodec::~SomaNetworkCodec()
+{
+  pNetwork_->shutdown(); 
+  
+}
 
 sigc::signal<void, int, TSpikeChannelState> &  SomaNetworkCodec::signalSourceStateChange() {
   return signalSourceStateChange_; 

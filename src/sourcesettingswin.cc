@@ -1,5 +1,7 @@
+#include <boost/foreach.hpp>
 #include "sourcesettingswin.h"
 #include <string>
+
 #include "combosetting.h" 
 #include "gaincombosetting.h"
 #include "filtercombosetting.h"
@@ -25,10 +27,35 @@ SourceSettingsWin::SourceSettingsWin() :
 
 }
 
+SourceSettingsWin::~SourceSettingsWin()
+{
+  BOOST_FOREACH(GainComboSetting * gcs, gcsptrs_) 
+    {
+      delete gcs; 
+    }
+  
+  BOOST_FOREACH(HPFCheckSetting * hcs, hcsptrs_) 
+    {
+      delete hcs; 
+    } 
+
+  BOOST_FOREACH(FilterComboSetting * fcs,  fcsptrs_)
+    {
+      delete fcs; 
+    }
+  
+  BOOST_FOREACH(TholdEntrySetting * tes,  tesptrs_)
+    {
+      delete tes; 
+    }
+
+}
+
+
 void SourceSettingsWin::setCodec(pSomaNetworkCodec_t nc) {
   pSomaNetCodec_ = nc; 
   chanPropList_  = pSomaNetCodec_->getChans(); 
-
+  
 }
 void SourceSettingsWin::show()
 {
@@ -74,15 +101,19 @@ void SourceSettingsWin::populate()
 
   GainComboSetting * gcsall = new GainComboSetting(pSomaNetCodec_, chansall, gainMap); 
   pTableSourceSettings_->attach(*gcsall, 1, 2, 1, 2); 
+  gcsptrs_.push_back(gcsall); 
   
   HPFCheckSetting * hcsall = new HPFCheckSetting(pSomaNetCodec_, chansall); 
   pTableSourceSettings_->attach(*hcsall, 2, 3, 1, 2); 
+  hcsptrs_.push_back(hcsall); 
 
   FilterComboSetting * fcsall = new FilterComboSetting(pSomaNetCodec_, chansall, filterMap); 
   pTableSourceSettings_->attach(*fcsall, 3, 4, 1, 2); 
+  fcsptrs_.push_back(fcsall); 
  
   TholdEntrySetting * tesall = new TholdEntrySetting(pSomaNetCodec_, chansall); 
   pTableSourceSettings_->attach(*tesall, 4, 5, 1, 2); 
+  tesptrs_.push_back(tesall); 
  
  
   int rowpos = 2; 
@@ -96,15 +127,19 @@ void SourceSettingsWin::populate()
 
     GainComboSetting * gcs = new GainComboSetting(pSomaNetCodec_, chans, gainMap); 
     pTableSourceSettings_->attach(*gcs, 1, 2, rowpos, rowpos +1); 
+    gcsptrs_.push_back(gcs); 
 
     HPFCheckSetting * hcs = new HPFCheckSetting(pSomaNetCodec_, chans); 
     pTableSourceSettings_->attach(*hcs, 2, 3, rowpos, rowpos +1); 
+    hcsptrs_.push_back(hcs); 
 
     FilterComboSetting * fcs = new FilterComboSetting(pSomaNetCodec_, chans, filterMap); 
     pTableSourceSettings_->attach(*fcs, 3, 4, rowpos, rowpos +1); 
+    fcsptrs_.push_back(fcs); 
 
     TholdEntrySetting * tes = new TholdEntrySetting(pSomaNetCodec_, chans); 
     pTableSourceSettings_->attach(*tes, 4, 5, rowpos, rowpos+1); 
+    tesptrs_.push_back(tes); 
  
     
     rowpos++; 
