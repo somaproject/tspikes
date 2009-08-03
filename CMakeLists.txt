@@ -20,7 +20,6 @@ pkg_check_modules(GUIDEPS REQUIRED
 pkg_check_modules(SOMADEPS REQUIRED
   somanetwork-1.0>=1.0
   somadspio-1.0>=1.0
-  log4cpp>=1.0
 )
 
 ENABLE_TESTING()

@@ -18,8 +18,6 @@ namespace po = boost::program_options;
 namespace bf = boost::filesystem;
 namespace bl = boost::logging; 
 
-std::string LOGROOT("soma.tspikes"); 
-
 int main(int argc, char** argv)
 {
   using namespace std; 
@@ -110,16 +108,16 @@ int main(int argc, char** argv)
   //  fakedata::Grid g(0, 10, 10000); 
 
   std::vector<TSpike_t> preload_spikes; 
-// //   for (int i = 0; i < 50000; i++) {
+// //   for (int i = 0; i < 50000; i++) {b
 // //     preload_spikes.push_back(g.next()); 
 // //   }
   
   TSpikeWin tspikewin(network, vm["datasrc"].as<int>(), expStartTime,
-		      preload_spikes);
+ 		      preload_spikes);
   
   
   kit.run(tspikewin);
-  
+  std::cout << "The end of main()" << std::endl; 
   return 0; 
 
 }
