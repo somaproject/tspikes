@@ -1,6 +1,7 @@
 set(tspikes_SRCS
   clusterrenderer.cc glspikes.cc  spikewaveview.cc
-  ttreader.cc clusterview.cc
+  #ttreader.cc
+ clusterview.cc
   glconfig.cc  ratetimeline.cc tspikemain.cc
   tspikewin.cc spikewaverenderer.cc somanetcodec.cc
   sourcesettingswin.cc gaincombosetting.cc 
