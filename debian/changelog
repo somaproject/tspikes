@@ -1,3 +1,10 @@
+tspikes (0.9~somatesting-jaunty-github-090804153639) jaunty; urgency=low
+
+  * Fixed build target to install tspikes binary
+  * Git Revision Hash: cf8d271f54ff80fff128bd401ced32e1f09425c1
+
+ -- Stuart Layton <slayton@mit.edu>  Tue, 04 Aug 2009 15:38:41 -0400
+
 tspikes (0.9~somatesting-jaunty-github-090804113949) jaunty; urgency=low
 
   * removed HDF5 dependency in the test runner
