@@ -10,4 +10,4 @@ Standards-Version: 3.8.0
 Package: tspikes
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: Soma 4 channel spike visualizatin software
+Description: Soma 4 channel spike visualization software

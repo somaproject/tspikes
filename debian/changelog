@@ -1,3 +1,12 @@
+tspikes (0.9~somatesting-jaunty-github-090804163425) jaunty; urgency=low
+
+  * updated debian/changelog and removed old debian/ file
+  * Removed ttreader dependency for building
+  * Git Revision Hash: db2bcc64b3a84f3c8a59f01a1338752f1d414ad0
+  [ Stuart Layton ]
+
+ -- Stuart Layton <slayton@mit.edu>  Tue, 04 Aug 2009 16:33:57 -0400
+
 tspikes (0.9~somatesting-jaunty-github-090804153639) jaunty; urgency=low
 
   * Fixed build target to install tspikes binary
