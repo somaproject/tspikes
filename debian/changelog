@@ -1,3 +1,38 @@
+tspikes (0.9~somatesting-jaunty-github-090804113949) jaunty; urgency=low
+
+  * removed HDF5 dependency in the test runner
+  * Revision:b5ca00d6dd07352073466d9f43564ac8f0bc9281
+
+ -- Stuart Layton <slayton@mit.edu>  Tue, 04 Aug 2009 11:38:58 -0400
+
+tspikes (0.9~somatesting-jaunty-github-090804094847) jaunty; urgency=low
+
+  * Added a lot of additional logging
+  * Moved to new logging, with helpers
+  * Updates to window modified grid Added extra invalidates() so that
+    status text gets updated
+  * * src/tspikemain.cc: Logging should now work with new framework
+  * Removed cout-based debugging information
+  * Dave's change to fix gradient vert shader
+  * Fixed "TSpikes crashes on exit" -- we were not properly destroying
+    widgets that had pointers to the somanetwork::pNetwork_t shared
+    pointer, so the destructor for the network object was never being
+    called. [#13 state:resolved]
+  * Removed old log4cpp cruft.
+  * Added "RelWithDebInfo" target [#2 state:resolved]
+  * Changed settings dialog invocation from "run()" to "show()" so it is
+    no longer modal. [#9 state:resolved]
+  * Moved curly brace to parens.
+  * Revision:8283ae454b9472b4d8da58027430f726eaaa79ff
+
+ -- Stuart Layton <slayton@mit.edu>  Tue, 04 Aug 2009 09:45:59 -0400
+
+tspikes (0.9~soma-ubuntu11) jaunty; urgency=low
+
+  * empty changelog
+
+ -- Stuart Layton <slayton@mit.edu>  Tue, 07 Jul 2009 19:58:38 -0400
+
 tspikes (0.9~soma-ubuntu10) jaunty; urgency=low
 
   * added missing coma
