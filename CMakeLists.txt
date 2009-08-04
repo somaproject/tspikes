@@ -3,15 +3,14 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 PROJECT(tspikes)
 
-find_package(Boost 1.37.0 COMPONENTS thread unit_test_framework filesystem program_options system REQUIRED)
-find_package(PkgConfig)
-
-# we should handle this with build/release distinctions, but I'm not that l33t. 
-
 IF(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
    SET(CMAKE_BUILD_TYPE RelWithDebInfo)
 ENDIF(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
 
+find_package(Boost 1.37.0 COMPONENTS thread unit_test_framework filesystem program_options system REQUIRED)
+find_package(PkgConfig)
+
+# we should handle this with build/release distinctions, but I'm not that l33t. 
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 

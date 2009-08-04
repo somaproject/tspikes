@@ -108,8 +108,8 @@ set(SHADERS
 set(GLADEFILES
   tspikes.glade)
 
-#install( TARGETS tspikes tspikes-test-clustervis
-#  DESTINATION bin)
+install( TARGETS tspikes # tspikes-test-clustervis
+ DESTINATION bin)
 
 install(FILES ${SHADERS}
   DESTINATION share/${PROJECT_NAME})
