@@ -595,37 +595,38 @@ void ClusterRenderer::drawRangeBox()
   float xwidth = viewX2_ - viewX1_; 
   float ywidth = viewY2_ - viewY1_; 
 
-
-  glBegin(GL_LINE_LOOP); 
-  glVertex2f(viewX2_ -  xwidth*frac, viewY2_); 
-  glVertex2f(viewX2_, viewY2_); 
-  glVertex2f(viewX2_, viewY2_ - ywidth*frac); 
-  glVertex2f(viewX2_ - xwidth*frac, viewY2_ - ywidth*frac); 
-  glEnd(); 
+//   glBegin(GL_LINE_LOOP); 
+//   glVertex2f(viewX2_ -  xwidth*frac, viewY2_); 
+//   glVertex2f(viewX2_, viewY2_); 
+//   glVertex2f(viewX2_, viewY2_ - ywidth*frac); 
+//   glVertex2f(viewX2_ - xwidth*frac, viewY2_ - ywidth*frac); 
+//   glEnd(); 
   
   // draw the border
+  float border_lower_x = viewX2_ -  xwidth*frac; 
+  float border_lower_y = viewY2_ - ywidth*frac; 
   glColor4f(1.0, 1.0, 1.0, 1.0); 
   glBegin(GL_LINE_LOOP); 
-  glVertex2f(viewX2_ -  xwidth*frac, viewY2_); 
+  glVertex2f(border_lower_x, viewY2_); 
   glVertex2f(viewX2_, viewY2_); 
-  glVertex2f(viewX2_, viewY2_ - ywidth*frac); 
-  glVertex2f(viewX2_ - xwidth*frac, viewY2_ - ywidth*frac); 
+  glVertex2f(viewX2_, border_lower_y); 
+  glVertex2f(border_lower_x, border_lower_y); 
   glEnd(); 
 
   // now, draw the active region
   glColor4f(1.0, 0.0, 0.0, 1.0); 
   glBegin(GL_LINE_LOOP); 
   // lower-left coordinate
-  glVertex2f(viewX2_ - xwidth*frac, viewY2_ - ywidth*frac); 
+  glVertex2f(border_lower_x, border_lower_y); 
 
-  glVertex2f(viewX2_ - xwidth*frac, 
-	     viewY2_ - ywidth*frac + viewY2_/rangeY_*frac*ywidth); 
+  glVertex2f(border_lower_x, 
+	     border_lower_y + viewY2_/rangeY_*frac*ywidth); 
 
-  glVertex2f(viewX2_ - xwidth*frac + viewX2_/rangeX_*xwidth*frac, 
- 	     viewY2_ - ywidth*frac + viewY2_/rangeY_*frac*ywidth); 
+  glVertex2f(border_lower_x + viewX2_/rangeX_*xwidth*frac, 
+ 	     border_lower_y + viewY2_/rangeY_*frac*ywidth); 
 
-  glVertex2f(viewX2_ - xwidth*frac + viewX2_/rangeX_*frac*xwidth, 
-	     viewY2_ - ywidth*frac ); 
+  glVertex2f(border_lower_x + viewX2_/rangeX_*frac*xwidth, 
+	     border_lower_y ); 
 
   glEnd(); 
 
