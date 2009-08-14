@@ -1,6 +1,13 @@
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/date_time.hpp>
+#include <boost/date_time/posix_time/conversion.hpp>
+
 #include "tspikewin.h"
 #include "glspikes.h"
 #include <boost/assign.hpp>
+
+using namespace boost::posix_time;
+
 
 TSpikeWin::TSpikeWin(pNetworkInterface_t pNetwork, 
 		     datasource_t src,
@@ -358,12 +365,10 @@ void TSpikeWin::setTime(somatime_t  stime)
       lastRateTime_ = reltime; 
       lastRateSpikeCount_ = spikeCount_; 
     }
-  
-  abstime_t hours = trunc(t / (60*60)); 
-  abstime_t mins = trunc((t - (hours*60)) / 60); 
-  abstime_t secs = round(( t - hours * 60 * 60  - mins * 60)); 
+
+  time_duration td = microseconds(reltime * 1e6); 
   boost::format timeformat("Live \n(%d:%02d:%02d)\n%d"); 
-  timeformat % hours % mins % secs % stime; 
+  timeformat % td.hours() % td.minutes() % td.seconds() % stime; 
   liveButton_.set_label(boost::str(timeformat)); 
   lastSomaTime_; 
 }
