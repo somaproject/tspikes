@@ -144,8 +144,12 @@ bool ClusterView::on_expose_event(GdkEventExpose* event)
     //assert(0 == 1);
       return false;
     }
-  clusterRenderer_.render(); 
-  
+
+  if (rangeX_ == 0  or rangeY_ == 0) {
+    //clusterRenderer_.renderDisabled(); 
+  } else { 
+    clusterRenderer_.render(); 
+  }
   // Swap buffers.
   gldrawable->swap_buffers();
   gldrawable->gl_end();
@@ -216,25 +220,19 @@ void ClusterView::setView(GLSPVectMap_t::const_iterator sstart,
 void ClusterView::zoomX(float factor)
 {
  
-  x2_ = x2_ * factor; 
 
-  if (x2_ > rangeX_)
-    x2_ = rangeX_; 
-  setViewingWindow(x1_, y1_, x2_, y2_); 
+  float newx2 = x2_ * factor; 
 
-  xViewChangeSignal_.emit(x2_); 
+  xViewChangeRequestSignal_.emit(newx2, newx2/rangeX_); 
 
 }
 
 void ClusterView::zoomY(float factor)
 {
-  y2_ = y2_ * factor; 
-  if (y2_ > rangeY_)
-    y2_ = rangeY_; 
-  
-  
-  setViewingWindow(x1_, y1_, x2_, y2_); 
-  yViewChangeSignal_.emit(y2_); 
+  float newy2 = y2_ * factor; 
+
+  yViewChangeRequestSignal_.emit(newy2, newy2/rangeY_); 
+
 }
 
 void ClusterView::setGrid(float g)
@@ -289,16 +287,40 @@ bool ClusterView::on_button_press_event(GdkEventButton* event)
 
 void ClusterView::setXView(float x)
 {
+  /* Actually change the view */ 
+
+
   x2_ = x; 
-  zoomX(1.0); 
+
+  if (x2_ > rangeX_)
+    x2_ = rangeX_; 
+  setViewingWindow(x1_, y1_, x2_, y2_); 
+
+}
+
+void ClusterView::setXViewFraction(float x)
+{
+  setXView(rangeX_ * x); 
 }
 
 void ClusterView::setYView(float y)
 {
+  /* actually change the view */ 
+
   y2_ = y; 
-  zoomY(1.0); 
+
+  if (y2_ > rangeY_)
+    y2_ = rangeY_; 
+  
+  setViewingWindow(x1_, y1_, x2_, y2_); 
 
 }
+
+void ClusterView::setYViewFraction(float y)
+{
+  setYView(rangeY_ * y); 
+}
+
 
 void ClusterView::updateState(bool X, const TSpikeChannelState & state)
 {

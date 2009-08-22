@@ -300,3 +300,35 @@ void SomaNetworkCodec::dspFilterID(int chan, somadspio::filterid_t fid)
   }
 }
 
+
+std::map<uint32_t, std::string> SomaNetworkCodec::getAvailableFilters()
+{
+  std::map<uint32_t, std::string> filterMap; 
+
+  filterMap[0] = "none"; 
+  filterMap[1] = "DC-9kHz"; 
+  filterMap[2] = "100-200Hz"; 
+
+  return filterMap;   
+  
+} 
+
+
+std::map<int, std::string> SomaNetworkCodec::getAvailableGains()
+{
+
+  std::map<int, std::string> gainMap; 
+  
+  gainMap[0] = "0"; 
+  gainMap[100] = "100"; 
+  gainMap[200] = "200"; 
+  gainMap[500] = "500"; 
+  gainMap[1000] = "1000"; 
+  gainMap[2000] = "2000"; 
+  gainMap[5000] = "5000"; 
+  gainMap[10000] = "10000"; 
+  
+  return gainMap; 
+
+
+}

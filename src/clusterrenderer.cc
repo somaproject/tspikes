@@ -6,6 +6,19 @@
 
 using namespace  boost::filesystem;
 
+std::pair<int, int> getCViewPair(CViewMode cm)
+{
+  switch(cm) {
+  case VIEW12: return std::make_pair(0, 1); 
+  case VIEW13: return std::make_pair(0, 2); 
+  case VIEW14: return std::make_pair(0, 3); 
+  case VIEW23: return std::make_pair(1, 2); 
+  case VIEW24: return std::make_pair(1, 3); 
+  case VIEW34: return std::make_pair(2, 3); 
+  }
+
+}
+
 ClusterRenderer::ClusterRenderer(SpikePointVectDatabase & spvdb , CViewMode cvm)
   : spvdb_(spvdb),
     decayRate_(0.09), 
@@ -140,13 +153,20 @@ void ClusterRenderer::setup()
 bool ClusterRenderer::setViewingWindow(float x1, float y1, 
 				   float x2, float y2)
 {
-
+  if (x1 == x2 or y1 == y2) { 
+    std::cout << " ClusterRenderer::setViewingWindow to invalid "
+	      << x1 << " " << y1 << " " 
+	      << x2 << " " << y2 << std::endl; 
+    return false; 
+  }
   viewX1_ = x1; 
   viewX2_ = x2; 
   viewY1_ = y1; 
   viewY2_ = y2; 
 
   viewChanged_ = true; 
+
+  return true; 
 }
 
 void ClusterRenderer::updateViewingWindow()

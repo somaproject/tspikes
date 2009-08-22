@@ -23,6 +23,7 @@
 enum DecayMode {LINEAR, LOG}; 
 enum CViewMode  {VIEW12, VIEW13, VIEW14, VIEW23, VIEW24, VIEW34}; 
 
+std::pair<int, int>  getCViewPair(CViewMode); 
 
 class ClusterRenderer 
 {

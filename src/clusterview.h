@@ -13,6 +13,8 @@
 
 #include <gtkglmm.h>
 
+#include <boost/ptr_container/ptr_vector.hpp>
+
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glext.h>
@@ -54,14 +56,17 @@ public:
   float rangeX_;
   float rangeY_; 
 
-  sigc::signal <void, float> & xViewChangeSignal() 
-    { return xViewChangeSignal_; }
+  sigc::signal <void, float, float> & xViewChangeRequestSignal() 
+    { return xViewChangeRequestSignal_; }
 
-  sigc::signal <void, float> & yViewChangeSignal()
-    {return yViewChangeSignal_; }
-
+  sigc::signal <void, float, float> & yViewChangeRequestSignal()
+  {return yViewChangeRequestSignal_; }
+  
   void setXView(float); 
   void setYView(float); 
+
+  void setXViewFraction(float); 
+  void setYViewFraction(float); 
 
 protected:
 
@@ -89,8 +94,11 @@ protected:
   float lastX_; 
   float lastY_; 
 
-  sigc::signal<void, float> xViewChangeSignal_; 
-  sigc::signal<void, float> yViewChangeSignal_; 
+  sigc::signal<void, float, float> xViewChangeRequestSignal_; 
+  sigc::signal<void, float, float> yViewChangeRequestSignal_; 
   
 };
+
+typedef boost::ptr_vector<ClusterView> clusterViews_t; 
+
 #endif

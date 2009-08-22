@@ -71,20 +71,18 @@ void SourceSettingsWin::populate()
 
   // FIXME: Move these to some remote configuration interface
   settingmap_t gainMap; 
-  gainMap[0] = "0"; 
-  gainMap[100] = "100"; 
-  gainMap[200] = "200"; 
-  gainMap[500] = "500"; 
-  gainMap[1000] = "1000"; 
-  gainMap[2000] = "2000"; 
-  gainMap[5000] = "5000"; 
-  gainMap[10000] = "10000"; 
+  typedef std::pair<const int, std::string> gainmap_t; 
+  BOOST_FOREACH(gainmap_t v, pSomaNetCodec_->getAvailableGains())
+    {
+      gainMap[v.first] = v.second; 
+    }
   
   settingmap_t filterMap; 
-  filterMap[0] = "none"; 
-  filterMap[1] = "DC-9kHz"; 
-  filterMap[2] = "100-200Hz"; 
-
+  typedef std::pair<const uint32_t, std::string> filtermap_t; 
+  BOOST_FOREACH(filtermap_t v, pSomaNetCodec_->getAvailableFilters()) {
+    filterMap[v.first] = v.second; 
+  }
+  
 
   // populate the settings -- ugly and a lot of work, but oh well. 
   chanproplist_t::iterator c; 

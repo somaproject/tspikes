@@ -70,6 +70,12 @@ class SomaNetworkCodec
   void refreshStateCache(); 
   chanproplist_t getChans() { return chanprops_; } ; 
 
+  // filter settings
+  std::map<uint32_t, std::string> getAvailableFilters(); 
+
+  // gains
+  std::map<int, std::string> getAvailableGains(); 
+  
  private:
   pNetworkInterface_t pNetwork_; 
   int dsrc_;  /// data source # 

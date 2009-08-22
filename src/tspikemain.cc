@@ -37,9 +37,10 @@ int main(int argc, char** argv)
     ("enable-tspikes-log", po::value<string>(), "Enable logging for tspikes")
     ("enable-network-log", po::value<string>()->default_value("warning"), "Enable soma network debugging at this level")
     ("enable-dspio-log", po::value<string>()->default_value("warning"), "Enable soma DSP IO debugging at this level")
+    ("force-reference-time", po::value<long>()->default_value(0), "Force the reference timestamp")
     ;
   
-
+  
   po::variables_map vm;
   po::store(po::parse_command_line(argc, argv, desc), vm);
   po::notify(vm);    
@@ -102,8 +103,12 @@ int main(int argc, char** argv)
 
     return -1; 
   }
-  
+
   somatime_t expStartTime = 0; 
+  
+  if(vm.count("force-reference-time")) {
+    expStartTime =  vm["force-reference-time"].as<long>(); 
+  }
 
   //  fakedata::Grid g(0, 10, 10000); 
 
@@ -117,7 +122,7 @@ int main(int argc, char** argv)
   
   
   kit.run(tspikewin);
-  std::cout << "The end of main()" << std::endl; 
+
   return 0; 
 
 }

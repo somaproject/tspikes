@@ -12,7 +12,7 @@
 #include <gtkglmm.h>
 
 #include <boost/ptr_container/ptr_map.hpp>
-#include <boost/ptr_container/ptr_vector.hpp>
+#include <boost/scoped_ptr.hpp>
 
 #include <somanetwork/networkinterface.h>
 #include <somanetwork/tspike.h>
@@ -24,6 +24,7 @@
 #include "somanetcodec.h"
 #include "sourcesettingswin.h" 
 #include "tslogging.h" 
+#include "clusterviewcontroller.h"
 
 // widget list types
 typedef boost::ptr_vector<SpikeWaveView> pSpikeWaveViewVect_t; 
@@ -76,12 +77,11 @@ protected:
 
   // 
   #ifndef NO_GL
-  ClusterView clusterViewXY_;
-  ClusterView clusterViewXA_;
-  ClusterView clusterViewXB_;
-  ClusterView clusterViewYA_;
-  ClusterView clusterViewYB_;
-  ClusterView clusterViewAB_;
+  
+  clusterViews_t clusterViews_; 
+
+  ClusterViewController * pClusterViewController_; 
+  
 
   SpikeWaveView spikeWaveViewX_;
   SpikeWaveView spikeWaveViewY_;

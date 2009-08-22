@@ -1,7 +1,8 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/date_time.hpp>
 #include <boost/date_time/posix_time/conversion.hpp>
-
+#include <boost/assign/std/vector.hpp> 
+#include <boost/foreach.hpp>
 #include "tspikewin.h"
 #include "glspikes.h"
 #include <boost/assign.hpp>
@@ -23,13 +24,6 @@ TSpikeWin::TSpikeWin(pNetworkInterface_t pNetwork,
   clusterViewVBox_(false, 0), 
   mainHBox_(false, 0), 
 #ifndef NO_GL
-  clusterViewXY_(spvdb_, VIEW12), 
-  clusterViewXA_(spvdb_, VIEW13), 
-  clusterViewXB_(spvdb_, VIEW14), 
-  clusterViewYA_(spvdb_, VIEW23), 
-  clusterViewYB_(spvdb_, VIEW24), 
-  clusterViewAB_(spvdb_, VIEW34), 
-  
   spikeWaveViewX_(CHANX), 
   spikeWaveViewY_(CHANY), 
   spikeWaveViewA_(CHANA), 
@@ -59,20 +53,23 @@ TSpikeWin::TSpikeWin(pNetworkInterface_t pNetwork,
   
   int clusterWidth = 165; 
 #ifndef NO_GL
-  clusterViewXY_.set_size_request(clusterWidth, clusterWidth);
-  clusterViewXA_.set_size_request(clusterWidth, clusterWidth);
-  clusterViewXB_.set_size_request(clusterWidth, clusterWidth);
-  clusterViewYA_.set_size_request(clusterWidth, clusterWidth);
-  clusterViewYB_.set_size_request(clusterWidth, clusterWidth);
-  clusterViewAB_.set_size_request(clusterWidth, clusterWidth);
+  using namespace boost::assign; 
+  std::vector<CViewMode> modes; 
+  modes += VIEW12, VIEW13, VIEW14, VIEW23, VIEW24, VIEW34; 
 
-  
-  clusterTable_.attach(clusterViewXY_, 0, 1, 0, 1);
-  clusterTable_.attach(clusterViewXA_, 1, 2, 0, 1);
-  clusterTable_.attach(clusterViewXB_, 2, 3, 0, 1);
-  clusterTable_.attach(clusterViewYA_, 0, 1, 1, 2);
-  clusterTable_.attach(clusterViewYB_, 1, 2, 1, 2);
-  clusterTable_.attach(clusterViewAB_, 2, 3, 1, 2);
+  for (int i = 0; i < 6; i++) {
+    clusterViews_.push_back(new ClusterView(spvdb_, modes[i])); 
+    clusterViews_[i].set_size_request(clusterWidth, clusterWidth);
+  }
+
+  pClusterViewController_ = new ClusterViewController(clusterViews_); 
+
+  clusterTable_.attach(clusterViews_[0], 0, 1, 0, 1);
+  clusterTable_.attach(clusterViews_[1], 1, 2, 0, 1);
+  clusterTable_.attach(clusterViews_[2], 2, 3, 0, 1);
+  clusterTable_.attach(clusterViews_[3], 0, 1, 1, 2);
+  clusterTable_.attach(clusterViews_[4], 1, 2, 1, 2);
+  clusterTable_.attach(clusterViews_[5], 2, 3, 1, 2);
 
   rateTimeline_.set_size_request(clusterWidth*3, 60); 
 #endif // NO_GL
@@ -114,52 +111,12 @@ TSpikeWin::TSpikeWin(pNetworkInterface_t pNetwork,
 
   float decay = 0.05; 
 #ifndef NO_GL
-  clusterViewXY_.setView(spvdb_.begin(), 
-			 spvdb_.end(), 
-			 decay, LOG); 
-  clusterViewXY_.setViewingWindow(0, 0, float(150e-6), float(150e-6));
-
-  clusterViewXA_.setView(spvdb_.begin(), 
-			 spvdb_.end(), 
-			 decay, LOG); 
-  clusterViewXA_.setViewingWindow(0, 0, float(150e-6), float(150e-6));
-
-  clusterViewXB_.setView(spvdb_.begin(), 
-			 spvdb_.end(), 
-			 decay, LOG); 
-  clusterViewXB_.setViewingWindow(0, 0, float(150e-6), float(150e-6));
-
-  clusterViewYA_.setView(spvdb_.begin(), 
-			 spvdb_.end(), 
-			 decay, LOG); 
-  clusterViewYA_.setViewingWindow(0, 0, float(150e-6), float(150e-6));
-
-  clusterViewYB_.setView(spvdb_.begin(), 
-			 spvdb_.end(), 
-			 decay, LOG); 
-  clusterViewYB_.setViewingWindow(0, 0, float(150e-6), float(150e-6));
-
-  clusterViewAB_.setView(spvdb_.begin(), 
-			 spvdb_.end(), 
-			 decay, LOG); 
-  clusterViewAB_.setViewingWindow(0, 0, float(150e-6), float(150e-6));
-
-
-  // now we wire up all of the views together so zooms are sync'd
-  clusterViewXY_.xViewChangeSignal().connect(
-					      sigc::mem_fun(clusterViewXA_, 
-							    &ClusterView::setXView)); 
-  clusterViewXY_.xViewChangeSignal().connect(
-					      sigc::mem_fun(clusterViewXB_, 
-							    &ClusterView::setXView)); 
-
-  clusterViewXY_.yViewChangeSignal().connect(
-					      sigc::mem_fun(clusterViewYA_, 
-							    &ClusterView::setXView)); 
-
-  clusterViewXY_.yViewChangeSignal().connect(
-					      sigc::mem_fun(clusterViewYB_, 
-							    &ClusterView::setXView)); 
+  for (int i = 0; i < 6; i++) {
+    clusterViews_[i].setView(spvdb_.begin(), 
+			   spvdb_.end(), 
+			   decay, LOG); 
+    clusterViews_[i].setViewingWindow(0, 0, float(150e-6), float(150e-6));
+  }
 
   
   spikeWaveViewX_.setAmplitudeView(-100e-6, 300e-6); 
@@ -311,6 +268,7 @@ void TSpikeWin::setupMenus()
 
 TSpikeWin::~TSpikeWin()
 {
+  delete pClusterViewController_; 
 
 }
 
@@ -320,12 +278,9 @@ bool TSpikeWin::on_idle()
   TSL_(debug) << "TSpikeWin: on idle"; 
 
 #ifndef NO_GL
-  clusterViewXY_.invalidate(); 
-  clusterViewXA_.invalidate(); 
-  clusterViewXB_.invalidate(); 
-  clusterViewYA_.invalidate(); 
-  clusterViewYB_.invalidate(); 
-  clusterViewAB_.invalidate(); 
+  BOOST_FOREACH(ClusterView & cv, clusterViews_) {
+    cv.invalidate(); 
+  }
 
   spikeWaveViewX_.invalidate(); 
   spikeWaveViewY_.invalidate(); 
@@ -434,30 +389,16 @@ void TSpikeWin::updateClusterView(bool isLive, reltime_t activePos, float decayR
   
   // now update internal iterators
 #ifndef NO_GL
-  clusterViewXY_.setView(t1i, t2i, 
-			 decayRate, LOG); 
+  
+  BOOST_FOREACH(ClusterView & cv, clusterViews_) {
+    cv.setView(t1i, t2i, decayRate, LOG);
+  }
 
-  clusterViewXA_.setView(t1i, t2i, 
-			 decayRate, LOG); 
 
-  clusterViewXB_.setView(t1i, t2i, 
-			 decayRate, LOG); 
+  BOOST_FOREACH(ClusterView & cv, clusterViews_) {
+    cv.invalidate(); 
+  }
 
-  clusterViewYA_.setView(t1i, t2i, 
-			 decayRate, LOG); 
-
-  clusterViewYB_.setView(t1i, t2i, 
-			 decayRate, LOG); 
-
-  clusterViewAB_.setView(t1i, t2i, 
-			 decayRate, LOG); 
-
-  clusterViewXY_.invalidate(); 
-  clusterViewXA_.invalidate(); 
-  clusterViewXB_.invalidate(); 
-  clusterViewYA_.invalidate(); 
-  clusterViewYB_.invalidate(); 
-  clusterViewAB_.invalidate(); 
 #endif // NO_GL
 
 }
@@ -505,36 +446,35 @@ void TSpikeWin::sourceStateChangeCallback(int chan, TSpikeChannelState state)
 
   switch(chan) {
   case 0:
-    TSL_(info) << "Updating chan 0  by calling updateState on stuff" << std::endl; 
     spikeWaveViewX_.updateState(state); 
 
-    clusterViewXY_.updateState(true, state); 
-    clusterViewXA_.updateState(true, state); 
-    clusterViewXB_.updateState(true, state); 
+    clusterViews_[0].updateState(true, state); 
+    clusterViews_[1].updateState(true, state); 
+    clusterViews_[2].updateState(true, state); 
     break; 
 
   case 1:
     spikeWaveViewY_.updateState(state); 
 
-    clusterViewXY_.updateState(false, state);
-    clusterViewYA_.updateState(true, state); 
-    clusterViewYB_.updateState(true, state); 
+    clusterViews_[0].updateState(false, state);
+    clusterViews_[3].updateState(true, state); 
+    clusterViews_[4].updateState(true, state); 
     break;
 
   case 2:
     spikeWaveViewA_.updateState(state); 
 
-    clusterViewXA_.updateState(false, state);
-    clusterViewYA_.updateState(false, state); 
-    clusterViewAB_.updateState(true, state); 
+    clusterViews_[1].updateState(false, state);
+    clusterViews_[3].updateState(false, state); 
+    clusterViews_[5].updateState(true, state); 
     break;
 
   case 3:
     spikeWaveViewB_.updateState(state); 
 
-    clusterViewXB_.updateState(false, state);
-    clusterViewYB_.updateState(false, state); 
-    clusterViewAB_.updateState(false, state); 
+    clusterViews_[2].updateState(false, state);
+    clusterViews_[4].updateState(false, state); 
+    clusterViews_[5].updateState(false, state); 
     break;
 
   }
@@ -560,12 +500,10 @@ void TSpikeWin::newTSpikeCallback(const TSpike_t & ts)
 
   spikeCount_++; 
 #ifndef NO_GL
-  clusterViewXY_.invalidate(); 
-  clusterViewXA_.invalidate(); 
-  clusterViewXB_.invalidate(); 
-  clusterViewYA_.invalidate(); 
-  clusterViewYB_.invalidate(); 
-  clusterViewAB_.invalidate(); 
+  BOOST_FOREACH(ClusterView & cv, clusterViews_) {
+    cv.invalidate(); 
+  }
+
 #endif
 
 
@@ -617,12 +555,10 @@ void TSpikeWin::on_action_reset_data()
   spikeWaveViewB_.resetData();
 
   
-  clusterViewXY_.resetData(); 
-  clusterViewXA_.resetData(); 
-  clusterViewXB_.resetData();
-  clusterViewYA_.resetData(); 
-  clusterViewYB_.resetData(); 
-  clusterViewAB_.resetData();
+  BOOST_FOREACH(ClusterView & cv, clusterViews_) {
+    cv.resetData(); 
+  }
+
   #endif
 }
 
@@ -634,12 +570,10 @@ void TSpikeWin::on_action_reset_views()
   spikeWaveViewA_.resetView(); 
   spikeWaveViewB_.resetView();
 
-  clusterViewXY_.resetView(); 
-  clusterViewXA_.resetView(); 
-  clusterViewXB_.resetView();
-  clusterViewYA_.resetView(); 
-  clusterViewYB_.resetView(); 
-  clusterViewAB_.resetView();
+  BOOST_FOREACH(ClusterView & cv, clusterViews_) {
+    cv.resetView(); 
+  }
+
   #endif
 
 }

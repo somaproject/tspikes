@@ -7,7 +7,7 @@ set(tspikes_SRCS
   sourcesettingswin.cc gaincombosetting.cc 
   hpfchecksetting.cc combosetting.cc filtercombosetting.cc
   tholdentrysetting.cc voltage.cc ratetimelinerenderer.cc
-  tslogging.cc
+  tslogging.cc clusterviewcontroller.cc
   fakedata.cc util.cc )
 
 
