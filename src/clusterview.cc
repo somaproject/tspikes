@@ -44,7 +44,9 @@ ClusterView::ClusterView(SpikePointVectDatabase & spvdb, CViewMode cvm)
   add_events(Gdk::VISIBILITY_NOTIFY_MASK | 
 	     Gdk::BUTTON1_MOTION_MASK    | 
 	     Gdk::BUTTON2_MOTION_MASK    | 
-	     Gdk::BUTTON_PRESS_MASK );
+	     Gdk::POINTER_MOTION_MASK | 
+	     Gdk::BUTTON_PRESS_MASK |
+	     Gdk::BUTTON_RELEASE_MASK );
 
   signal_motion_notify_event().connect(sigc::mem_fun(*this, 
 						     &ClusterView::on_motion_notify_event)); 
@@ -261,14 +263,18 @@ bool ClusterView::on_motion_notify_event(GdkEventMotion* event)
       zoomX(1.0 + zoomXfact); 
       zoomY(1.0 + zoomYfact); 
       invalidate(); 
+
+      lastX_ = x; 
+      lastY_ = y; 
+      
+
     } 
   else if (event->state & GDK_BUTTON3_MASK)
     {
-
+      lastX_ = x; 
+      lastY_ = y; 
+       
     }
-
-  lastX_ = x; 
-  lastY_ = y; 
 
   return true;
 }

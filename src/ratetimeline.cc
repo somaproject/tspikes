@@ -28,6 +28,7 @@ RateTimeline::RateTimeline()
 	     Gdk::POINTER_MOTION_MASK | 
 	     Gdk::SCROLL_MASK |
 	     Gdk::BUTTON_PRESS_MASK      |
+	     Gdk::BUTTON_RELEASE_MASK | 
 	     Gdk::VISIBILITY_NOTIFY_MASK | 
 	     Gdk::ENTER_NOTIFY_MASK | 
 	     Gdk::LEAVE_NOTIFY_MASK );

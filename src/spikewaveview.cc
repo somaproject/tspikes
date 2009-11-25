@@ -36,7 +36,9 @@ SpikeWaveView::SpikeWaveView(GLChan_t chan) :
   add_events(Gdk::VISIBILITY_NOTIFY_MASK | 
 	     Gdk::BUTTON1_MOTION_MASK    | 
 	     Gdk::BUTTON2_MOTION_MASK    | 
-	     Gdk::BUTTON_PRESS_MASK );
+	     Gdk::POINTER_MOTION_MASK  |
+	     Gdk::BUTTON_PRESS_MASK | 
+	     Gdk::BUTTON_RELEASE_MASK );
 
   signal_motion_notify_event().connect(sigc::mem_fun(*this, 
 						     &SpikeWaveView::on_motion_notify_event)); 
@@ -237,16 +239,19 @@ bool SpikeWaveView::on_motion_notify_event(GdkEventMotion* event)
 
       invalidate(); 
 
-    }
-
+      lastX_ = x; 
+      lastY_ = y; 
       
+    }
+  
+  
   else if (event->state & GDK_BUTTON3_MASK)
     {
-
+      
+      lastX_ = x; 
+      lastY_ = y; 
+      
     }
-
-  lastX_ = x; 
-  lastY_ = y; 
 
   return true;
 }
