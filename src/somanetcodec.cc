@@ -127,7 +127,7 @@ void SomaNetworkCodec::parseEvent(const Event_t & evt)
       }
     } else {
     if (dspStateProxy_) {
-      if (evt.src > 0 && evt.src < 70) {
+      if (evt.src == dsrc_to_esrc(dsrc_)) {
 	dspStateProxy_->newEvent(evt); 
       }
     }
