@@ -12,6 +12,7 @@ find_package(PkgConfig)
 
 # we should handle this with build/release distinctions, but I'm not that l33t. 
 
+# build with "-DNO_GL" to use remote debug version
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
 pkg_check_modules(GUIDEPS REQUIRED 

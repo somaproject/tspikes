@@ -268,8 +268,9 @@ void TSpikeWin::setupMenus()
 
 TSpikeWin::~TSpikeWin()
 {
+#ifndef NO_GL
   delete pClusterViewController_; 
-
+#endif 
 }
 
 bool TSpikeWin::on_idle()
