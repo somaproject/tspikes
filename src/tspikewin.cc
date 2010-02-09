@@ -47,6 +47,7 @@ TSpikeWin::TSpikeWin(pNetworkInterface_t pNetwork,
   set_reallocate_redraws(true);
 
   pNetwork_->enableDataRX(dsrc_, TSPIKE); 
+  pNetwork_->enableEventRX(); 
 
   //boost::assign::ptr_map_insert<GLSPVect_t>(spvdb_)(abstimeToRelTime(spVectorStartTime_, offsetTime_)); 
   add(mainHBox_); 
